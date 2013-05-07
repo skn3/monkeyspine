@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import spine
+Import monkeyspine
 
 Class SpineSlotData
 	Field Name:String
