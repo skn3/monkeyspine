@@ -1,0 +1,23 @@
+[ {
+		"file": "powerup_atlas_0.png",
+		"items": {
+			"star": {
+				"x": 6,
+				"y": 284,
+				"width": 76,
+				"height": 72
+			},
+			"token": {
+				"x": 6,
+				"y": 159,
+				"width": 123,
+				"height": 122
+			},
+			"wing": {
+				"x": 6,
+				"y": 6,
+				"width": 137,
+				"height": 150
+			}
+		}
+	} ]

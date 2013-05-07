@@ -1,0 +1,41 @@
+[ {
+		"file": "spinosaurus_atlas_0.png",
+		"items": {
+			"leaves": {
+				"x": 6,
+				"y": 1059,
+				"width": 1042,
+				"height": 522
+			},
+			"logo": {
+				"x": 1051,
+				"y": 1059,
+				"width": 917,
+				"height": 323
+			},
+			"play": {
+				"x": 1689,
+				"y": 6,
+				"width": 218,
+				"height": 77
+			},
+			"quit": {
+				"x": 1689,
+				"y": 86,
+				"width": 216,
+				"height": 77
+			},
+			"settings": {
+				"x": 6,
+				"y": 1584,
+				"width": 446,
+				"height": 76
+			},
+			"background": {
+				"x": 6,
+				"y": 6,
+				"width": 1680,
+				"height": 1050
+			}
+		}
+	} ]

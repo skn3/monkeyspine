@@ -1,0 +1,301 @@
+[ {
+		"file": "goblins_atlas_0.png",
+		"items": {
+			"goblin/head": {
+				"x": 112,
+				"y": 6,
+				"width": 103,
+				"height": 64,
+				"frameX": 0,
+				"frameY": -2,
+				"frameWidth": 103,
+				"frameHeight": 66
+			},
+			"goblin/left-arm": {
+				"x": 176,
+				"y": 468,
+				"width": 37,
+				"height": 35
+			},
+			"goblin/left-foot": {
+				"x": 105,
+				"y": 242,
+				"width": 65,
+				"height": 31
+			},
+			"goblin/left-hand": {
+				"x": 143,
+				"y": 378,
+				"width": 36,
+				"height": 41
+			},
+			"goblin/left-lower-leg": {
+				"x": 68,
+				"y": 308,
+				"width": 30,
+				"height": 70,
+				"frameX": -2,
+				"frameY": 0,
+				"frameWidth": 33,
+				"frameHeight": 70
+			},
+			"goblin/left-shoulder": {
+				"x": 213,
+				"y": 105,
+				"width": 29,
+				"height": 44
+			},
+			"goblin/left-upper-leg": {
+				"x": 31,
+				"y": 242,
+				"width": 33,
+				"height": 73
+			},
+			"goblin/neck": {
+				"x": 169,
+				"y": 276,
+				"width": 36,
+				"height": 41
+			},
+			"goblin/pelvis": {
+				"x": 6,
+				"y": 459,
+				"width": 62,
+				"height": 43
+			},
+			"goblin/right-arm": {
+				"x": 182,
+				"y": 363,
+				"width": 23,
+				"height": 50
+			},
+			"goblin/right-foot": {
+				"x": 71,
+				"y": 454,
+				"width": 63,
+				"height": 33
+			},
+			"goblin/right-hand": {
+				"x": 137,
+				"y": 468,
+				"width": 36,
+				"height": 37
+			},
+			"goblin/right-lower-leg": {
+				"x": 71,
+				"y": 163,
+				"width": 35,
+				"height": 76,
+				"frameX": -1,
+				"frameY": 0,
+				"frameWidth": 36,
+				"frameHeight": 76
+			},
+			"goblin/right-shoulder": {
+				"x": 101,
+				"y": 378,
+				"width": 39,
+				"height": 42,
+				"frameX": 0,
+				"frameY": -3,
+				"frameWidth": 39,
+				"frameHeight": 45
+			},
+			"goblin/right-upper-leg": {
+				"x": 31,
+				"y": 391,
+				"width": 34,
+				"height": 63
+			},
+			"goblin/shield": {
+				"x": 31,
+				"y": 88,
+				"width": 70,
+				"height": 72
+			},
+			"goblin/spear": {
+				"x": 6,
+				"y": 88,
+				"width": 22,
+				"height": 368
+			},
+			"goblin/torso": {
+				"x": 218,
+				"y": 6,
+				"width": 68,
+				"height": 96
+			},
+			"goblin/undie-straps": {
+				"x": 109,
+				"y": 218,
+				"width": 55,
+				"height": 19
+			},
+			"goblin/undies": {
+				"x": 182,
+				"y": 416,
+				"width": 36,
+				"height": 29
+			},
+			"goblingirl/dagger-tip": {
+				"x": 182,
+				"y": 448,
+				"width": 17,
+				"height": 17
+			},
+			"goblingirl/dagger": {
+				"x": 181,
+				"y": 73,
+				"width": 26,
+				"height": 108
+			},
+			"goblingirl/head": {
+				"x": 6,
+				"y": 6,
+				"width": 103,
+				"height": 79,
+				"frameX": 0,
+				"frameY": 0,
+				"frameWidth": 103,
+				"frameHeight": 81
+			},
+			"goblingirl/left-arm": {
+				"x": 173,
+				"y": 228,
+				"width": 37,
+				"height": 35
+			},
+			"goblingirl/left-foot": {
+				"x": 101,
+				"y": 344,
+				"width": 65,
+				"height": 31
+			},
+			"goblingirl/left-hand": {
+				"x": 169,
+				"y": 320,
+				"width": 35,
+				"height": 40
+			},
+			"goblingirl/left-lower-leg": {
+				"x": 68,
+				"y": 381,
+				"width": 30,
+				"height": 70,
+				"frameX": -2,
+				"frameY": 0,
+				"frameWidth": 33,
+				"frameHeight": 70
+			},
+			"goblingirl/left-shoulder": {
+				"x": 245,
+				"y": 105,
+				"width": 28,
+				"height": 45,
+				"frameX": 0,
+				"frameY": 0,
+				"frameWidth": 28,
+				"frameHeight": 46
+			},
+			"goblingirl/left-upper-leg": {
+				"x": 31,
+				"y": 318,
+				"width": 33,
+				"height": 70
+			},
+			"goblingirl/neck": {
+				"x": 173,
+				"y": 184,
+				"width": 33,
+				"height": 41,
+				"frameX": 0,
+				"frameY": 0,
+				"frameWidth": 35,
+				"frameHeight": 41
+			},
+			"goblingirl/pelvis": {
+				"x": 109,
+				"y": 172,
+				"width": 59,
+				"height": 43,
+				"frameX": -1,
+				"frameY": 0,
+				"frameWidth": 62,
+				"frameHeight": 43
+			},
+			"goblingirl/right-arm": {
+				"x": 208,
+				"y": 320,
+				"width": 22,
+				"height": 50,
+				"frameX": -3,
+				"frameY": 0,
+				"frameWidth": 28,
+				"frameHeight": 50
+			},
+			"goblingirl/right-foot": {
+				"x": 101,
+				"y": 308,
+				"width": 63,
+				"height": 33
+			},
+			"goblingirl/right-hand": {
+				"x": 209,
+				"y": 184,
+				"width": 35,
+				"height": 37,
+				"frameX": -1,
+				"frameY": 0,
+				"frameWidth": 36,
+				"frameHeight": 37
+			},
+			"goblingirl/right-lower-leg": {
+				"x": 31,
+				"y": 163,
+				"width": 35,
+				"height": 76,
+				"frameX": -1,
+				"frameY": 0,
+				"frameWidth": 36,
+				"frameHeight": 76
+			},
+			"goblingirl/right-shoulder": {
+				"x": 137,
+				"y": 423,
+				"width": 39,
+				"height": 42,
+				"frameX": 0,
+				"frameY": -3,
+				"frameWidth": 39,
+				"frameHeight": 45
+			},
+			"goblingirl/right-upper-leg": {
+				"x": 68,
+				"y": 242,
+				"width": 34,
+				"height": 63
+			},
+			"goblingirl/torso": {
+				"x": 112,
+				"y": 73,
+				"width": 66,
+				"height": 96,
+				"frameX": 0,
+				"frameY": 0,
+				"frameWidth": 68,
+				"frameHeight": 96
+			},
+			"goblingirl/undie-straps": {
+				"x": 105,
+				"y": 276,
+				"width": 55,
+				"height": 19
+			},
+			"goblingirl/undies": {
+				"x": 208,
+				"y": 373,
+				"width": 36,
+				"height": 29
+			}
+		}
+	} ]

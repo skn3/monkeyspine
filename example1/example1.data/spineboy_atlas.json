@@ -1,0 +1,149 @@
+[ {
+		"file": "spineboy_atlas_0.png",
+		"items": {
+			"eyes-closed": {
+				"x": 388,
+				"y": 109,
+				"width": 34,
+				"height": 27
+			},
+			"eyes": {
+				"x": 208,
+				"y": 83,
+				"width": 34,
+				"height": 27
+			},
+			"head": {
+				"x": 13,
+				"y": 357,
+				"width": 121,
+				"height": 132
+			},
+			"left-ankle": {
+				"x": 467,
+				"y": 81,
+				"width": 25,
+				"height": 32
+			},
+			"left-arm": {
+				"x": 405,
+				"y": 77,
+				"width": 35,
+				"height": 29
+			},
+			"left-foot": {
+				"x": 405,
+				"y": 13,
+				"width": 65,
+				"height": 30
+			},
+			"left-hand": {
+				"x": 273,
+				"y": 83,
+				"width": 35,
+				"height": 38
+			},
+			"left-lower-leg": {
+				"x": 262,
+				"y": 13,
+				"width": 49,
+				"height": 64
+			},
+			"left-pant-bottom": {
+				"x": 351,
+				"y": 83,
+				"width": 44,
+				"height": 22
+			},
+			"left-shoulder": {
+				"x": 314,
+				"y": 67,
+				"width": 34,
+				"height": 53
+			},
+			"left-upper-leg": {
+				"x": 369,
+				"y": 13,
+				"width": 33,
+				"height": 67
+			},
+			"neck": {
+				"x": 351,
+				"y": 108,
+				"width": 34,
+				"height": 28
+			},
+			"pelvis": {
+				"x": 137,
+				"y": 452,
+				"width": 63,
+				"height": 47
+			},
+			"right-ankle": {
+				"x": 473,
+				"y": 13,
+				"width": 25,
+				"height": 30
+			},
+			"right-arm": {
+				"x": 443,
+				"y": 81,
+				"width": 21,
+				"height": 45
+			},
+			"right-foot-idle": {
+				"x": 405,
+				"y": 46,
+				"width": 53,
+				"height": 28
+			},
+			"right-foot": {
+				"x": 203,
+				"y": 452,
+				"width": 67,
+				"height": 30
+			},
+			"right-hand": {
+				"x": 461,
+				"y": 46,
+				"width": 32,
+				"height": 32
+			},
+			"right-lower-leg": {
+				"x": 208,
+				"y": 13,
+				"width": 51,
+				"height": 64
+			},
+			"right-pant-bottom": {
+				"x": 208,
+				"y": 113,
+				"width": 46,
+				"height": 18
+			},
+			"right-shoulder": {
+				"x": 314,
+				"y": 13,
+				"width": 52,
+				"height": 51
+			},
+			"right-upper-leg": {
+				"x": 161,
+				"y": 13,
+				"width": 44,
+				"height": 70
+			},
+			"spineboy": {
+				"x": 13,
+				"y": 13,
+				"width": 145,
+				"height": 341
+			},
+			"torso": {
+				"x": 137,
+				"y": 357,
+				"width": 68,
+				"height": 92
+			}
+		}
+	} ]

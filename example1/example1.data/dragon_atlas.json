@@ -1,0 +1,268 @@
+[
+	{
+		"file": "dragon_atlas_0.png",
+		"items": {
+			"front_toeA": {
+				"x": 892,
+				"y": 968,
+				"width": 29,
+				"height": 50
+			},
+			"front_toeB": {
+				"x": 431,
+				"y": 608,
+				"width": 56,
+				"height": 57
+			},
+			"head": {
+				"x": 6,
+				"y": 101,
+				"width": 296,
+				"height": 260
+			},
+			"logo": {
+				"x": 6,
+				"y": 6,
+				"width": 897,
+				"height": 92
+			},
+			"L_front_leg": {
+				"x": 668,
+				"y": 540,
+				"width": 84,
+				"height": 57
+			},
+			"L_rear_thigh": {
+				"x": 919,
+				"y": 285,
+				"width": 91,
+				"height": 148,
+				"frameX": 0,
+				"frameY": -1,
+				"frameWidth": 91,
+				"frameHeight": 149
+			},
+			"L_wing01": {
+				"x": 610,
+				"y": 608,
+				"width": 191,
+				"height": 256
+			},
+			"L_wing02": {
+				"x": 804,
+				"y": 540,
+				"width": 179,
+				"height": 269
+			},
+			"L_wing06": {
+				"x": 209,
+				"y": 677,
+				"width": 192,
+				"height": 331
+			},
+			"L_wing08": {
+				"x": 834,
+				"y": 101,
+				"width": 164,
+				"height": 181
+			},
+			"R_front_leg": {
+				"x": 906,
+				"y": 6,
+				"width": 101,
+				"height": 89
+			},
+			"R_wing01": {
+				"x": 209,
+				"y": 364,
+				"width": 219,
+				"height": 310
+			},
+			"R_wing02": {
+				"x": 404,
+				"y": 677,
+				"width": 203,
+				"height": 305
+			},
+			"R_wing03": {
+				"x": 305,
+				"y": 101,
+				"width": 272,
+				"height": 247
+			},
+			"R_wing04": {
+				"x": 610,
+				"y": 867,
+				"width": 279,
+				"height": 144
+			},
+			"R_wing05": {
+				"x": 580,
+				"y": 101,
+				"width": 251,
+				"height": 229
+			},
+			"R_wing06": {
+				"x": 6,
+				"y": 364,
+				"width": 200,
+				"height": 366
+			},
+			"R_wing07": {
+				"x": 6,
+				"y": 733,
+				"width": 200,
+				"height": 263
+			},
+			"R_wing08": {
+				"x": 431,
+				"y": 351,
+				"width": 234,
+				"height": 254
+			},
+			"R_wing09": {
+				"x": 668,
+				"y": 333,
+				"width": 248,
+				"height": 204
+			},
+			"tail01": {
+				"x": 892,
+				"y": 812,
+				"width": 120,
+				"height": 153
+			},
+			"tail03": {
+				"x": 919,
+				"y": 436,
+				"width": 73,
+				"height": 92
+			},
+			"tail05": {
+				"x": 490,
+				"y": 608,
+				"width": 52,
+				"height": 59
+			}
+		}
+	},
+	{
+		"file": "dragon_atlas_1.png",
+		"items": {
+			"back": {
+				"x": 168,
+				"y": 222,
+				"width": 190,
+				"height": 185
+			},
+			"chest": {
+				"x": 195,
+				"y": 410,
+				"width": 136,
+				"height": 122
+			},
+			"chin": {
+				"x": 6,
+				"y": 690,
+				"width": 214,
+				"height": 146
+			},
+			"L_front_thigh": {
+				"x": 334,
+				"y": 718,
+				"width": 84,
+				"height": 72
+			},
+			"L_rear_leg": {
+				"x": 197,
+				"y": 839,
+				"width": 168,
+				"height": 132,
+				"frameX": -19,
+				"frameY": -25,
+				"frameWidth": 206,
+				"frameHeight": 177
+			},
+			"L_wing03": {
+				"x": 6,
+				"y": 480,
+				"width": 186,
+				"height": 207
+			},
+			"L_wing04": {
+				"x": 6,
+				"y": 839,
+				"width": 188,
+				"height": 135
+			},
+			"L_wing05": {
+				"x": 6,
+				"y": 6,
+				"width": 218,
+				"height": 213
+			},
+			"L_wing07": {
+				"x": 6,
+				"y": 222,
+				"width": 159,
+				"height": 255
+			},
+			"L_wing09": {
+				"x": 227,
+				"y": 6,
+				"width": 204,
+				"height": 167
+			},
+			"rear-toe": {
+				"x": 334,
+				"y": 638,
+				"width": 105,
+				"height": 77,
+				"frameX": 0,
+				"frameY": 0,
+				"frameWidth": 109,
+				"frameHeight": 77
+			},
+			"R_front_thigh": {
+				"x": 223,
+				"y": 686,
+				"width": 108,
+				"height": 108
+			},
+			"R_rear_leg": {
+				"x": 289,
+				"y": 535,
+				"width": 116,
+				"height": 100
+			},
+			"R_rear_thigh": {
+				"x": 195,
+				"y": 535,
+				"width": 91,
+				"height": 148,
+				"frameX": 0,
+				"frameY": -1,
+				"frameWidth": 91,
+				"frameHeight": 149
+			},
+			"tail02": {
+				"x": 334,
+				"y": 410,
+				"width": 95,
+				"height": 120
+			},
+			"tail04": {
+				"x": 368,
+				"y": 793,
+				"width": 56,
+				"height": 71
+			},
+			"tail06": {
+				"x": 408,
+				"y": 533,
+				"width": 95,
+				"height": 68
+			}
+		}
+	}
+]
