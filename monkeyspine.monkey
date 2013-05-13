@@ -1,6 +1,11 @@
 'see license.txt for source licenses
 Strict
 
+'version 2
+' - fixed getflip return type to bool, cheers Zwer99
+'version 1
+' - first public commit
+
 'core
 Import mojo
 Import monkey.map

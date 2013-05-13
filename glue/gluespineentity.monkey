@@ -693,23 +693,23 @@ Class SpineEntity
 		dirty = True
 	End
 	
-	Method GetFlip:Float[] ()
+	Method GetFlip:Bool[] ()
 		' --- get local flip ---
 		Return[flipX, flipY]
 	End
 	
-	Method GetFlip:Void(flipXY:Float[])
+	Method GetFlip:Void(flipXY:Bool[])
 		' --- get local flip ---
 		flipXY[0] = flipX
 		flipXY[1] = flipY
 	End
 	
-	Method GetFlipX:Float()
+	Method GetFlipX:Bool()
 		' --- get local flip ---
 		Return flipX
 	End
 	
-	Method GetFlipY:Float()
+	Method GetFlipY:Bool()
 		' --- get local flip ---
 		Return flipY
 	End
