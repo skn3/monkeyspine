@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import skn3.monkeyspine
+Import monkeyspine
 
 Class SpineAttachmentType'FAKE ENUM
 	Const region:= 0

@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 'This example demonstrates how we can use a different atlas loader. The atlas loade we are using will load seperate images instead of loading packed images.
 Import mojo
-Import skn3.monkeyspine
+Import monkeyspine
 
 Function Main:Int()
 	New MyApp

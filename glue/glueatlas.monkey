@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import skn3.monkeyspine
+Import monkeyspine
 
 'these interfaces and classes allow 3rd party developers to extend the monkey spine runtime
 

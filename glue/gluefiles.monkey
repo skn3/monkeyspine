@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import skn3.monkeyspine
+Import monkeyspine
 
 'file interfaces
 Interface SpineFileLoader

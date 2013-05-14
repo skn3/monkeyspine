@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import skn3.monkeyspine
+Import monkeyspine
 
 'interface to handle spine entity notifications
 Interface SpineEntityCallback
