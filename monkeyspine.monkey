@@ -3,7 +3,6 @@ Strict
 
 'version 3
 ' - moved module into root modules folder
-' - updated reference to json module to "import monkeyjson" instead of "import json"
 'version 2
 ' - fixed getflip return type to bool, cheers Zwer99
 'version 1
@@ -15,7 +14,7 @@ Import monkey.map
 Import brl.databuffer
 
 '3rd party
-Import monkeyjson
+Import json
 
 'glue code
 Import glue.gluevalues

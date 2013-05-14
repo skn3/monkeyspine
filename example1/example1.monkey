@@ -40,7 +40,7 @@ Class MyApp Extends App
 		Try
 			'create example items
 			Local item:ExampleItem
-			items = New ExampleItem[1]
+			items = New ExampleItem[5]
 			
 			'spine boy
 			item = New ExampleItem
