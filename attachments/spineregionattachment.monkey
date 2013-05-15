@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 'SpineAttachment that displays a texture region. 
 Class SpineRegionAttachment Extends SpineAttachment

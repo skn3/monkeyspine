@@ -1,6 +1,6 @@
 Strict
 
-Import monkeyspine
+Import spine
 
 Interface SpineAtlasLoader
 	Method OnLoadAtlas:Void(atlas:SpineAtlas, fileStream:SpineFileStream, imageLoader:SpineImageLoader = SpineDefaultImageLoader.instance)

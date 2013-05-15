@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 'file system
 Function SpineExtractDir:String(path:String)

@@ -2,7 +2,7 @@
 'This is a complex example that demonstrated multiple entities, animations, skins, collisions, speed and more!
 
 Import mojo
-Import monkeyspine
+Import spine
 
 Function Main:Int()
 	New MyApp

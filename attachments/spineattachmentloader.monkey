@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 Interface SpineAttachmentLoader
 	'return May be null to not load any attachment. 

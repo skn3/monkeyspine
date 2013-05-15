@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 'This example demonstrates how we can see when an animation has finished.
 Import mojo
-Import monkeyspine
+Import spine
 
 Function Main:Int()
 	New MyApp

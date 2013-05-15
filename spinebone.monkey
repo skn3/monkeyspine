@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 Class SpineBone
 	Const yDown:bool = True

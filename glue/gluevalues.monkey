@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 Global spineTempPoint:Float[2]
 Global spineTempVertices:Float[8]

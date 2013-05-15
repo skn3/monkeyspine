@@ -1,7 +1,7 @@
 'see license.txt for source licenses
 Strict
 
-Import monkeyspine
+Import spine
 
 ' Stores attachments by index:slot and attachment name. 
 Class SpineSkin

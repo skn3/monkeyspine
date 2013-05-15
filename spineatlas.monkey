@@ -27,7 +27,7 @@
 Strict
 
 #rem
-Import monkeyspine
+Import spine
 
 Class SpineAtlas
 	Field pages:SpineAtlasPage[]

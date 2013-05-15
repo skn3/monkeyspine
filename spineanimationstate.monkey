@@ -26,7 +26,7 @@
 #end
 Strict
 
-Import monkeyspine
+Import spine
 
 Class SpineAnimationState
 	Field Data:SpineAnimationStateData
