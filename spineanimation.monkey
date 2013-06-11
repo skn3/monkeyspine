@@ -66,6 +66,8 @@ Class SpineAnimation
 			If values[i] > target Return i
 			i += theStep
 		Wend
+		'note: Ziggy: This function was not returning anything. Not sure what should it return in case the search fails
+		Return i	'I assume that out of bounds is a good indication of the function failing. Maybe -1 would be a good alternative too
 	End
 End
 

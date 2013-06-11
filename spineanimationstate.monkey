@@ -70,7 +70,7 @@ Class SpineAnimationState
 
 	Method SetAnimation:Void(animationName:String, loop:bool)
 		Local animation:SpineAnimation = Data.SkeletonData.FindAnimation(animationName)
-		If animation = Null Throw New ArgumentException("SpineAnimation not found: " + animationName)
+		If animation = Null Throw New SpineArgumentNullException("SpineAnimation not found: " + animationName)
 		SetAnimation(animation, loop)
 	End
 
@@ -101,10 +101,16 @@ Class SpineAnimationState
 	End
 
 	Method ToString:String()
-		If Animation <> Null And Animation.Name <> Null
-			Return Animation.Name
-		Else
-			Return base.ToString()
-		EndIf
-	End
+        If Animation <> Null And Animation.Name <> ""	'note:Ziggy: Strings can't be null in Monkey
+            Return Animation.Name
+        Else
+            'Return Super.ToString() '--> Super class does not have a ToString method so....
+            Return ""       'Maybe this could be changed to something like "n/a" or "void" or the like... ?
+        EndIf
+    End
+	
+'	Method ToString:String()	'note:Ziggy: This was a duplicate method definition
+'		If Animation <> Null Return Animation.Name
+'		Return ""
+'	End
 End

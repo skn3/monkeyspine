@@ -396,15 +396,18 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 		locked = True
 	End
 	
+	'note:FIX TODO:This method prevents compilation as it does not return any value.
 	Method AddPage:SpineAtlasPage(path:String)
 		' --- add page to atlas ---
 		'do nothing
+		'Added to let this empty method compile the whole module. Not nice, but you know...
+		Return Null
 	End
 	
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 		' --- add a new region to atlas ---
 		'create new region
-		Local region:= New SpineMakeAtlasJSONAtlasRegion
+		Local region:= New SpineMakeAtlasJSONAtlasRegion 
 		
 		'setup the details for the region
 		region.name = name

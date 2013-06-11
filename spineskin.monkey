@@ -33,9 +33,11 @@ Class SpineSkin
 	End
 
 	Method FindNamesForSlot:String[] (slotIndex:int)
-		If attachments = Null Return
+		'note:Ziggy: A return expression is required by Monkey when the subroutine is not Void.
+		If attachments = Null Return New String[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
-		If slotMap = Null Return
+		'note:Ziggy: A return expression is required by Monkey when the subroutine is not Void (2).
+		If slotMap = Null Return New String[0]
 		
 		Local results:String[slotMap.Count()]
 		Local resultIndex:Int = 0
@@ -47,6 +49,7 @@ Class SpineSkin
 		Return results
 	End
 
+	'note:FIX TODO: This method is Void but was returning a value at the end, but nothing in the middle... that's surely a bug
 	Method FindAttachmentsForSlot:Void(slotIndex:int)
 		If attachments = Null Return
 		Local slotMap:= attachments.ValueForKey(slotIndex)
@@ -59,7 +62,7 @@ Class SpineSkin
 			results[resultIndex] = attachment
 			resultIndex += 1
 		Next
-		Return results
+		'Return results
 	End
 
 	Method ToString:String()

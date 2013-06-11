@@ -111,7 +111,8 @@ Class SpineSkeleton
 	Method FindBoneIndex:int(boneName:String)
 		If boneName.Length = 0 Return - 1
 		For Local i:= 0 Until Bones.Length
-			If bones[i].Data.Name = boneName Return i
+			'note:Ziggy: It seems this bone[i] is a reference to the Bones atribute, case corrected:
+			If Bones[i].Data.Name = boneName Return i
 		Next
 		Return -1
 	End
@@ -163,7 +164,8 @@ Class SpineSkeleton
 		For Local i:= 0 Until Slots.Length
 			If Slots[i].Data.Name = slotName
 				Local attachment:SpineAttachment = Null
-				If attachmentName <> null
+				'note:Ziggy: A String can't be Null. Too much Java or C# lately? hehe XD
+				If attachmentName <> ""
 					attachment = GetAttachment(i, attachmentName)
 					If attachment = Null Throw New SpineArgumentNullException("SpineAttachment not found: " + attachmentName + ", for slot: " + slotName)
 				EndIf

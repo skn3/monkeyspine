@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 4
+' - fixed lots of typo-ish bugs reported by ziggy
 'version 3
 ' - moved module into root modules folder
 'version 2
@@ -11,6 +13,7 @@ Strict
 'core
 Import mojo
 Import monkey.map
+Import monkey.boxes
 Import brl.databuffer
 
 '3rd party
