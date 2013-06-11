@@ -681,7 +681,7 @@ Class SpineEntity
 	
 	Method GetRotation:Float()
 		' --- return local angle ---
-		Return angle
+		Return rotation
 	End
 	
 	'flip api
@@ -725,7 +725,7 @@ Class SpineEntity
 		For Local index:Int = 0 Until 8
 			out[index] = bounding[index]
 		Next
-		Return 8
+		Return out
 	End
 	
 	Method GetBounding:Void(out:Float[])
@@ -848,7 +848,7 @@ Class SpineEntity
 		If slot = Null Return[0, 0, 0]
 		
 		'local
-		Return[slot.R * 255, slot.G * 255, slotB * 255]
+		Return[slot.R * 255, slot.G * 255, slot.B * 255]
 	End
 	
 	Method GetSlotColor:Void(name:String, rgb:Int[])
@@ -872,7 +872,7 @@ Class SpineEntity
 		' --- get color of a particular slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
-		If slot = Null Return[0, 0, 0]
+		If slot = Null Return 0
 		Return slot.R * 255
 	End
 	
@@ -880,7 +880,7 @@ Class SpineEntity
 		' --- get color of a particular slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
-		If slot = Null Return[0, 0, 0]
+		If slot = Null Return 0
 		Return slot.G * 255
 	End
 	
@@ -888,7 +888,7 @@ Class SpineEntity
 		' --- get color of a particular slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
-		If slot = Null Return[0, 0, 0]
+		If slot = Null Return 0
 		Return slot.B * 255
 	End
 	

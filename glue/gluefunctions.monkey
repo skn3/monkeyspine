@@ -70,7 +70,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 				'slash
 				start2 += 1
 				slash = True
-			ElseIf path1[index] = 32
+			ElseIf path2[index] = 32
 				'space
 				start2 += 1
 			Else
