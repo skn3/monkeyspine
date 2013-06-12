@@ -48,9 +48,10 @@ Class SpineSkin
 	End
 
 	Method FindAttachmentsForSlot:SpineAttachment[] (slotIndex:int)
-		If attachments = Null Return New SpineAttachmentTimeline[0]
+		
+		If attachments = Null Return New SpineAttachment[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
-		If slotMap = Null Return New SpineAttachmentTimeline[0]
+		If slotMap = Null Return New SpineAttachment[0]
 		
 		Local results:SpineAttachment[slotMap.Count()]
 		Local resultIndex:Int = 0

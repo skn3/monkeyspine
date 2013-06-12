@@ -101,7 +101,7 @@ Class SpineAnimationState
 	End
 
 	Method ToString:String()
-        If Animation <> Null And Animation.Name <> Null
+        If Animation <> Null And Animation.Name <> ""
             Return Animation.Name
         Else
             'Return Super.ToString() '--> Super class does not have a ToString method so....
