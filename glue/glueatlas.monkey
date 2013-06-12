@@ -399,6 +399,7 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 	Method AddPage:SpineAtlasPage(path:String)
 		' --- add page to atlas ---
 		'do nothing
+		Return Null
 	End
 	
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)

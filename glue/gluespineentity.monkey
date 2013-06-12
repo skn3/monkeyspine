@@ -848,7 +848,7 @@ Class SpineEntity
 		If slot = Null Return[0, 0, 0]
 		
 		'local
-		Return[slot.R * 255, slot.G * 255, slot.B * 255]
+		Return[int(slot.R * 255), int(slot.G * 255), int(slot.B * 255)]
 	End
 	
 	Method GetSlotColor:Void(name:String, rgb:Int[])

@@ -135,10 +135,4 @@ Class SpineRegionAttachment Extends SpineAttachment
 		Offset[X4] = localX2Cos - localYSin
 		Offset[Y4] = localYCos + localX2Sin
 	End
-	
-	Method PointInside:Bool(x:Float, y:Float)
-		' --- return true if the given world point is inside the region ---
-		'this assumes the attachment has been updated using Update()
-		
-	End
 End

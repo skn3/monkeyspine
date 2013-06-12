@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 5
+' - more fixes by ziggy
 'version 4
 ' - fixed lots of typo-ish bugs reported by ziggy
 'version 3

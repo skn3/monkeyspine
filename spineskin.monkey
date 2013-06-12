@@ -33,9 +33,9 @@ Class SpineSkin
 	End
 
 	Method FindNamesForSlot:String[] (slotIndex:int)
-		If attachments = Null Return
+		If attachments = Null Return New String[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
-		If slotMap = Null Return
+		If slotMap = Null Return New String[0]
 		
 		Local results:String[slotMap.Count()]
 		Local resultIndex:Int = 0
@@ -47,10 +47,10 @@ Class SpineSkin
 		Return results
 	End
 
-	Method FindAttachmentsForSlot:Void(slotIndex:int)
-		If attachments = Null Return
+	Method FindAttachmentsForSlot:SpineAttachment[] (slotIndex:int)
+		If attachments = Null Return New SpineAttachmentTimeline[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
-		If slotMap = Null Return
+		If slotMap = Null Return New SpineAttachmentTimeline[0]
 		
 		Local results:SpineAttachment[slotMap.Count()]
 		Local resultIndex:Int = 0
