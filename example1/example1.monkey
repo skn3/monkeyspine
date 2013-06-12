@@ -97,7 +97,7 @@ Class MyApp Extends App
 		Cls(128, 128, 128)
 		
 		'simples! render current item
-		currentEntity.Render()
+		If currentEntity currentEntity.Render()
 		
 		'render help
 		SetColor(255, 255, 255)
@@ -147,8 +147,10 @@ Class MyApp Extends App
 			EndIf
 		EndIf
 		
-		Local entityText:String = "Entity: '" + currentEntity.GetName() + "'   Skin: '" + currentEntity.GetSkin() + "'   Animation '" + currentEntity.GetAnimation() + "'"
-		DrawText(entityText, DeviceWidth() -TextWidth(entityText) - 5, DeviceHeight() -FontHeight() -5)
+		If currentEntity
+			Local entityText:String = "Entity: '" + currentEntity.GetName() + "'   Skin: '" + currentEntity.GetSkin() + "'   Animation '" + currentEntity.GetAnimation() + "'"
+			DrawText(entityText, DeviceWidth() -TextWidth(entityText) - 5, DeviceHeight() -FontHeight() -5)
+		EndIf
 		
 		'draw collision overlay
 		Select collisionMode
@@ -177,6 +179,11 @@ Class MyApp Extends App
 		Local deltaInt:Int = newTimestamp - timestamp
 		Local deltaFloat:Float = deltaInt / 1000.0 * speed
 		timestamp = newTimestamp
+		
+		If MouseHit(MOUSE_LEFT)
+			currentEntity.Free()
+			currentEntity = Null
+		EndIf
 		
 		'change info display
 		If KeyHit(KEY_SPACE)
@@ -224,50 +231,52 @@ Class MyApp Extends App
 			speed -= 0.01
 		EndIf
 		
-		'update item entity
-		currentEntity.Update(deltaFloat)
-		
-		'make head look at mouse
-		If currentEntity.HasBone("head")
-			If MouseX() > currentEntity.GetBoneX("head", True)
-				'get angle between mouse and eyes slot
-				Local eyesPosition:= currentEntity.GetSlotPosition("eyes", True)
-				Local angle:Float = -ATan2( (MouseY() -eyesPosition[1]), (MouseX() -eyesPosition[0]))' + 180.0
-				If angle < 0 angle = 180 + (180 + angle)
-				
-				'limit angel so it doesn't break the neck
-				If angle > 15 And angle < 310
-					If angle < 180
-						angle = 15
-					Else
-						angle = 310
+		If currentEntity
+			'update item entity
+			currentEntity.Update(deltaFloat)
+			
+			'make head look at mouse
+			If currentEntity.HasBone("head")
+				If MouseX() > currentEntity.GetBoneX("head", True)
+					'get angle between mouse and eyes slot
+					Local eyesPosition:= currentEntity.GetSlotPosition("eyes", True)
+					Local angle:Float = -ATan2( (MouseY() -eyesPosition[1]), (MouseX() -eyesPosition[0]))' + 180.0
+					If angle < 0 angle = 180 + (180 + angle)
+					
+					'limit angel so it doesn't break the neck
+					If angle > 15 And angle < 310
+						If angle < 180
+							angle = 15
+						Else
+							angle = 310
+						EndIf
 					EndIf
+					
+					'set the world rotation of the bone
+					currentEntity.SetBoneRotation("head", angle + 90, True)
 				EndIf
-				
-				'set the world rotation of the bone
-				currentEntity.SetBoneRotation("head", angle + 90, True)
+			EndIf
+			
+			'find the bone we are currently over
+			overSlot = currentEntity.FindSlotAtPoint(MouseX(), MouseY())
+			
+			'do collision test
+			Local collided:Bool = False
+			Select collisionMode
+				Case 1
+					collided = currentEntity.PointInside(MouseX(), MouseY(), precision)
+				Case 2
+					collided = currentEntity.RectOverlaps(MouseX() -40, MouseY() -40, 80, 80, precision)
+			End
+			
+			'change color based on collision
+			If collided
+				currentEntity.SetColor(0, 255, 0)
+			Else
+				currentEntity.SetColor(255, 255, 255)
 			EndIf
 		EndIf
-		
-		'find the bone we are currently over
-		overSlot = currentEntity.FindSlotAtPoint(MouseX(), MouseY())
-		
-		'do collision test
-		Local collided:Bool = False
-		Select collisionMode
-			Case 1
-				collided = currentEntity.PointInside(MouseX(), MouseY(), precision)
-			Case 2
-				collided = currentEntity.RectOverlaps(MouseX() -40, MouseY() -40, 80, 80, precision)
-		End
-		
-		'change color based on collision
-		If collided
-			currentEntity.SetColor(0, 255, 0)
-		Else
-			currentEntity.SetColor(255, 255, 255)
-		EndIf
-		
+			
 		'must alwasy return
 		Return 0
 	End
@@ -287,7 +296,7 @@ Class MyApp Extends App
 		EndIf
 		
 		'change skin
-		currentEntity.SetSkin(currentItem.skins[currentItem.skinIndex])
+		If currentEntity currentEntity.SetSkin(currentItem.skins[currentItem.skinIndex])
 	End
 	
 	Method NextAnimation:Void()
@@ -300,7 +309,7 @@ Class MyApp Extends App
 		EndIf
 		
 		'change animation
-		currentEntity.SetAnimation(currentItem.animations[currentItem.animationIndex], True)
+		If currentEntity currentEntity.SetAnimation(currentItem.animations[currentItem.animationIndex], True)
 	End
 	
 	Method NextEntity:Void()
@@ -317,16 +326,20 @@ Class MyApp Extends App
 		'change skin
 		If currentItem.skinIndex = -1 NextSkin()
 		
-		'change animation
-		currentEntity.SetAnimation(currentItem.animations[currentItem.animationIndex], True)
+		If currentEntity
+			'change animation
+			currentEntity.SetAnimation(currentItem.animations[currentItem.animationIndex], True)
 		
-		'change debug setting
-		currentEntity.SetDebugDraw(debug)
+			'change debug setting
+			currentEntity.SetDebugDraw(debug)
+		EndIf
 	End
 	
 	Method ChangeDebug:Void(on:Bool)
 		' --- change debug draw setting ---
-		currentEntity.SetDebugDraw(on)
+		If currentEntity
+			currentEntity.SetDebugDraw(on)
+		EndIf
 		debug = on
 	End
 End

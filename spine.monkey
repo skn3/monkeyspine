@@ -1,6 +1,10 @@
 'see license.txt for source licenses
 Strict
 
+'version 6
+' - Added IsAnimationRunning() to SpineEntity this will return true if the animation is still running
+' - Added GetAnimationTime() to SpineEntity this will get the current time in ms for the animation
+' - Added Free() to spineentity and certain acompanying objects
 'version 5
 ' - more fixes by ziggy
 'version 4

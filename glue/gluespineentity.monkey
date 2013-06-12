@@ -102,6 +102,18 @@ Class SpineEntity
 		Return True
 	End
 	
+	Method Free:Void()
+		' --- free the spine entity ---
+		If atlas atlas.Free()
+		atlas = Null
+		data = Null
+		skeleton = Null
+		callback = Null
+		animation = Null
+		lastSlotLookup = Null
+		lastBoneLookup = Null
+	End
+	
 	'events
 	Private
 	Method OnCalculate:Void()
@@ -555,6 +567,11 @@ Class SpineEntity
 		dirty = True
 	End
 	
+	Method IsAnimationRunning:Bool()
+		' --- check if the previously set animation is running ---
+		Return finished = False
+	End
+	
 	Method SetSpeed:Void(speed:Float)
 		' --- change speed multiplier ---
 		Self.speed = speed
@@ -588,6 +605,11 @@ Class SpineEntity
 	Method GetAnimation:SpineAnimation(id:String)
 		' --- return teh animation object ---
 		Return data.FindAnimation(id)
+	End
+	
+	Method GetAnimationTime:Int()
+		' --- return time of animation ---
+		Return skeleton.Time * 1000
 	End
 	
 	Method GetSpeed:Float()

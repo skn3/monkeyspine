@@ -11,6 +11,7 @@ Interface SpineAtlasLoader
 End
 
 Interface SpineAtlas
+	Method Free:Void()
 	Method Lock:Void()
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 	Method UnLock:Void()
@@ -220,10 +221,25 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 End
 
 Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
-	Field pages:SpineAtlasPage[]
+	Field pages:SpineMakeAtlasJSONAtlasPage[]
 	Field pagesCount:Int
 	Field regions:SpineMakeAtlasJSONAtlasRegion[]
 	Field regionsCount:Int
+	
+	Method Free:Void()
+		' --- free teh atlas ---
+		Local index:Int
+		
+		For index = 0 Until regions.Length
+			regions[index].page = Null
+			regions[index].image = Null
+		Next
+		
+		For index = 0 Until pages.Length
+			pages[index].image.Discard()
+			pages[index].image = Null
+		Next
+	End
 	
 	Method Lock:Void()
 		' --- atlas is about to be created ---
@@ -390,6 +406,14 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 	Field path:String
 	Field regions:SpineMakeAtlasJSONAtlasRegion[]
 	Field regionsCount:Int
+	
+	Method Free:Void()
+		' --- free ---
+		For Local index:Int = 0 Until regions.Length
+			regions[index].image.Discard()
+			regions[index].image = Null
+		Next
+	End
 	
 	Method Lock:Void()
 		' --- atlas is about to be created ---
