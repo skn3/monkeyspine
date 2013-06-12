@@ -25,10 +25,12 @@ Class SpineAnimationStateData
 		If fromAnimation = Null Throw New SpineArgumentNullException("from cannot be null.")
 		If toAnimation = Null Throw New SpineArgumentNullException("to cannot be null.")
 		
-		If animationToMixTime = Null animationToMixTime = New Map<SpineAnimation, FloatMap<SpineAnimation>>
+		'note: MODIFY LATER: Error can't create instance of abstract class, due to Compare method not being implemented. This will crash:
+		If animationToMixTime = Null animationToMixTime = New Map<SpineAnimation, FloatMap<SpineAnimation>>	'<- Needs fixing
 		
 		Local fromMap:= animationToMixTime.ValueForKey(fromAnimation)
 		If fromMap = Null
+			'note: MODIFY LATER: Can't convert from FloatMap<SpineAnimation> to Map<SpineAnimation,FloatObject>
 			fromMap = New FloatMap<SpineAnimation>
 			animationToMixTime.Insert(fromAnimation, fromMap)
 		EndIf

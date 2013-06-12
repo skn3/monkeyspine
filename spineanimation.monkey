@@ -66,6 +66,7 @@ Class SpineAnimation
 			If values[i] > target Return i
 			i += theStep
 		Wend
+		Return -1
 	End
 End
 
