@@ -3,10 +3,19 @@ Strict
 
 Import spine
 
+Class SpineAnimationMap<V> Extends Map<SpineAnimation, V>
+	Method Compare:Int(a:SpineAnimation, b:SpineAnimation)
+		'If a < b Then Return 1
+		'If a > b Then Return -1
+		If a = b Then Return 0
+		Return -1
+	End
+End
+
 Class SpineAnimationStateData
 	Field SkeletonData:SpineSkeletonData
 	Private
-	Field animationToMixTime:Map<SpineAnimation, Map<SpineAnimation, FloatObject>>
+	Field animationToMixTime:SpineAnimationMap<SpineAnimationMap<FloatObject>>
 	Public
 
 	Method New(skeletonData:SpineSkeletonData)
@@ -25,13 +34,11 @@ Class SpineAnimationStateData
 		If fromAnimation = Null Throw New SpineArgumentNullException("from cannot be null.")
 		If toAnimation = Null Throw New SpineArgumentNullException("to cannot be null.")
 		
-		'note: MODIFY LATER: Error can't create instance of abstract class, due to Compare method not being implemented. This will crash:
-		If animationToMixTime = Null animationToMixTime = New Map<SpineAnimation, FloatMap<SpineAnimation>>	'<- Needs fixing
+		If animationToMixTime = Null animationToMixTime = New SpineAnimationMap<SpineAnimationMap<FloatObject>>
 		
 		Local fromMap:= animationToMixTime.ValueForKey(fromAnimation)
 		If fromMap = Null
-			'note: MODIFY LATER: Can't convert from FloatMap<SpineAnimation> to Map<SpineAnimation,FloatObject>
-			fromMap = New FloatMap<SpineAnimation>
+			fromMap = New SpineAnimationMap<FloatObject>
 			animationToMixTime.Insert(fromAnimation, fromMap)
 		EndIf
 		

@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 7
+' - fixed map issues, thanks ziggy
 'version 6
 ' - Added IsAnimationRunning() to SpineEntity this will return true if the animation is still running
 ' - Added GetAnimationTime() to SpineEntity this will get the current time in ms for the animation
