@@ -4,6 +4,10 @@
 Import mojo
 Import spine
 
+'Syntax checks in order to let all the Spine APIS be compiled:
+Import reflection
+#REFLECTION_FILTER="*"; 
+
 Function Main:Int()
 	New MyApp
 	Return 0
