@@ -2,7 +2,7 @@
 Strict
 
 'version 8
-' - added spineEntity.GetAtlas() to get atlas of spine entity
+' - added spineEntity.GetAtlas() to get atlas of spine entity (thanks ziggy)
 ' - added SpineLoadAtlas() function to load an atlas outside of creating a spine entity
 ' - added SpineAtlas.Use() so that the spine glue will reference count an atlas
 ' - changed SpineAtlas.Free(force=false) added a force flag which will force teh atlas to be freed.
