@@ -516,6 +516,10 @@ Class SpineEntity
 		Return skeleton.B
 	End
 	
+	Method GetAtlas:SpineAtlas()
+		Return atlas
+	End
+
 	'skin api
 	Method SetSkin:Void(name:String)
 		' --- change the skin ---
