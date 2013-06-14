@@ -1,6 +1,12 @@
 'see license.txt for source licenses
 Strict
 
+'version 8
+' - added spineEntity.GetAtlas() to get atlas of spine entity
+' - added SpineLoadAtlas() function to load an atlas outside of creating a spine entity
+' - added SpineAtlas.Use() so that the spine glue will reference count an atlas
+' - changed SpineAtlas.Free(force=false) added a force flag which will force teh atlas to be freed.
+'   If force is false and atlas is being used by something else then only a eference count will be decreased
 'version 7
 ' - fixed map issues, thanks ziggy
 'version 6

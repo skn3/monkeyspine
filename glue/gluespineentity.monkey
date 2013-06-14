@@ -94,6 +94,10 @@ Class SpineEntity
 		data = skeletonJson.ReadSkeletonData(skeletonPath)
 		atlas.UnLock()
 		
+		'increase reference count on the atlas
+		'it is upto the speciffic atlas implementation to make sure it doesn't free an atlas if its currently being used
+		atlas.Use()
+		
 		'create skeleton
 		skeleton = New SpineSkeleton(data)
 		skeleton.SetToBindPose()
@@ -104,7 +108,11 @@ Class SpineEntity
 	
 	Method Free:Void()
 		' --- free the spine entity ---
+		'decrease reference count for atlas
+		'it is upto the atlas implementation if it should also free any images resources
 		If atlas atlas.Free()
+		
+		'cleanup pointers
 		atlas = Null
 		data = Null
 		skeleton = Null

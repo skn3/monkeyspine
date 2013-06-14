@@ -122,6 +122,51 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	Return ""
 End
 
+'atlas
+Function SpineLoadAtlas:SpineAtlas(path:String = "")
+	' --- helper to load an atlas outside of creating a spine entity ---
+	Local atlas:= SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(path, SpineDefaultFileLoader.instance)
+	
+	'increase reference count on atlas
+	atlas.Use()
+	
+	'return it
+	Return atlas
+End
+
+Function SpineLoadAtlas:SpineAtlas(path:String = "", atlasLoader:SpineAtlasLoader)
+	' --- helper to load an atlas outside of creating a spine entity ---
+	Local atlas:= atlasLoader.LoadAtlas(path, SpineDefaultFileLoader.instance)
+	
+	'increase reference count on atlas
+	atlas.Use()
+	
+	'return it
+	Return atlas
+End
+
+Function SpineLoadAtlas:SpineAtlas(path:String = "", fileLoader:SpineFileLoader)
+	' --- helper to load an atlas outside of creating a spine entity ---
+	Local atlas:= SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(path, fileLoader)
+	
+	'increase reference count on atlas
+	atlas.Use()
+	
+	'return it
+	Return atlas
+End
+
+Function SpineLoadAtlas:SpineAtlas(path:String = "", atlasLoader:SpineAtlasLoader, fileLoader:SpineFileLoader)
+	' --- helper to load an atlas outside of creating a spine entity ---
+	Local atlas:= atlasLoader.LoadAtlas(path, fileLoader)
+	
+	'increase reference count on atlas
+	atlas.Use()
+	
+	'return it
+	Return atlas
+End
+
 'collisions / geometry
 Function SpineGetQuad:Int(axisX:Float, axisY:Float, vertX:Float, vertY:Float)
 	If vertX<axisX

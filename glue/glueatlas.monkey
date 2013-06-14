@@ -11,7 +11,8 @@ Interface SpineAtlasLoader
 End
 
 Interface SpineAtlas
-	Method Free:Void()
+	Method Use:Void()
+	Method Free:Void(force:Bool = False)
 	Method Lock:Void()
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 	Method UnLock:Void()
@@ -221,24 +222,36 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 End
 
 Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
+	Field refCount:Int
 	Field pages:SpineMakeAtlasJSONAtlasPage[]
 	Field pagesCount:Int
 	Field regions:SpineMakeAtlasJSONAtlasRegion[]
 	Field regionsCount:Int
 	
-	Method Free:Void()
+	Method Use:Void()
+		' --- increase reference count of atlas ---
+		refCount += 1
+	End
+	
+	Method Free:Void(force:Bool = False)
 		' --- free teh atlas ---
-		Local index:Int
+		'decrease reference count
+		refCount -= 1
 		
-		For index = 0 Until regions.Length
-			regions[index].page = Null
-			regions[index].image = Null
-		Next
-		
-		For index = 0 Until pages.Length
-			pages[index].image.Discard()
-			pages[index].image = Null
-		Next
+		'only free if reference count says so
+		If force or refCount <= 0
+			Local index:Int
+			
+			For index = 0 Until regions.Length
+				regions[index].page = Null
+				regions[index].image = Null
+			Next
+			
+			For index = 0 Until pages.Length
+				pages[index].image.Discard()
+				pages[index].image = Null
+			Next
+		EndIf
 	End
 	
 	Method Lock:Void()
@@ -402,17 +415,29 @@ Class SpineSeperateFileAtlasLoader Implements SpineAtlasLoader
 End
 
 Class SpineSeperateFileAtlas Implements SpineAtlas
+	Field refCount:Int
 	Field locked:Bool
 	Field path:String
 	Field regions:SpineMakeAtlasJSONAtlasRegion[]
 	Field regionsCount:Int
 	
-	Method Free:Void()
+	Method Use:Void()
+		' --- increase reference count of atlas ---
+		refCount += 1
+	End
+	
+	Method Free:Void(force:Bool = False)
 		' --- free ---
-		For Local index:Int = 0 Until regions.Length
-			regions[index].image.Discard()
-			regions[index].image = Null
-		Next
+		'decrease reference count
+		refCount -= 1
+		
+		'only free if reference count says so
+		If force or refCount <= 0
+			For Local index:Int = 0 Until regions.Length
+				regions[index].image.Discard()
+				regions[index].image = Null
+			Next
+		EndIf
 	End
 	
 	Method Lock:Void()
@@ -523,3 +548,5 @@ Class SpineSeperateFileAtlasRegion Implements SpineAtlasRegion
 		Return image.Height()
 	End
 End
+
+'api
