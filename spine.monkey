@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 9
+' - fixed mid handle issue with source images that have padding around edges (reported by ziggy)
 'version 8
 ' - added spineEntity.GetAtlas() to get atlas of spine entity (thanks ziggy)
 ' - added SpineLoadAtlas() function to load an atlas outside of creating a spine entity

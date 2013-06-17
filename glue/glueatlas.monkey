@@ -297,7 +297,9 @@ Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
 		
 		'grab image from the page image
 		region.image = region.page.image.GrabImage(x, y, width, height)
-		region.image.SetHandle(region.image.Width() / 2.0, region.image.Height() / 2.0)
+		
+		'figure out correct mid handle
+		region.image.SetHandle(offsetX + (originalWidth / 2.0), offsetY + (originalHeight / 2.0))
 		
 		'add to regions
 		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
