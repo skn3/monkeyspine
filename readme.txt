@@ -1,6 +1,5 @@
 This module was created by skn3 / Jonathan Pittock and was kindly funded by:
 
-Rami Jarrar of Dreamshard Studios
 Playniax/Ignition Framework
 
 All credit and praise should be heavily direct at them!

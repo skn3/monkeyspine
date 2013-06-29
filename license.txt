@@ -1,7 +1,6 @@
 [Monkey Spine License]
  ******************************************************************************
  * Copyright (c) 2013, Skn3, Jonathan Pittock, www.skn3.com
- * Copyright (c) 2013, Dreamshard Studios, Rami Jarrar, www.dreamshardstudios.com
  * Copyright (c) 2013, Playniax, www.playniax.com
  * All rights reserved.
  * 
