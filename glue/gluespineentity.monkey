@@ -486,7 +486,7 @@ Class SpineEntity
 		Return False
 	End
 	
-	'color api
+	'color/alpha api
 	Method SetColor:Void(r:Int, g:Int, b:Int)
 		' --- change color of the entity ---
 		skeleton.R = r / 255.0
@@ -495,6 +495,11 @@ Class SpineEntity
 		
 		'flag dirty
 		dirty = True
+	End
+	
+	Method SetAlpha:Void(alpha:Float)
+		' --- change alpha ---
+		skeleton.A = alpha
 	End
 	
 	Method GetColor:Int[] ()
@@ -522,6 +527,11 @@ Class SpineEntity
 	Method GetB:Int()
 		' --- get color of skeleton ---
 		Return skeleton.B
+	End
+	
+	Method GetAlpha:Float()
+		' --- get alpha ---
+		Return skeleton.A
 	End
 	
 	Method GetAtlas:SpineAtlas()

@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 10
+' - added SetAlpha() and GetAlpha() to spineentity
 'version 9
 ' - fixed mid handle issue with source images that have padding around edges (reported by ziggy)
 'version 8

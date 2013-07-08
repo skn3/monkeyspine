@@ -52,6 +52,7 @@ Class MyApp Extends App
 			item.entity = New SpineEntity("spineboy.json", "spineboy_atlas.json")
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			item.entity.SetScale(1.0)
+			item.entity.SetAlpha(0.5)
 			items[0] = item
 			
 			'globlins
