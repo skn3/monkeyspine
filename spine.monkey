@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 11
+' - added PointInsideSlot() and RectOverlapsSlot() methods to spineentity. There are two versions of the method one accepst name:String and the other slot:SpineSlot
 'version 10
 ' - added SetAlpha() and GetAlpha() to spineentity
 'version 9

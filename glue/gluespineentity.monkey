@@ -486,6 +486,92 @@ Class SpineEntity
 		Return False
 	End
 	
+	Method PointInsideSlot:Bool(x:Float, y:Float, name:String, precision:Int = 1)
+		' --- shortcut for name lookup ---
+		Return PointInsideSlot(x, y, GetSlot(name), precision)
+	End
+	
+	Method PointInsideSlot:Bool(x:Float, y:Float, slot:SpineSlot, precision:Int = 1)
+		' --- check if a point is inside using varying levels of precision ---
+		' 0 - region bounds
+		' 1 - region rect
+		'calculate first
+		CalculateBounding()
+		
+		'check compelte bounding
+		If SpinePointInRect(x, y, bounding) = False Return False
+				
+		'skip if not a region attachment
+		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
+		
+		'get attachment in correct format
+		Local attachment:= SpineRegionAttachment(slot.Attachment)
+		
+		'need to do a hit test with point
+		'first do simple rect test, then poly test
+		If SpinePointInRect(x, y, attachment.BoundingVertices)
+			If precision < 1 Return True
+			
+			'check with rotated polys
+			If SpinePointInPoly(x, y, attachment.Vertices)
+				'hwere we could go one step further and check pixels.. but no.. not really in current monkey!
+				Return True
+			EndIf
+		EndIf
+		
+		'return fail
+		Return False
+	End
+	
+	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, name:String, precision:Int = 1)
+		' --- shortcut for slot lookup ---
+		Return RectOverlapsSlot(x, y, width, height, GetSlot(name), precision)
+	End
+	
+	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, slot:SpineSlot, precision:Int = 1)
+		' --- check if a rect overlaps using varying levels of precision ---
+		' 0 - region bounds
+		' 1 - region rect
+		'calculate first
+		CalculateBounding()
+		
+		'check compelte bounding
+		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
+		
+		'skip if not a region attachment
+		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
+		
+		'setup temp vertices for poly check
+		If precision > 1
+			spineTempVertices[0] = x
+			spineTempVertices[1] = y
+			spineTempVertices[2] = x + width
+			spineTempVertices[3] = y
+			spineTempVertices[4] = x + width
+			spineTempVertices[5] = y + height
+			spineTempVertices[6] = x
+			spineTempVertices[7] = y + height
+		EndIf
+						
+		'get attachment in correct format
+		Local attachment:= SpineRegionAttachment(slot.Attachment)
+			
+		'need to do a hit test with point
+		'first do simple rect test, then poly test
+		If SpineRectsOverlap(x, y, width, height, attachment.BoundingVertices)
+			If precision < 1 Return True
+			
+			'check with rotated polys
+			If SpinePolyToPoly(spineTempVertices, attachment.Vertices)
+				'here we could go one step further and check pixels.. but no.. not really in current monkey!
+				Return True
+			EndIf
+		EndIf
+		
+		'return fail
+		Return False
+	End
+	
 	'color/alpha api
 	Method SetColor:Void(r:Int, g:Int, b:Int)
 		' --- change color of the entity ---
