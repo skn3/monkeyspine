@@ -33,7 +33,7 @@ Class MyApp Extends App
 	Field speed:Float = 1.0
 	Field precision:Int = 2
 	Field collisionMode:Int = False
-	Field collisionSlotOn:Bool = True
+	Field collisionSlotOn:Bool = False
 	Field collisionSlot:SpineSlot
 	
 	Method OnCreate:Int()
