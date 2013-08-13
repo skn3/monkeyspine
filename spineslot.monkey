@@ -4,6 +4,7 @@ Strict
 Import spine
 
 Class SpineSlot
+	Field parentIndex:Int
 	Field Data:SpineSlotData
 	Field Bone:SpineBone
 	Field Skeleton:SpineSkeleton

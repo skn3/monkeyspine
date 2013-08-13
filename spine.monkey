@@ -1,6 +1,10 @@
 'see license.txt for source licenses
 Strict
 
+'version 12
+' - added GetFirstSlot() GetLastSlot() GetNextSlot(slot) GetPreviousSlot(slot) for iterating over slots in spine entity
+' - added FindFirstSlotWithAttachment() FindLastSlotWithAttachment() FindNextSlotWithAttachment(slot) FindPreviousSloWithAttachmentt(slot) for iterating over attachment slots in spine entity
+' - changed RectOverlapsSlot() and PointInsideSlot() so precision param is boolean
 'version 11
 ' - added PointInsideSlot() and RectOverlapsSlot() methods to spineentity. There are two versions of the method one accepst name:String and the other slot:SpineSlot
 'version 10

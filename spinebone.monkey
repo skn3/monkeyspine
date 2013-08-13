@@ -7,6 +7,7 @@ Class SpineBone
 	Const yDown:bool = True
 
 	Field Data:SpineBoneData
+	Field parentIndex:Int
 	Field Parent:SpineBone
 	
 	'these are values piped to by teh animation

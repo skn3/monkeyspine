@@ -486,31 +486,27 @@ Class SpineEntity
 		Return False
 	End
 	
-	Method PointInsideSlot:Bool(x:Float, y:Float, name:String, precision:Int = 1)
+	Method PointInsideSlot:Bool(x:Float, y:Float, name:String, precise:Bool = True)
 		' --- shortcut for name lookup ---
-		Return PointInsideSlot(x, y, GetSlot(name), precision)
+		Return PointInsideSlot(x, y, GetSlot(name), precise)
 	End
 	
-	Method PointInsideSlot:Bool(x:Float, y:Float, slot:SpineSlot, precision:Int = 1)
+	Method PointInsideSlot:Bool(x:Float, y:Float, slot:SpineSlot, precise:Bool = True)
 		' --- check if a point is inside using varying levels of precision ---
-		' 0 - region bounds
-		' 1 - region rect
-		'calculate first
-		CalculateBounding()
-		
-		'check compelte bounding
-		If SpinePointInRect(x, y, bounding) = False Return False
-				
+
 		'skip if not a region attachment
 		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
 		
+		'calculate first
+		CalculateBounding()
+						
 		'get attachment in correct format
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'need to do a hit test with point
 		'first do simple rect test, then poly test
 		If SpinePointInRect(x, y, attachment.BoundingVertices)
-			If precision < 1 Return True
+			If precise = False Return True
 			
 			'check with rotated polys
 			If SpinePointInPoly(x, y, attachment.Vertices)
@@ -523,26 +519,24 @@ Class SpineEntity
 		Return False
 	End
 	
-	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, name:String, precision:Int = 1)
+	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, name:String, precise:Bool = True)
 		' --- shortcut for slot lookup ---
-		Return RectOverlapsSlot(x, y, width, height, GetSlot(name), precision)
+		Return RectOverlapsSlot(x, y, width, height, GetSlot(name), precise)
 	End
 	
-	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, slot:SpineSlot, precision:Int = 1)
+	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, slot:SpineSlot, precise:Bool = True)
 		' --- check if a rect overlaps using varying levels of precision ---
-		' 0 - region bounds
-		' 1 - region rect
+		'skip if not a region attachment
+		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
+		
 		'calculate first
 		CalculateBounding()
 		
 		'check compelte bounding
 		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
-		
-		'skip if not a region attachment
-		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
-		
+				
 		'setup temp vertices for poly check
-		If precision > 1
+		If precise
 			spineTempVertices[0] = x
 			spineTempVertices[1] = y
 			spineTempVertices[2] = x + width
@@ -559,7 +553,7 @@ Class SpineEntity
 		'need to do a hit test with point
 		'first do simple rect test, then poly test
 		If SpineRectsOverlap(x, y, width, height, attachment.BoundingVertices)
-			If precision < 1 Return True
+			If precise = False Return True
 			
 			'check with rotated polys
 			If SpinePolyToPoly(spineTempVertices, attachment.Vertices)
@@ -870,6 +864,34 @@ Class SpineEntity
 	End
 	
 	'slot api
+	Method GetFirstSlot:SpineSlot()
+		' --- return first slot ---
+		If skeleton.Slots.Length = 0 Return Null
+		Return skeleton.Slots[0]
+	End
+	
+	Method GetLastSlot:SpineSlot()
+		' --- return last slot ---
+		If skeleton.Slots.Length = 0 Return Null
+		Return skeleton.Slots[skeleton.Slots.Length - 1]
+	End
+	
+	Method GetNextSlot:SpineSlot(slot:SpineSlot)
+		' --- get next slot ---
+		If slot = Null Return Null
+		Local index:= slot.parentIndex + 1
+		If index >= skeleton.Slots.Length Return Null
+		Return skeleton.Slots[index]
+	End
+	
+	Method GetPreviousSlot:SpineSlot(slot:SpineSlot)
+		' --- get previous slot ---
+		If slot = Null Return Null
+		Local index:= slot.parentIndex - 1
+		If index < 0 Return Null
+		Return skeleton.Slots[index]
+	End
+		
 	Method GetSlot:SpineSlot(name:String)
 		' --- find a slot by name ---
 		'check for quick lookup
@@ -879,6 +901,58 @@ Class SpineEntity
 		lastSlotLookupName = name
 		lastSlotLookup = skeleton.FindSlot(lastSlotLookupName)
 		Return lastSlotLookup
+	End
+	
+	Method FindFirstSlotWithAttachment:SpineSlot()
+		' --- return first slot with attachment ---
+		If skeleton.Slots.Length = 0 Return Null
+		
+		Local attachment:SpineRegionAttachment
+		For Local index:= 0 Until skeleton.Slots.Length
+			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
+			If attachment Return skeleton.Slots[index]
+		Next
+		
+		Return Null
+	End
+	
+	Method FindLastSlotWithAttachment:SpineSlot()
+		' --- return last slot with attachment ---
+		If skeleton.Slots.Length = 0 Return Null
+		
+		Local attachment:SpineRegionAttachment
+		For Local index:= skeleton.Slots.Length - 1 To 0 Step - 1
+			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
+			If attachment Return skeleton.Slots[index]
+		Next
+		
+		Return Null
+	End
+	
+	Method FindNextSlotWithAttachment:SpineSlot(slot:SpineSlot)
+		' --- return next slot with attachment ---
+		If slot = Null or skeleton.Slots.Length = 0 or slot.parentIndex + 1 >= skeleton.Slots.Length Return Null
+		
+		Local attachment:SpineRegionAttachment
+		For Local index:= slot.parentIndex + 1 Until skeleton.Slots.Length
+			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
+			If attachment Return skeleton.Slots[index]
+		Next
+		
+		Return Null
+	End
+	
+	Method FindPreviousSlotWithAttachment:SpineSlot(slot:SpineSlot)
+		' --- return previous slot with attachment ---
+		If slot = Null or skeleton.Slots.Length = 0 or slot.parentIndex - 1 < 0 Return Null
+		
+		Local attachment:SpineRegionAttachment
+		For Local index:= slot.parentIndex - 1 To 0 Step - 1
+			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
+			If attachment Return skeleton.Slots[index]
+		Next
+		
+		Return Null
 	End
 	
 	Method FindSlotWithAttachment:SpineSlot(name:String, ignoreInvisible:Bool = False)

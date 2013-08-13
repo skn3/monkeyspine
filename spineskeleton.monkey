@@ -54,6 +54,8 @@ Class SpineSkeleton
 			
 			'create new bone
 			Bones[bonesIndex] = New SpineBone(boneData, parent)
+			Bones[bonesIndex].parentIndex = bonesIndex
+			
 			bonesIndex += 1
 		Next
 
@@ -65,7 +67,11 @@ Class SpineSkeleton
 					Exit
 				EndIf
 			Next
+			
+			'create new slot
 			slot = New SpineSlot(Data.Slots[index], Self, bone)
+			slot.parentIndex = slotOrderIndex
+			
 			Slots[slotOrderIndex] = slot
 			DrawOrder[slotOrderIndex] = slot
 			slotOrderIndex += 1

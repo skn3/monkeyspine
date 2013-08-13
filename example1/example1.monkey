@@ -31,8 +31,10 @@ Class MyApp Extends App
 	Field currentEntity:SpineEntity
 	Field debug:Bool
 	Field speed:Float = 1.0
-	Field precision:Int = 0
+	Field precision:Int = 2
 	Field collisionMode:Int = False
+	Field collisionSlotOn:Bool = True
+	Field collisionSlot:SpineSlot
 	
 	Method OnCreate:Int()
 		' --- create the app ---
@@ -117,6 +119,16 @@ Class MyApp Extends App
 			EndIf
 		EndIf
 		
+		If collisionSlot And collisionSlotOn
+			Local attachment:SpineRegionAttachment = SpineRegionAttachment(collisionSlot.Attachment)
+			If attachment
+				SetColor(0, 0, 0)
+				SpineDrawLinePoly(attachment.Vertices)
+				SetColor(255, 255, 255)
+			EndIf			
+		EndIf
+		
+		
 		'draw text stuff
 		DrawText("Press <space> to toggle controls/info", 5, 5)
 		
@@ -144,11 +156,27 @@ Class MyApp Extends App
 				Case 2
 					DrawText("Press C to change collision type [rect]", 5, 110)
 			End
+			
+			If collisionSlotOn = False
+				DrawText("Checking for collision with entire entity", 5, 125)
+			Else
+				If collisionSlot = Null
+					DrawText("Checking for collision with slot <null> (press left or right to change)", 5, 125)
+				Else
+					DrawText("Checking for collision with slot '" + collisionSlot.Data.Name + "' (press left or right to change)", 5, 125)
+				EndIf
+			EndIf
+			
+			If collisionSlotOn = False
+				DrawText("Press W to change collision checking to slot", 5, 140)
+			Else
+				DrawText("Press W to change collision checking to entire entity", 5, 140)
+			EndIf
 						
 			If overSlot = Null
-				DrawText("Mouse is over: <null>", 5, 125)
+				DrawText("Mouse is over: <null>", 5, 155)
 			Else
-				DrawText("Mouse is over: '" + overSlot.Data.Name + "'", 5, 125)
+				DrawText("Mouse is over: '" + overSlot.Data.Name + "'", 5, 155)
 			EndIf
 		EndIf
 		
@@ -228,6 +256,14 @@ Class MyApp Extends App
 				collisionMode += 1
 			EndIf
 		EndIf
+		If KeyHit(KEY_W)
+			If collisionSlotOn
+				collisionSlotOn = False
+				collisionSlot = Null
+			Else
+				collisionSlotOn = True
+			EndIf
+		EndIf
 		
 		'change speed
 		If KeyDown(KEY_UP)
@@ -265,14 +301,40 @@ Class MyApp Extends App
 			'find the bone we are currently over
 			overSlot = currentEntity.FindSlotAtPoint(MouseX(), MouseY())
 			
-			'do collision test
+			'do collision stuff
 			Local collided:Bool = False
-			Select collisionMode
-				Case 1
-					collided = currentEntity.PointInside(MouseX(), MouseY(), precision)
-				Case 2
-					collided = currentEntity.RectOverlaps(MouseX() -40, MouseY() -40, 80, 80, precision)
-			End
+			If collisionSlotOn = False
+				'with entire entity
+				Select collisionMode
+					Case 1
+						collided = currentEntity.PointInside(MouseX(), MouseY(), precision)
+					Case 2
+						collided = currentEntity.RectOverlaps(MouseX() -40, MouseY() -40, 80, 80, precision)
+				End
+			Else
+				'with particular slot
+				'select slot
+				If collisionSlot = Null collisionSlot = currentEntity.FindFirstSlotWithAttachment()
+				
+				If KeyHit(KEY_LEFT)
+					collisionSlot = currentEntity.FindPreviousSlotWithAttachment(collisionSlot)
+					If collisionSlot = Null collisionSlot = currentEntity.FindLastSlotWithAttachment()
+				EndIf
+				If KeyHit(KEY_RIGHT)
+					collisionSlot = currentEntity.FindNextSlotWithAttachment(collisionSlot)
+					If collisionSlot = Null collisionSlot = currentEntity.FindFirstSlotWithAttachment()
+				EndIf
+				
+				'do collision test
+				If collisionSlot
+					Select collisionMode
+						Case 1
+							collided = currentEntity.PointInsideSlot(MouseX(), MouseY(), collisionSlot, precision = 2)
+						Case 2
+							collided = currentEntity.RectOverlapsSlot(MouseX() -40.0, MouseY() -40.0, 80.0, 80.0, collisionSlot, precision = 2)
+					End
+				EndIf
+			EndIf
 			
 			'change color based on collision
 			If collided
@@ -338,6 +400,9 @@ Class MyApp Extends App
 			'change debug setting
 			currentEntity.SetDebugDraw(debug)
 		EndIf
+		
+		'remove collision slot so we get a new one next update
+		collisionSlot = Null
 	End
 	
 	Method ChangeDebug:Void(on:Bool)
