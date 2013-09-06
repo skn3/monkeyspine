@@ -6,6 +6,7 @@ Import spine
 'interface to handle spine entity notifications
 Interface SpineEntityCallback
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
+	Method OnSpineEntityEvent:Void(entity:SpineEntity, event:String, intValue:Int, floatValue:Float, stringValue:String)
 End
 
 'class to wrap spine
@@ -22,6 +23,8 @@ Class SpineEntity
 	Field looping:Bool
 	Field finished:Bool
 	
+	Field snapToPixels:Bool = False
+	
 	Field debugSlots:Bool = False
 	Field debugBones:Bool = False
 	Field debugBounding:Bool = False
@@ -33,6 +36,8 @@ Class SpineEntity
 	Field dirtyBounding:Bool
 	
 	Field bounding:Float[8]
+	
+	Field events:= New List<SpineEvent>
 	
 	Field x:Float = 0.0
 	Field y:float = 0.0
@@ -52,7 +57,7 @@ Class SpineEntity
 	'there are lots of variations here to make it easy to use
 	Method New(skeletonPath:String = "", atlasPath:String = "")
 		' --- load a new spine entity ---
-		Load(skeletonPath, SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(atlasPath, SpineDefaultFileLoader.instance), SpineDefaultFileLoader.instance)
+		Load(skeletonPath, SpineDefaultAtlasLoader.instance.LoadAtlas(atlasPath, SpineDefaultFileLoader.instance), SpineDefaultFileLoader.instance)
 	End
 	
 	Method New(skeletonPath:String = "", atlasPath:String = "", atlasLoader:SpineAtlasLoader)
@@ -64,7 +69,7 @@ Class SpineEntity
 	Method New(skeletonPath:String = "", atlasPath:String = "", fileLoader:SpineFileLoader)
 		' --- load a new spine entity ---
 		'call the Load method with given details
-		Load(skeletonPath, SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(atlasPath, fileLoader), fileLoader)
+		Load(skeletonPath, SpineDefaultAtlasLoader.instance.LoadAtlas(atlasPath, fileLoader), fileLoader)
 	End
 	
 	Method New(skeletonPath:String = "", atlasPath:String = "", atlasLoader:SpineAtlasLoader, fileLoader:SpineFileLoader)
@@ -229,17 +234,53 @@ Class SpineEntity
 			skeleton.Update(delta * speed)
 			
 			'update the animation
-			animation.Apply(skeleton, skeleton.Time, looping)
+			'we now pass in an events list
+			animation.Apply(skeleton, skeleton.LastTime, skeleton.Time, looping, events)
 			dirty = True
 			
+			'need to process events
+			OnProcessEvents()
+						
 			'check for completion of animation
-			If looping = False and skeleton.Time >= animation.Duration
-				StopAnimation()
-				finished = True
+			If skeleton.Time >= animation.Duration
+				If looping = False
+					StopAnimation()
+					finished = True
 				
-				'fire callback
-				If callback callback.OnSpineEntityAnimationComplete(Self, animation.Name)
+					'fire callback
+					If callback callback.OnSpineEntityAnimationComplete(Self, animation.Name)
+				Else
+					'Print "reset time"
+					'reset time
+					'skeleton.SetToBindPose()'dont do this because it messes up teh animation
+					skeleton.ResetSlotOrder()
+					skeleton.Time = 0.0
+					skeleton.LastTime = 0.0
+				EndIf
 			EndIf
+		EndIf
+	End
+	
+	Method OnProcessEvents:Void()
+		' --- process the internal events list ---
+		'check for firing of events
+		If events.IsEmpty() = False
+			'iterate over all events that were fired
+			Local node:= events.FirstNode()
+			Local event:SpineEvent
+			While node
+				'get event
+				event = node.Value()
+				
+				'fire it to callback
+				If callback callback.OnSpineEntityEvent(Self, event.Data.Name, event.IntValue, event.FloatValue, event.StringValue)
+				
+				'next event
+				node = node.NextNode()
+			Wend
+			
+			'make sure to clear the event list afterwards
+			events.Clear()
 		EndIf
 	End
 	
@@ -285,7 +326,11 @@ Class SpineEntity
 			'draw it
 			mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 			mojo.SetAlpha(attachment.WorldAlpha)
-			attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, attachment.Vertices)
+			If snapToPixels
+				attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, attachment.Vertices)
+			Else
+				attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, attachment.Vertices)
+			EndIf
 		Next
 		
 		'render slots
@@ -662,8 +707,12 @@ Class SpineEntity
 		playing = True
 		
 		'apply the animation to the skeleton
-		animation.Apply(skeleton, skeleton.Time, looping)
+		animation.Apply(skeleton, skeleton.Time, skeleton.Time, looping, events)
 		skeleton.SetToBindPose()
+		
+		'need to process events
+		'this will probably never do anything...
+		OnProcessEvents()
 		
 		'flag that the entity is dirty again
 		dirty = True
@@ -1044,7 +1093,7 @@ Class SpineEntity
 		'flag dirty
 		dirty = True
 	End
-	
+		
 	Method GetSlotColor:Int[] (name:String)
 		' --- get color of a particular slot ---
 		'check a slot exists
@@ -1094,6 +1143,26 @@ Class SpineEntity
 		Local slot:= GetSlot(name)
 		If slot = Null Return 0
 		Return slot.B * 255
+	End
+	
+	Method GetSlotAlpha:Float(name:String)
+		' --- change the alpha of a slot ---
+		'check a slot exists
+		Local slot:= GetSlot(name)
+		If slot = Null Return 0.0
+		Return slot.A
+	End
+	
+	Method SetSlotAlpha:Void(name:String, alpha:float)
+		' --- change the alpha of a slot ---
+		'check a slot exists
+		Local slot:= GetSlot(name)
+		If slot = Null Return
+		
+		slot.A = alpha
+		
+		'flag dirty
+		dirty = True
 	End
 	
 	'slot position api
@@ -1659,6 +1728,11 @@ Class SpineEntity
 	Method GetName:String()
 		' --- return name of skeleton ---
 		Return skeleton.Data.Name
+	End
+	
+	Method SetSnapToPixels:Void(snap:Bool)
+		' --- change if images should be snapped to pixels ---
+		Self.snapToPixels = snap
 	End
 	
 	Method SetCallback:Void(callback:SpineEntityCallback)

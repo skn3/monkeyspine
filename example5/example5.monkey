@@ -10,29 +10,24 @@ End
 
 Class MyApp Extends App Implements SpineEntityCallback
 	Field timestamp:Int
-	Field spineBoy:SpineEntity
-	Field animation:String = "walk"
+	Field spinetest:SpineEntity
 	Field showMessageText:String
 	Field showMessageAlpha:Float = 4.0
 	
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
 		' --- animation has finished ---
 		Select entity
-			Case spineBoy
-				'switch between animations
-				If spineBoy.GetAnimation() = "walk"
-					spineBoy.SetAnimation("jump", False)
-					showMessageText = "Switching to 'jump' animation"
-					showMessageAlpha = 4.0
-				Else
-					spineBoy.SetAnimation("walk", False)
-					showMessageText = "Switching to 'walk' animation"
-					showMessageAlpha = 4.0
-				EndIf
+			Case spinetest
 		End
 	End
 	
 	Method OnSpineEntityEvent:Void(entity:SpineEntity, event:String, intValue:Int, floatValue:Float, stringValue:String)
+		' --- event has triggered ---
+		Select entity
+			Case spinetest
+				showMessageText = "event:" + event + ", int:" + intValue + ", float: " + floatValue + ", string: " + stringValue
+				showMessageAlpha = 4.0
+		End
 	End
 	
 	Method OnCreate:Int()
@@ -41,14 +36,14 @@ Class MyApp Extends App Implements SpineEntityCallback
 		SetUpdateRate(60)
 		timestamp = Millisecs()
 		
-		'load spineboy
+		'load spinetest
 		Try
-			spineBoy = New SpineEntity("spineboy.json", "spineboy_atlas.json", SpineMakeAtlasLoader.instance)
-			spineBoy.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
-			spineBoy.SetAnimation("jump")
-			spineBoy.SetCallback(Self)
-			spineBoy.SetSpeed(0.3)
-			spineBoy.SetDebugDraw(True)
+			spinetest = New SpineEntity("spinetest.json", "spinetest.atlas")
+			spinetest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
+			spinetest.SetAnimation("animation", True)
+			spinetest.SetCallback(Self)
+			spinetest.SetSpeed(0.8)
+			spinetest.SetSnapToPixels(True)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -63,7 +58,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		Cls(128, 128, 128)
 		
 		'simples! render current item
-		spineBoy.Render()
+		spinetest.Render()
 		
 		'render message
 		If showMessageAlpha > 0.0
@@ -88,7 +83,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		timestamp = newTimestamp
 		
 		'update item entity
-		spineBoy.Update(deltaFloat)
+		spinetest.Update(deltaFloat)
 		
 		'update fading message
 		If showMessageAlpha > 0

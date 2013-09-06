@@ -51,7 +51,7 @@ Class MyApp Extends App
 			'spine boy
 			item = New ExampleItem
 			item.animations =["walk", "jump"]
-			item.entity = New SpineEntity("spineboy.json", "spineboy_atlas.json")
+			item.entity = New SpineEntity("spineboy.json", "spineboy_atlas.json", SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			item.entity.SetScale(1.0)
 			item.entity.SetAlpha(0.5)
@@ -61,21 +61,21 @@ Class MyApp Extends App
 			item = New ExampleItem
 			item.skins =["goblin", "goblingirl"]
 			item.animations =["walk"]
-			item.entity = New SpineEntity("goblins.json", "goblins_atlas.json")
+			item.entity = New SpineEntity("goblins.json", "goblins_atlas.json", SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			items[1] = item
 			
 			'powerup
 			item = New ExampleItem
 			item.animations =["animation"]
-			item.entity = New SpineEntity("powerup.json", "powerup_atlas.json")
+			item.entity = New SpineEntity("powerup.json", "powerup_atlas.json", SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			items[2] = item
 			
 			'spinosaurus
 			item = New ExampleItem
 			item.animations =["animation"]
-			item.entity = New SpineEntity("spinosaurus.json", "spinosaurus_atlas.json")
+			item.entity = New SpineEntity("spinosaurus.json", "spinosaurus_atlas.json", SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight())
 			item.entity.SetScale(0.5, 0.5)
 			items[3] = item
@@ -83,7 +83,7 @@ Class MyApp Extends App
 			'dragon
 			item = New ExampleItem
 			item.animations =["flying"]
-			item.entity = New SpineEntity("dragon.json", "dragon_atlas.json")
+			item.entity = New SpineEntity("dragon.json", "dragon_atlas.json", SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			item.entity.SetScale(0.5, 0.5)
 			items[4] = item

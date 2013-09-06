@@ -14,6 +14,7 @@ Class SpineSkeleton
 	Field B:float
 	Field A:float
 	Field Time:float
+	Field LastTime:float
 	Field FlipX:bool
 	Field FlipY:bool
 	
@@ -105,6 +106,12 @@ Class SpineSkeleton
 			Slots[i].SetToBindPose(i)
 		Next
 	End
+	
+	Method ResetSlotOrder:Void()
+		For Local i:= 0 Until Slots.Length
+			DrawOrder[i] = Slots[i]
+		Next
+	End
 
 	Method FindBone:SpineBone(boneName:String)
 		If boneName.Length = 0 Return Null
@@ -181,6 +188,7 @@ Class SpineSkeleton
 	End
 
 	Method Update:Void(delta:float)
+		LastTime = Time
 		Time += delta
 	End
 End

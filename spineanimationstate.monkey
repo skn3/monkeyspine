@@ -35,6 +35,7 @@ Class SpineAnimationState
 	Field Loop:bool
 	
 	Private
+	Field LastTime:Float
 	Field previous:SpineAnimation
 	Field previousTime:float
 	Field previousLoop:bool
@@ -56,16 +57,18 @@ Class SpineAnimationState
 	Method Apply:Void(skeleton:SpineSkeleton)
 		If Animation = Null Return
 		If previous <> Null
-			previous.Apply(skeleton, previousTime, previousLoop)
+			previous.Apply(skeleton, MAX_FLOAT, previousTime, previousLoop, Null)
 			Local alpha:float = mixTime / mixDuration
 			If alpha >= 1
 				alpha = 1
 				previous = null
 			EndIf
-			Animation.Mix(skeleton, Time, Loop, alpha)
+			Animation.Mix(skeleton, LastTime, Time, Loop, Null, alpha)
 		Else
-			Animation.Apply(skeleton, Time, Loop)
+			Animation.Apply(skeleton, LastTime, Time, Loop, Null)
 		EndIf
+		
+		LastTime = Time
 	End
 
 	Method SetAnimation:Void(animationName:String, loop:bool)

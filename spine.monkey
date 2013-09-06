@@ -1,6 +1,18 @@
 'see license.txt for source licenses
 Strict
 
+'version 13
+' - MASSIVE UPDATE
+' - added support for native spine texture atlas
+' - changed so default texture atlas loader type is the spine texture atlas loader
+' - renamed the seperate image loader to SpineSeperateImageLoader
+' - fixed file stream wrapper so eof works
+' - added event callback to SpineEntityCallback interface
+' - implemented spine events
+' - implemeneted spine draw order
+' - added SetSnapToPixels() to spineentity, this will draw images at int coordinates
+' - Added GetSlotAlpha() and SetSlotAlpha()
+' - fixed seperate image loader collisions + bounding not working
 'version 12
 ' - added GetFirstSlot() GetLastSlot() GetNextSlot(slot) GetPreviousSlot(slot) for iterating over slots in spine entity
 ' - added FindFirstSlotWithAttachment() FindLastSlotWithAttachment() FindNextSlotWithAttachment(slot) FindPreviousSloWithAttachmentt(slot) for iterating over attachment slots in spine entity
@@ -34,6 +46,9 @@ Strict
 'version 1
 ' - first public commit
 
+'spine requires these file types to operate normally
+#TEXT_FILES += "*.atlas;*.json;"
+
 'core
 Import mojo
 Import monkey.map
@@ -58,6 +73,8 @@ Import spineanimationstatedata
 Import spineatlas
 Import spinebone
 Import spinebonedata
+Import spineevent
+Import spineeventdata
 Import spineskeleton
 Import spineskeletondata
 Import spineskeletonjson

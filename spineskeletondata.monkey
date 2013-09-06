@@ -7,23 +7,24 @@ Class SpineSkeletonData
 	Field Name:String
 	Field Bones:SpineBoneData[]
 	Field Slots:SpineSlotData[]
+	Field Events:SpineEventData[]
 	Field Skins:SpineSkin[]
 	' May be null. 
 	Field DefaultSkin:SpineSkin
 	Field Animations:SpineAnimation[]
 
-	Private
 	Field bonesCount:Int
 	Field slotsCount:Int
+	Field eventsCount:Int
 	Field skinsCount:Int
 	Field animationsCount:Int
-	Public
 
 	'glue
 	Method TrimArrays:Void()
 		' --- this repalces the TrimExcess ported and will trim all arrays to their proper capacity ---
 		If bonesCount < Bones.Length Bones = Bones.Resize(bonesCount)
 		If slotsCount < Slots.Length Slots = Slots.Resize(slotsCount)
+		If eventsCount < Events.Length Events = Events.Resize(eventsCount)
 		If skinsCount < Skins.Length Skins = Skins.Resize(skinsCount)
 		If animationsCount < Animations.Length Animations = Animations.Resize(animationsCount)
 	End
@@ -84,6 +85,36 @@ Class SpineSkeletonData
 		If slotName.Length = 0 Return - 1
 		For Local i:= 0 Until slotsCount
 			If Slots[i].Name = slotName Return i
+		Next
+		Return -1
+	End
+	
+	' --- Events.
+	Method AddEvent:Void(event:SpineEventData)
+		If event = Null Throw New SpineArgumentNullException("event cannot be null.")
+		
+		'check resize array
+		If eventsCount >= Events.Length Events = Events.Resize(Events.Length * 2 + 10)
+		
+		'set it
+		Events[eventsCount] = event
+		eventsCount += 1
+	End
+
+	'return May be null. 
+	Method FindEvent:SpineEventData(eventName:String)
+		If eventName.Length = 0 Return Null
+		For Local i:= 0 Until eventsCount
+			If Events[i].Name = eventName Return Events[i]
+		Next
+		Return Null
+	End
+
+	'return -1 if the was:bone not found. 
+	Method FindEventIndex:int(eventName:String)
+		If eventName.Length = 0 Return - 1
+		For Local i:= 0 Until eventsCount
+			If Events[i].Name = eventName Return i
 		Next
 		Return -1
 	End

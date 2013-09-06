@@ -108,6 +108,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Method UpdateOffset:Void()
 		' --- update offsets for the region ---
 		'this only really needs to be called when the the image is changed
+		Print "Region.GetOriginalWidth() = "+Region.GetOriginalWidth()
 		Local regionScaleX:float = Width / Region.GetOriginalWidth() * ScaleX
 		Local regionScaleY:float = Height / Region.GetOriginalHeight() * ScaleY
 		Local localX:float = -Width / 2.0 * ScaleX + Region.GetOffsetX() * regionScaleX

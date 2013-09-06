@@ -49,7 +49,7 @@ Class MyApp Extends App
 			'test
 			item = New ExampleItem
 			item.animations =["animation"]
-			item.entity = New SpineEntity("test_skeleton.json", "test_atlas.json")
+			item.entity = New SpineEntity("test_skeleton.json", "test_atlas.json",SpineMakeAtlasLoader.instance)
 			item.entity.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			item.entity.SetScale(1.0)
 			items[0] = item

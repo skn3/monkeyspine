@@ -11,6 +11,7 @@ End
 Class MyApp Extends App
 	Field timestamp:Int
 	Field spineBoy:SpineEntity
+	Field collided:Bool
 	
 	Method OnCreate:Int()
 		' --- create the app ---
@@ -20,9 +21,10 @@ Class MyApp Extends App
 		
 		'load spineboy
 		Try
-			spineBoy = New SpineEntity("spineboy.json", "spineboy_seperate", SpineSeperateFileAtlasLoader.instance)
+			spineBoy = New SpineEntity("spineboy.json", "spineboy_seperate", SpineSeperateImageLoader.instance)
 			spineBoy.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spineBoy.SetAnimation("walk", True)
+			spineBoy.SetDebugDraw(True, True, True)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -38,6 +40,14 @@ Class MyApp Extends App
 		
 		'simples! render current item
 		spineBoy.Render()
+		
+		If collided = False
+			SetColor(255, 0, 0)
+			DrawText("not collided", 5, 5)
+		Else
+			SetColor(0, 255, 0)
+			DrawText("collided", 5, 5)
+		EndIf
 		
 		'must alwasy return
 		Return 0
@@ -56,6 +66,8 @@ Class MyApp Extends App
 		
 		'update item entity
 		spineBoy.Update(deltaFloat)
+		
+		collided = spineBoy.PointInside(MouseX(), MouseY(), 2)
 		
 		'must alwasy return
 		Return 0

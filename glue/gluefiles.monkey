@@ -62,7 +62,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 		For index = index Until total
 			'check for end of line
 			If buffer.PeekByte(index) = 10
-				Local result:String = buffer.PeekString(start, (index - start) + 1)
+				Local result:String = buffer.PeekString(start, (index - start))
 				index = index + 1
 				start = index
 				Return result
@@ -80,6 +80,6 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	End
 	
 	Method Eof:Bool()
-		Return index < total
+		Return index >= total
 	End
 End

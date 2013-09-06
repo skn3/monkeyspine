@@ -1,0 +1,95 @@
+{
+"bones": [
+	{ "name": "root" },
+	{ "name": "bone1", "parent": "root", "x": -117.5, "y": 49.49 },
+	{ "name": "bone2", "parent": "root", "x": -1.5, "y": 48.49 },
+	{ "name": "bone3", "parent": "root", "x": 119.5, "y": 51.5 }
+],
+"slots": [
+	{ "name": "1", "bone": "bone1", "attachment": "1" },
+	{ "name": "2", "bone": "bone2", "attachment": "2" },
+	{ "name": "3", "bone": "bone3", "attachment": "3" }
+],
+"skins": {
+	"default": {
+		"1": {
+			"1": { "width": 64, "height": 64 }
+		},
+		"2": {
+			"2": { "width": 64, "height": 64 }
+		},
+		"3": {
+			"3": { "width": 64, "height": 64 }
+		}
+	}
+},
+"events": {
+	"stacked_1": {},
+	"stacked_3": {}
+},
+"animations": {
+	"animation": {
+		"bones": {
+			"bone3": {
+				"rotate": [
+					{ "time": 0, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0, "curve": "stepped" },
+					{ "time": 0.5, "x": 0, "y": 0 },
+					{ "time": 0.8333, "x": -30, "y": 185 },
+					{ "time": 1, "x": -121, "y": 59.99 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1 }
+				]
+			},
+			"bone2": {
+				"rotate": [
+					{ "time": 0, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1 }
+				]
+			},
+			"bone1": {
+				"rotate": [
+					{ "time": 0, "angle": 0, "curve": "stepped" },
+					{ "time": 1.1666, "angle": 0 },
+					{ "time": 1.5, "angle": -55.47 },
+					{ "time": 1.8333, "angle": -144.38 },
+					{ "time": 2.1666, "angle": -178.69 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 0.3333, "x": 11, "y": 88 },
+					{ "time": 0.5, "x": 116, "y": 31.99, "curve": "stepped" },
+					{ "time": 1.5, "x": 116, "y": 31.99 },
+					{ "time": 1.8333, "x": 4, "y": 104.99 },
+					{ "time": 2.1666, "x": -70.99, "y": 10.99 }
+				],
+				"scale": [
+					{ "time": 0, "x": 1, "y": 1, "curve": "stepped" },
+					{ "time": 1.1666, "x": 1, "y": 1 },
+					{ "time": 1.5, "x": 1.546, "y": 1.546 }
+				]
+			}
+		},
+		"events": [
+			{ "time": 0.5, "name": "stacked_1" },
+			{ "time": 1, "name": "stacked_3", "int": 123 }
+		],
+		"draworder": [
+			{
+				"time": 1.1666,
+				"offsets": [
+					{ "slot": "1", "offset": 2 }
+				]
+			}
+		]
+	}
+}
+}

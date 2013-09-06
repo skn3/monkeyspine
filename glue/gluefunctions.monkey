@@ -125,7 +125,7 @@ End
 'atlas
 Function SpineLoadAtlas:SpineAtlas(path:String = "")
 	' --- helper to load an atlas outside of creating a spine entity ---
-	Local atlas:= SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(path, SpineDefaultFileLoader.instance)
+	Local atlas:= SpineDefaultAtlasLoader.instance.LoadAtlas(path, SpineDefaultFileLoader.instance)
 	
 	'increase reference count on atlas
 	atlas.Use()
@@ -147,7 +147,7 @@ End
 
 Function SpineLoadAtlas:SpineAtlas(path:String = "", fileLoader:SpineFileLoader)
 	' --- helper to load an atlas outside of creating a spine entity ---
-	Local atlas:= SpineMakeAtlasJSONAtlasLoader.instance.LoadAtlas(path, fileLoader)
+	Local atlas:= SpineDefaultAtlasLoader.instance.LoadAtlas(path, fileLoader)
 	
 	'increase reference count on atlas
 	atlas.Use()

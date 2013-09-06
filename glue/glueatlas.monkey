@@ -37,9 +37,233 @@ Interface SpineAtlasRegion
 	Method GetOriginalHeight:Int()
 End
 
-'makeatlas json implementation
-Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
-	Global instance:= New SpineMakeAtlasJSONAtlasLoader
+'atlas loaders
+Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
+	Global instance:= New SpineDefaultAtlasLoader
+	
+	Method LoadAtlas:SpineAtlas(path:String, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
+		' --- load an atlas using the MakeAtlas JSON format ---
+		'http://monkeycoder.co.nz/Community/posts.php:?topic=5088
+		
+		'attempt to load atlas json
+		Local fileStream:= fileLoader.LoadFile(path)
+				
+		Local token1:String
+		
+		Local line:String
+		Local pos1:Int
+		Local pos2:Int
+		
+		Local imagesDir:String = SpineExtractDir(path)
+		
+		Local page:SpineDefaultAtlasPage
+		Local pageIndex:= 0
+		Local pageNew:= True
+		Local pageHasStart:= False
+		Local pageHasHeader:= False
+		Local pageFilePath:String
+		Local pageFormat:String
+		Local pageFilterMin:String
+		Local pageFilterMag:String
+		Local pageRepeat:String
+		
+		Local region:SpineDefaultAtlasRegion
+		Local regionNew:Bool
+		Local regionSave:Bool
+		Local regionName:String
+		Local regionNextName:String
+		Local regionIndex:Int
+		Local regionRotate:Bool
+		Local regionX:Int
+		Local regionY:Int
+		Local regionWidth:Int
+		Local regionHeight:Int
+		Local regionFrameX:Int
+		Local regionFrameY:Int
+		Local regionFrameWidth:Int
+		Local regionFrameHeight:Int
+		
+		'create the atlas
+		Local atlas:= New SpineDefaultAtlas
+		
+		'prepare atlas for loading
+		atlas.Lock()
+		
+		'read in the file
+		While fileStream.Eof() = False
+			'get line from stream
+			line = fileStream.ReadLine()
+			'are we starting a new page ?
+			If pageNew = True
+				'ignore blank lines
+				If line.Length > 0
+					If pageHasStart = False
+						'first line has no ':' it states the image file
+						'get image path
+						pageFilePath = SpineCombinePaths(imagesDir, line)
+						
+						'create new page
+						page = SpineDefaultAtlasPage(atlas.AddPage(pageFilePath))
+						
+						'check that page was loaded
+						If page = Null Throw SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+						
+						'image loaded woohoo continue
+						pageHasStart = True
+					Else
+						'reading in properties
+						pos1 = line.Find(":")
+						If pos1 >= 0
+							'this is a property
+							token1 = line[0 .. pos1]
+							
+							Select token1
+								Case "format"
+									'ignored
+									pageFormat = line[pos1 + 2 ..]
+								Case "filter"
+									'ignored
+									pos2 = line.Find(",", pos1 + 1)
+									If pos2 = -1
+										pageFilterMin = line[pos1 + 2 ..]
+										pageFilterMag = ""
+									Else
+										pageFilterMin = line[pos1 + 2 .. pos2]
+										pageFilterMag = line[pos2 + 2 ..]
+									EndIf
+								Case "repeat"
+									'ignored
+									pageRepeat = line[pos1 + 2 ..]
+							End
+						Else
+							'so we now on to defining items
+							pageHasHeader = True
+							pageNew = False
+							
+							'new region
+							regionNew = True
+							regionNextName = line
+						EndIf
+					EndIf
+				EndIf
+			Else
+				'need to check for end of page
+				If line.Length = 0
+					'page is finished
+					pageNew = True
+					pageHasHeader = False
+				Else
+					'do reset of values
+					If regionNew
+						regionNew = False
+						
+						regionName = regionNextName
+						regionIndex = -1
+						regionRotate = False
+						regionX = 0
+						regionY = 0
+						regionWidth = 0
+						regionHeight = 0
+						regionFrameX = 0
+						regionFrameY = 0
+						regionFrameWidth = 0
+						regionFrameHeight = 0
+					EndIf
+					
+					pos1 = line.Find(":")
+					If pos1 = -1
+						'this is a new region
+						
+						'setup control flags
+						regionSave = True
+						regionNew = True
+						regionNextName = line
+					Else
+						'this is a property
+						token1 = line[2 .. pos1]
+						
+						Select token1
+							Case "rotate"
+								If line[pos1 + 2 ..] = "true"
+									'Not supported yet
+									regionRotate = True
+									Throw SpineException("Invalid Region (rotation not supported)'" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+								Else
+									regionRotate = False
+								EndIf
+							Case "xy"
+								pos2 = line.Find(",", pos1 + 1)
+								If pos2 = -1
+									regionX = Int(line[pos1 + 2 ..])
+									regionY = 0
+								Else
+									regionX = Int(line[pos1 + 2 .. pos2])
+									regionY = Int(line[pos2 + 2 ..])
+								EndIf
+							Case "size"
+								pos2 = line.Find(",", pos1 + 1)
+								If pos2 = -1
+									regionWidth = Int(line[pos1 + 2 ..])
+									regionHeight = 0
+								Else
+									regionWidth = Int(line[pos1 + 2 .. pos2])
+									regionHeight = Int(line[pos2 + 2 ..])
+								EndIf
+							Case "orig"
+								pos2 = line.Find(",", pos1 + 1)
+								If pos2 = -1
+									regionFrameWidth = Int(line[pos1 + 2 ..])
+									regionFrameHeight = 0
+								Else
+									regionFrameWidth = Int(line[pos1 + 2 .. pos2])
+									regionFrameHeight = Int(line[pos2 + 2 ..])
+								EndIf
+							Case "offset"
+								pos2 = line.Find(",", pos1 + 1)
+								If pos2 = -1
+									regionFrameX = Int(line[pos1 + 2 ..])
+									regionFrameY = 0
+								Else
+									regionFrameX = Int(line[pos1 + 2 .. pos2])
+									regionFrameY = Int(line[pos2 + 2 ..])
+								EndIf
+							Case "index"
+								regionIndex = Int(line[pos1 + 2 ..])
+						End
+					EndIf
+				EndIf
+			EndIf
+			
+			'if we are at teh end of the file lets force region to save
+			If fileStream.Eof() And pageHasHeader And regionNew = False
+				'force save the region as eof
+				regionSave = True
+			EndIf
+			
+			'do we need to process adding the region?
+			If regionSave
+				regionSave = False
+				
+				'add the region
+				region = SpineDefaultAtlasRegion(atlas.AddRegion(page, regionName, regionX, regionY, regionWidth, regionHeight, regionFrameX, regionFrameY, regionFrameWidth, regionFrameHeight))
+				
+				'check to see if we failed to create this region?
+				If region = Null
+					Throw SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+				EndIf
+			EndIf
+		Wend
+		
+		'finalise atlas loading
+		atlas.UnLock()
+		
+		'return the loaded atlas
+		Return atlas
+	End
+End
+
+Class SpineMakeAtlasLoader Implements SpineAtlasLoader
+	Global instance:= New SpineMakeAtlasLoader
 	
 	Method LoadAtlas:SpineAtlas(path:String, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
 		' --- load an atlas using the MakeAtlas JSON format ---
@@ -55,7 +279,7 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 		Local imagesDir:String = SpineExtractDir(path)
 		
 		'create the atlas
-		Local atlas:= New SpineMakeAtlasJSONAtlas
+		Local atlas:= New SpineDefaultAtlas
 		
 		'prepare atlas for loading
 		atlas.Lock()
@@ -67,12 +291,12 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 		Local jsonItemsObject:JSONObject
 		Local jsonItemObject:JSONObject
 		
-		Local page:SpineMakeAtlasJSONAtlasPage
+		Local page:SpineDefaultAtlasPage
 		Local pageIndex:Int = -1
 		Local pageFileName:String
 		Local pageFilePath:String
 		
-		Local region:SpineMakeAtlasJSONAtlasRegion
+		Local region:SpineDefaultAtlasRegion
 		Local regionName:String
 		Local regionValid:Bool
 		Local regionX:Int
@@ -107,7 +331,7 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 				pageFilePath = SpineCombinePaths(imagesDir, pageFileName)
 				
 				'attempt to load the page
-				page = SpineMakeAtlasJSONAtlasPage(atlas.AddPage(pageFilePath))
+				page = SpineDefaultAtlasPage(atlas.AddPage(pageFilePath))
 			EndIf
 			
 			'check that page was loaded
@@ -203,7 +427,7 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 					EndIf
 					
 					'create the region now that it has validated
-					region = SpineMakeAtlasJSONAtlasRegion(atlas.AddRegion(page, regionName, regionX, regionY, regionWidth, regionHeight, regionFrameX, regionFrameY, regionFrameWidth, regionFrameHeight))
+					region = SpineDefaultAtlasRegion(atlas.AddRegion(page, regionName, regionX, regionY, regionWidth, regionHeight, regionFrameX, regionFrameY, regionFrameWidth, regionFrameHeight))
 				EndIf
 				
 				'check to see if we failed to create this region?
@@ -221,11 +445,27 @@ Class SpineMakeAtlasJSONAtlasLoader Implements SpineAtlasLoader
 	End
 End
 
-Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
+Class SpineSeperateImageLoader Implements SpineAtlasLoader
+	Global instance:= New SpineSeperateImageLoader
+	
+	Method LoadAtlas:SpineAtlas(path:String, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
+		' --- load the images path ---
+		'create atlas and set images path
+		Local atlas:= New SpineSeperateImageAtlas
+		atlas.path = path
+		
+		'return it
+		Return atlas
+	End
+End
+
+Private
+'default atlas implementation
+Class SpineDefaultAtlas Implements SpineAtlas
 	Field refCount:Int
-	Field pages:SpineMakeAtlasJSONAtlasPage[]
+	Field pages:SpineDefaultAtlasPage[]
 	Field pagesCount:Int
-	Field regions:SpineMakeAtlasJSONAtlasRegion[]
+	Field regions:SpineDefaultAtlasRegion[]
 	Field regionsCount:Int
 	
 	Method Use:Void()
@@ -262,7 +502,7 @@ Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
 	Method AddPage:SpineAtlasPage(path:String)
 		' --- add page to atlas ---
 		'create new page
-		Local page:= New SpineMakeAtlasJSONAtlasPage
+		Local page:= New SpineDefaultAtlasPage
 		page.index = pagesCount
 		
 		'load the page image
@@ -281,11 +521,11 @@ Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 		' --- add a new region to atlas ---
 		'create new region
-		Local region:= New SpineMakeAtlasJSONAtlasRegion
+		Local region:= New SpineDefaultAtlasRegion
 		
 		'setup the details for the region
 		region.name = name
-		region.page = SpineMakeAtlasJSONAtlasPage(page)
+		region.page = SpineDefaultAtlasPage(page)
 		region.x = x
 		region.y = y
 		region.width = width
@@ -326,7 +566,7 @@ Class SpineMakeAtlasJSONAtlas Implements SpineAtlas
 	End
 End
 
-Class SpineMakeAtlasJSONAtlasPage Implements SpineAtlasPage
+Class SpineDefaultAtlasPage Implements SpineAtlasPage
 	Field index:Int
 	Field image:Image
 	
@@ -341,9 +581,9 @@ Class SpineMakeAtlasJSONAtlasPage Implements SpineAtlasPage
 	End
 End
 
-Class SpineMakeAtlasJSONAtlasRegion Implements SpineAtlasRegion
+Class SpineDefaultAtlasRegion Implements SpineAtlasRegion
 	Field name:String
-	Field page:SpineMakeAtlasJSONAtlasPage
+	Field page:SpineDefaultAtlasPage
 	Field image:Image
 	Field x:Int
 	Field y:Int
@@ -353,6 +593,10 @@ Class SpineMakeAtlasJSONAtlasRegion Implements SpineAtlasRegion
 	Field offsetY:Int
 	Field originalWidth:Int
 	Field originalHeight:Int
+	
+	Method ToString:String()
+		Return "name: " + name + ", x: " + x + ", y: " + y + ", width: " + width + ", height: " + height + ", offsetx: " + offsetX + ", offsety: " + offsetY + ", originalwidth: " + originalWidth + ", originalheight: " + originalHeight
+	End
 	
 	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, vertices:Float[])
 		' --- draw the region using the provided details ---
@@ -401,26 +645,12 @@ Class SpineMakeAtlasJSONAtlasRegion Implements SpineAtlasRegion
 	End
 End
 
-'seperate file implementation
-Class SpineSeperateFileAtlasLoader Implements SpineAtlasLoader
-	Global instance:= New SpineSeperateFileAtlasLoader
-	
-	Method LoadAtlas:SpineAtlas(path:String, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
-		' --- load the images path ---
-		'create atlas and set images path
-		Local atlas:= New SpineSeperateFileAtlas
-		atlas.path = path
-		
-		'return it
-		Return atlas
-	End
-End
-
-Class SpineSeperateFileAtlas Implements SpineAtlas
+'seperate image atlas implementation
+Class SpineSeperateImageAtlas Implements SpineAtlas
 	Field refCount:Int
 	Field locked:Bool
 	Field path:String
-	Field regions:SpineMakeAtlasJSONAtlasRegion[]
+	Field regions:SpineSeperateImageAtlasRegion[]
 	Field regionsCount:Int
 	
 	Method Use:Void()
@@ -456,7 +686,7 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 		' --- add a new region to atlas ---
 		'create new region
-		Local region:= New SpineMakeAtlasJSONAtlasRegion
+		Local region:= New SpineSeperateImageAtlasRegion
 		
 		'setup the details for the region
 		region.name = name
@@ -467,7 +697,9 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 		'If region.image = Null
 		'	Throw SpineException("Invalid image path '" + regionPath + "'")
 		'EndIf
-		If region.image region.image.SetHandle(region.image.Width() / 2.0, region.image.Height() / 2.0)
+		If region.image
+			region.image.SetHandle(region.image.Width() / 2.0, region.image.Height() / 2.0)
+		EndIf
 		
 		'add to regions
 		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
@@ -500,7 +732,7 @@ Class SpineSeperateFileAtlas Implements SpineAtlas
 	End
 End
 
-Class SpineSeperateFileAtlasRegion Implements SpineAtlasRegion
+Class SpineSeperateImageAtlasRegion Implements SpineAtlasRegion
 	Field name:String
 	Field image:Image
 	
@@ -522,11 +754,13 @@ Class SpineSeperateFileAtlasRegion Implements SpineAtlasRegion
 		
 	Method GetWidth:Int()
 		' --- return info about region ---
+		If image = Null Return 0
 		Return image.Width()
 	End
 	
 	Method GetHeight:Int()
 		' --- return info about region ---
+		If image = Null Return 0
 		Return image.Height()
 	End
 	
@@ -542,13 +776,15 @@ Class SpineSeperateFileAtlasRegion Implements SpineAtlasRegion
 	
 	Method GetOriginalWidth:Int()
 		' --- return info about region ---
+		If image = Null Return 0
 		Return image.Width()
 	End
 	
 	Method GetOriginalHeight:Int()
 		' --- return info about region ---
+		If image = Null Return 0
 		Return image.Height()
 	End
 End
 
-'api
+Public

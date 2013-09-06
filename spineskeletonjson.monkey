@@ -141,6 +141,7 @@ Class SpineSkeletonJson
 		Local slotIndex:Int
 		Local attachment:SpineAttachment
 		Local attachmentName:String
+		Local eventData:SpineEventData
 		Local jsonSlot:JSONObject
 		Local jsonAttachment:JSONObject
 		
@@ -170,6 +171,19 @@ Class SpineSkeletonJson
 				If skin.Name = "default" skeletonData.DefaultSkin = skin
 			Next
 		EndIf
+		
+		'events
+		jsonGroupObject = JSONObject(jsonRoot.GetItem("events"))
+		If jsonGroupObject <> Null
+			For jsonName = EachIn jsonGroupObject.Names()
+				'get event from name
+				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
+				eventData = New SpineEventData(jsonName)
+				
+				'add it
+				skeletonData.AddEvent(eventData)
+			Next
+		EndIf		
 
 		'animations.
 		jsonGroupObject = JSONObject(jsonRoot.GetItem("animations"))
@@ -238,7 +252,9 @@ Class SpineSkeletonJson
 
 		Local duration:float = 0.0
 
+		Local index:Int
 		Local jsonGroupObject:JSONObject
+		Local jsonGroupArray:JSONArray
 		Local jsonBone:JSONObject
 		Local jsonTimeline:JSONArray
 		Local jsonTimelineFrameDataItem:JSONDataItem
@@ -278,6 +294,7 @@ Class SpineSkeletonJson
 								frameIndex += 1
 							Next
 							
+							'add timeline (maybe resize array)
 							If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
 							timelines[timelineCount] = timeline
 							timelineCount += 1
@@ -318,7 +335,7 @@ Class SpineSkeletonJson
 				Next
 			Next
 		EndIf
-
+		
 		'slots
 		Local slotName:String
 		Local slotIndex:Int
@@ -384,6 +401,149 @@ Class SpineSkeletonJson
 					
 				Next
 			Next
+		EndIf
+		
+		'events
+		Local eventName:String
+		Local jsonEvent:JSONObject
+		Local event:SpineEvent
+		Local eventData:SpineEventData
+		Local eventIndex:Int
+		
+		jsonGroupArray = JSONArray(jsonAnimation.GetItem("events"))
+		If jsonGroupArray <> Null
+			Local timeline:SpineEventTimeline = New SpineEventTimeline(jsonGroupArray.values.Count())
+			frameIndex = 0
+			
+			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
+				jsonEvent = JSONObject(jsonTimelineFrameDataItem)
+				
+				'lookup the event
+				eventName = jsonEvent.GetItem("name")
+				eventIndex = skeletonData.FindEventIndex(eventName)
+				If eventIndex = -1 Throw New SpineException("Event not found: " + eventName)
+				
+				'get teh event default data
+				eventData = skeletonData.Events[eventIndex]
+				
+				'create new event
+				event = New SpineEvent(eventData)
+				event.IntValue = jsonEvent.GetItem("int", eventData.GetInt())
+				event.FloatValue = jsonEvent.GetItem("float", eventData.GetFloat())
+				event.StringValue = jsonEvent.GetItem("string", eventData.GetString())
+				
+				'process frame in timeline
+				timeline.SetFrame(frameIndex, jsonEvent.GetItem("time", 0.0), event)
+				
+				'next frame index
+				frameIndex += 1
+			Next
+			
+			'add timeline
+			If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+			timelines[timelineCount] = timeline
+			timelineCount += 1
+			
+			'update duration
+			duration = Max(duration, timeline.GetFrames()[timeline.FrameCount() -1])
+		EndIf
+
+		'draw order
+		Local jsonOrder:JSONObject
+		Local jsonOffsetDataItem:JSONDataItem
+		Local jsonOffsetArray:JSONArray
+		Local jsonOffsetTotal:Int
+		Local jsonOffset:JSONObject
+		Local originalIndex:Int
+		Local unchangedIndex:Int
+		Local offset:Int
+		
+		jsonGroupArray = JSONArray(jsonAnimation.GetItem("draworder"))
+		If jsonGroupArray <> Null
+			'get slot count 
+			'we get it from the count value as we are still reading json data
+			'if we use teh array size then the code below will use teh size of the unfilled array elements
+			Local slotsCount:= skeletonData.slotsCount
+			
+			'create this new timeline
+			Local timeline:SpineDrawOrderTimeline = New SpineDrawOrderTimeline(jsonGroupArray.values.Count())
+			frameIndex = 0
+			
+			'iterate over frame keys
+			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
+				jsonOrder = JSONObject(jsonTimelineFrameDataItem)
+				
+				'get the offset array
+				jsonOffsetArray = JSONArray(jsonOrder.GetItem("offsets"))
+				jsonOffsetTotal = jsonOffsetArray.values.Count()
+				
+				'create draw order array and reset it
+				Local drawOrder:= New int[slotsCount]
+				For slotIndex = slotsCount - 1 To 0 Step - 1
+					drawOrder[slotIndex] = -1;
+				Next
+				
+				'create unchanged array				
+				Local unchanged:= New Int[slotsCount - jsonOffsetTotal]
+				
+				originalIndex = 0
+				unchangedIndex = 0
+				
+				'iterate over offsets
+				For jsonOffsetDataItem = EachIn jsonOffsetArray
+					jsonOffset = JSONObject(jsonOffsetDataItem)
+				
+					'get slot index
+					slotName = jsonOffset.GetItem("slot")
+					slotIndex = skeletonData.FindSlotIndex(slotName)
+					
+					'check slot is valid
+					If slotIndex = -1 Throw New SpineException("Slot not found: " + slotName);
+										
+					'collect unchanges items
+					While originalIndex <> slotIndex
+						unchanged[unchangedIndex] = originalIndex
+						unchangedIndex += 1
+						originalIndex += 1
+					Wend
+					
+					'get offset
+					offset = jsonOffset.GetItem("offset", 0)
+					
+					'set changed items
+					drawOrder[originalIndex + offset] = originalIndex
+					originalIndex += 1
+				Next
+				
+				'collect remaining unchanged items
+				While originalIndex < slotsCount
+					unchanged[unchangedIndex] = originalIndex
+					unchangedIndex += 1
+					originalIndex += 1
+				Wend
+				
+				'fill unchanged items
+				For index = slotsCount - 1 To 0 Step - 1
+					If drawOrder[index] = -1
+						unchangedIndex -= 1
+						drawOrder[index] = unchanged[unchangedIndex]
+					EndIf
+				Next
+				
+				'process frame in timeline
+				timeline.SetFrame(frameIndex, jsonOrder.GetItem("time", 0.0), drawOrder)
+				
+				'next frame index
+				frameIndex += 1
+			Next
+			
+			'add timeline
+			If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+			timelines[timelineCount] = timeline
+			timelineCount += 1
+			
+			'update duration
+			duration = Max(duration, timeline.GetFrames()[timeline.FrameCount() -1])
 		EndIf
 
 		'trim timeline

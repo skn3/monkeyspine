@@ -17,25 +17,32 @@ Class SpineAnimation
 	End
 
 	'Poses the skeleton at the specified time for this animation.
-	Method Apply:Void(skeleton:SpineSkeleton, time:Float, loop:Bool)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, loop:Bool, events:List<SpineEvent>)
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
 
-		If loop And Duration <> 0 time Mod= Duration
-
+		If loop And Duration <> 0
+			lastTime Mod= Duration
+			time Mod= Duration
+		EndIf
+		
 		For Local i:= 0 Until Timelines.Length
-			Timelines[i].Apply(skeleton, time, 1)
+			Timelines[i].Apply(skeleton, lastTime, time, 1, events)
 		Next
 	End
 
+	Method Mix:Void(skeleton:SpineSkeleton, time:float, loop:bool, alpha:float)
+		Mix(skeleton, MAX_FLOAT, time, loop, Null, alpha)
+	End
+	
 	'Poses the skeleton at the specified time for this animation mixed with the current pose.
 	'@param alpha The amount of this animation that affects the current pose.
-	Method Mix:Void(skeleton:SpineSkeleton, time:float, loop:bool, alpha:float)
+	Method Mix:Void(skeleton:SpineSkeleton, timeLast:Float, time:float, loop:bool, events:List<SpineEvent>, alpha:float)
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
 
 		If loop And Duration <> 0 time Mod= Duration
 
 		For Local i:= 0 Until Timelines.Length
-			Timelines[i].Apply(skeleton, time, alpha)
+			Timelines[i].Apply(skeleton, timeLast, time, alpha, events)
 		Next
 	End
 
@@ -72,7 +79,7 @@ End
 
 Interface SpineTimeline
 	'Sets the value(s) for the specified time.
-	Method Apply:Void(skeleton:SpineSkeleton, time:Float, alpha:Float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, events:List<SpineEvent>)
 	Method FrameCount:Int()
 End
 
@@ -94,7 +101,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		curves = New float[ (frameCount - 1) * 6]
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:float) Abstract
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:float, events:List<SpineEvent>) Abstract
 
 	Method SetLinear:Void(frameIndex:Int)
 		curves[frameIndex * 6] = LINEAR
@@ -182,7 +189,7 @@ Class SpineRotateTimeline Extends SpineCurveTimeline
 		Frames[frameIndex + 1] = angle
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:Float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:Float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local bone:SpineBone = skeleton.Bones[BoneIndex]
@@ -249,7 +256,7 @@ Class SpineTranslateTimeline Extends SpineCurveTimeline
 		Frames[frameIndex + 2] = y
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local bone:SpineBone = skeleton.Bones[BoneIndex]
@@ -279,7 +286,7 @@ Class SpineScaleTimeline Extends SpineTranslateTimeline
 		Frames = New float[frameCount * 3]
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:Float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:Float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local bone:SpineBone = skeleton.Bones[BoneIndex]
@@ -327,7 +334,7 @@ Class SpineColorTimeline Extends SpineCurveTimeline
 		Frames[frameIndex + 4] = a
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:Float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:Float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local slot:SpineSlot = skeleton.Slots[SlotIndex]
@@ -389,7 +396,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		AttachmentNames[frameIndex] = attachmentName
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, time:float, alpha:Float)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:Float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local frameIndex:Int
@@ -406,5 +413,122 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 			skeleton.Slots[SlotIndex].Attachment = skeleton.GetAttachment(SlotIndex, attachmentName)
 		EndIf
 		
+	End
+End
+
+Class SpineEventTimeline Implements SpineTimeline
+	Field Frames:Float[] ' time, ...
+	Field Events:SpineEvent[]
+
+	Method New(frameCount:Int)
+		Frames = new Float[frameCount]
+		Events = new SpineEvent[frameCount]
+	End
+
+	Method FrameCount:Int()
+		Return Frames.Length
+	End
+
+	Method GetFrames:Float[]()
+		Return Frames
+	End
+
+	Method GetEvents:SpineEvent[]()
+		Return Events
+	End
+
+	Method SetFrame:Void(frameIndex:Int, time:Float, event:SpineEvent)
+		'Sets the time of the specified keyframe
+		Frames[frameIndex] = time
+		Events[frameIndex] = event
+	End
+
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, firedEvents:List<SpineEvent>)
+		'we should only fire events that have happened in the space between lastTime and time
+		'check for instant cancel
+		If firedEvents = Null or Frames.Length = 0 Return
+		
+		'check to see if the time (current) is before the first frame
+		Local Frames:Float[] = Self.Frames
+		If time < Frames[0] Return ' Time is before first frame.
+
+		'check to see if the last checked time is after the last frame stored in the event timeline
+		'this means the event would have already been fired
+		Local frameCount:Int = Frames.Length
+		if lastTime >= Frames[frameCount - 1] Return ' Last time is after last frame.
+
+		'simplified event checking... (strange...)
+		For Local index:= 0 Until Frames.Length
+			If Frames[index] >= lastTime
+				'check for past current time
+				If Frames[index] > time Exit
+				
+				'add to fired events
+				firedEvents.AddLast(Events[index])
+			EndIf
+		Next
+		
+		#rem
+		'not sure why the spine runtime was coded this way, seems a bit of a waste...
+		Local frameIndex:Int
+		if frameCount = 1
+			frameIndex = 0
+		else
+			frameIndex = SpineAnimation.binarySearch(Frames, lastTime, 1) - 1
+			Local frame:Float = Frames[frameIndex]
+			While frameIndex > 0 And frame = Frames[frameIndex - 1]
+				frameIndex -= 1 ' Fire multiple Events with the same frame.
+			Wend
+		EndIf
+		
+		'add to fired events (hope this works?)
+		While frameIndex < frameCount And time > Frames[frameIndex]
+			firedEvents.AddLast(Events[frameIndex])
+			frameIndex += 1
+		Wend
+		#end
+	End
+End
+
+Class SpineDrawOrderTimeline Implements SpineTimeline
+	Field Frames:Float[] ' time, ...
+	Field DrawOrders:Int[][]
+
+	Method New(frameCount:Int)
+		Frames = new Float[frameCount]
+		DrawOrders = new Int[frameCount][]
+	End
+
+	Method FrameCount:Int()
+		Return Frames.Length
+	End
+
+	Method GetFrames:Float[]()
+		Return Frames
+	End
+
+	Method GetDrawOrders:Int[][]()
+		Return DrawOrders
+	End
+
+	Method SetFrame:Void(frameIndex:Int, time:Float, drawOrder:Int[])
+		' Sets the time of the specified keyframe. 
+		Frames[frameIndex] = time
+		DrawOrders[frameIndex] = drawOrder
+	End
+
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, events:List<SpineEvent>)
+		If time < Frames[0] Return ' Time is before first frame.
+
+		Local frameIndex:Int
+		If time >= Frames[Frames.Length - 1] ' Time is after last frame.
+			frameIndex = Frames.Length - 1
+		else
+			frameIndex = SpineAnimation.binarySearch(Frames, time, 1) - 1
+		EndIf
+
+		For Local index:= 0 Until DrawOrders[frameIndex].Length
+			skeleton.DrawOrder[index] = skeleton.Slots[DrawOrders[frameIndex][index]]
+		Next
 	End
 End
