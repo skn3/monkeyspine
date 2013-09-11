@@ -327,9 +327,9 @@ Class SpineEntity
 			mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 			mojo.SetAlpha(attachment.WorldAlpha)
 			If snapToPixels
-				attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, attachment.Vertices)
+				attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
 			Else
-				attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, attachment.Vertices)
+				attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
 			EndIf
 		Next
 		

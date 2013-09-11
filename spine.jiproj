@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<JiProj xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" EntryPoint=".\example4\example4.monkey" Name="spine">
+<JiProj xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" EntryPoint=".\example5\example5.monkey" Name="spine">
   <Files>
     <Document Filename=".\attachments\spineatlasattachmentloader.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
       <DocGUID />

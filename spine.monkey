@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 14
+' - added small fix so snap to turns image handles into ints
 'version 13
 ' - MASSIVE UPDATE
 ' - added support for native spine texture atlas

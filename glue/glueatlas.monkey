@@ -25,7 +25,7 @@ Interface SpineAtlasPage
 End
 
 Interface SpineAtlasRegion
-	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, vertices:Float[])
+	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, handleX:Float, handleY:Float, vertices:Float[])
 
 	Method GetX:Int()
 	Method GetY:Int()
@@ -539,7 +539,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		region.image = region.page.image.GrabImage(x, y, width, height)
 		
 		'figure out correct mid handle
-		region.image.SetHandle(offsetX + (originalWidth / 2.0), offsetY + (originalHeight / 2.0))
+		region.image.SetHandle(0, 0)'offsetX + (originalWidth / 2.0), offsetY + (originalHeight / 2.0))
 		
 		'add to regions
 		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
@@ -598,10 +598,16 @@ Class SpineDefaultAtlasRegion Implements SpineAtlasRegion
 		Return "name: " + name + ", x: " + x + ", y: " + y + ", width: " + width + ", height: " + height + ", offsetx: " + offsetX + ", offsety: " + offsetY + ", originalwidth: " + originalWidth + ", originalheight: " + originalHeight
 	End
 	
-	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, vertices:Float[])
+	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, handleX:Float, handleY:Float, vertices:Float[])
 		' --- draw the region using the provided details ---
 		'both sets of details are provided so it is upto the implementation to choose how to render
-		DrawImage(image, x, y, rotation, scaleX, scaleY, 0)
+		PushMatrix()
+		Translate(x, y)
+		Rotate(rotation)
+		Scale(scaleX, scaleY)
+		Translate(handleX, handleY)
+		DrawImage(image, 0, 0)
+		PopMatrix()
 	End
 
 	Method GetX:Int()
@@ -698,7 +704,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		'	Throw SpineException("Invalid image path '" + regionPath + "'")
 		'EndIf
 		If region.image
-			region.image.SetHandle(region.image.Width() / 2.0, region.image.Height() / 2.0)
+			region.image.SetHandle(0, 0)'region.image.Width() / 2.0, region.image.Height() / 2.0)
 		EndIf
 		
 		'add to regions
@@ -736,10 +742,18 @@ Class SpineSeperateImageAtlasRegion Implements SpineAtlasRegion
 	Field name:String
 	Field image:Image
 	
-	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, vertices:Float[])
+	Method Draw:Void(x:Float, y:Float, rotation:Float, scaleX:Float, scaleY:float, handleX:Float, handleY:Float, vertices:Float[])
 		' --- draw the region using the provided details ---
 		'both sets of details are provided so it is upto the implementation to choose how to render
-		If image DrawImage(image, x, y, rotation, scaleX, scaleY, 0)
+		If image
+			PushMatrix()
+			Translate(x, y)
+			Rotate(rotation)
+			Scale(scaleX, scaleY)
+			Translate(handleX, handleY)
+			DrawImage(image, 0, 0)
+			PopMatrix()
+		EndIf
 	End
 
 	Method GetX:Int()
