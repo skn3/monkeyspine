@@ -1,6 +1,11 @@
 'see license.txt for source licenses
 Strict
 
+'version 15
+' - added SetDebugHideImages() to entity so we can disable drawing of images
+' - fixed issue where transform/scale/rotation animation was being ignored for root bone, cheers rikman
+' - made atlas, data and skeleton fields in spineentity public for hackables, cheers rikman
+' - fixed issue where scale on single axis was deforming in monkey, cheers rikman.
 'version 14
 ' - added small fix so snap to turns image handles into ints
 'version 13

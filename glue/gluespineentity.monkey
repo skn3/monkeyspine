@@ -11,10 +11,11 @@ End
 
 'class to wrap spine
 Class SpineEntity
-	Private
 	Field atlas:SpineAtlas
 	Field data:SpineSkeletonData
 	Field skeleton:SpineSkeleton
+	
+	Private
 	Field callback:SpineEntityCallback
 	
 	Field animation:SpineAnimation
@@ -28,6 +29,7 @@ Class SpineEntity
 	Field debugSlots:Bool = False
 	Field debugBones:Bool = False
 	Field debugBounding:Bool = False
+	Field debugHideImages:Bool = False
 	
 	Field updating:Bool = False
 	Field rendering:Bool = False
@@ -134,23 +136,43 @@ Class SpineEntity
 		'this will update the state of the skeleton so anything we access after it is correctly updated
 		dirty = False
 		
-		'update the root bone
-		Local rootBone:= skeleton.RootBone()
-		If rootBone
-			rootBone.X = x
-			rootBone.Y = y
-			rootBone.ScaleX = scaleX
-			rootBone.ScaleY = scaleY
-			rootBone.Rotation = rotation
-		EndIf
-		
-		'update the skeleton
+		'update the skeleton flip
 		skeleton.FlipX = flipX
 		skeleton.FlipY = flipY
 		
-		'update world transform
-		skeleton.UpdateWorldTransform()
-		
+		'root bone or child bone?
+		Local rootBone:= skeleton.RootBone()
+		If rootBone
+			'root bone
+			'save old root details
+			Local oldRootBoneX:= rootBone.X
+			Local oldRootBoneY:= rootBone.Y
+			Local oldRootBoneScaleX:= rootBone.ScaleX
+			Local oldRootBoneScaleY:= rootBone.ScaleY
+			Local oldRootBoneRotation:= rootBone.Rotation
+			
+			'apply root bone calculation
+			rootBone.X = x + oldRootBoneX
+			rootBone.Y = y + oldRootBoneY
+			rootBone.ScaleX = scaleX * oldRootBoneScaleX
+			rootBone.ScaleY = scaleY * oldRootBoneScaleY
+			rootBone.Rotation = rotation + oldRootBoneRotation
+						
+			'update world transform
+			skeleton.UpdateWorldTransform()
+			
+			'restore root details
+			rootBone.X = oldRootBoneX
+			rootBone.Y = oldRootBoneY
+			rootBone.ScaleX = oldRootBoneScaleX
+			rootBone.ScaleY = oldRootBoneScaleY
+			rootBone.Rotation = oldRootBoneRotation
+		Else
+			'child bone
+			'update world transform
+			skeleton.UpdateWorldTransform()
+		EndIf
+				
 		'update region vertices
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
@@ -313,25 +335,27 @@ Class SpineEntity
 		EndIf
 		
 		'render images
-		For index = 0 Until skeleton.DrawOrder.Length
-			'get slot
-			slot = skeleton.DrawOrder[index]
-			
-			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
-			
-			'get attachment in correct format
-			attachment = SpineRegionAttachment(slot.Attachment)
-			
-			'draw it
-			mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
-			mojo.SetAlpha(attachment.WorldAlpha)
-			If snapToPixels
-				attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
-			Else
-				attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
-			EndIf
-		Next
+		If debugHideImages = False
+			For index = 0 Until skeleton.DrawOrder.Length
+				'get slot
+				slot = skeleton.DrawOrder[index]
+				
+				'skip if not a region attachment
+				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+				
+				'get attachment in correct format
+				attachment = SpineRegionAttachment(slot.Attachment)
+				
+				'draw it
+				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
+				mojo.SetAlpha(attachment.WorldAlpha)
+				If snapToPixels
+					attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
+				Else
+					attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
+				EndIf
+			Next
+		EndIf
 		
 		'render slots
 		If debugSlots
@@ -408,6 +432,11 @@ Class SpineEntity
 		debugSlots = slots
 		debugBones = bones
 		debugBounding = bounding
+	End
+	
+	Method SetDebugHideImages:Void(images:Bool)
+		' --- hide images ---
+		debugHideImages = images
 	End
 	
 	Method GetDebugDraw:Bool()
