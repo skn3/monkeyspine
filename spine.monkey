@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 16
+' - fixed issue with draworder not resetting for non loopd animations (cheers rikman)
 'version 15
 ' - added SetDebugHideImages() to entity so we can disable drawing of images
 ' - fixed issue where transform/scale/rotation animation was being ignored for root bone, cheers rikman

@@ -106,7 +106,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 						page = SpineDefaultAtlasPage(atlas.AddPage(pageFilePath))
 						
 						'check that page was loaded
-						If page = Null Throw SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+						If page = Null Throw New SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 						
 						'image loaded woohoo continue
 						pageHasStart = True
@@ -187,7 +187,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 								If line[pos1 + 2 ..] = "true"
 									'Not supported yet
 									regionRotate = True
-									Throw SpineException("Invalid Region (rotation not supported)'" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+									Throw New SpineException("Invalid Region (rotation not supported)'" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 								Else
 									regionRotate = False
 								EndIf
@@ -249,7 +249,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 				
 				'check to see if we failed to create this region?
 				If region = Null
-					Throw SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+					Throw New SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 				EndIf
 			EndIf
 		Wend
@@ -273,7 +273,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		Local jsonPages:JSONArray
 		Local fileStream:= fileLoader.LoadFile(path)
 		If fileStream jsonPages = JSONArray(JSONData.ReadJSON(fileStream.ReadAll()))
-		If jsonPages = Null Throw SpineException("Invalid Atlas '" + path + "'")
+		If jsonPages = Null Throw New SpineException("Invalid Atlas '" + path + "'")
 		
 		'get images directory
 		Local imagesDir:String = SpineExtractDir(path)
@@ -335,7 +335,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 			EndIf
 			
 			'check that page was loaded
-			If page = Null Throw SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+			If page = Null Throw New SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 			
 			'iterate over regions
 			For regionName = EachIn jsonItemsObject.Names()
@@ -432,7 +432,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 				
 				'check to see if we failed to create this region?
 				If region = Null
-					Throw SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
+					Throw New SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 				EndIf
 			Next
 		Next
@@ -507,7 +507,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		
 		'load the page image
 		page.image = LoadImage(path)
-		If page.image = Null Throw SpineException("Invalid atlas page image '" + path + "'")
+		If page.image = Null Throw New SpineException("Invalid atlas page image '" + path + "'")
 		
 		'add to pages
 		If pagesCount >= pages.Length pages = pages.Resize(pages.Length * 2 + 10)
@@ -701,7 +701,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		Local regionPath:String = SpineCombinePaths(path, name + ".png")
 		region.image = LoadImage(regionPath)
 		'If region.image = Null
-		'	Throw SpineException("Invalid image path '" + regionPath + "'")
+		'	Throw New SpineException("Invalid image path '" + regionPath + "'")
 		'EndIf
 		If region.image
 			region.image.SetHandle(0, 0)'region.image.Width() / 2.0, region.image.Height() / 2.0)

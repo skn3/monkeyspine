@@ -737,6 +737,7 @@ Class SpineEntity
 		
 		'apply the animation to the skeleton
 		animation.Apply(skeleton, skeleton.Time, skeleton.Time, looping, events)
+		skeleton.ResetSlotOrder()
 		skeleton.SetToBindPose()
 		
 		'need to process events
