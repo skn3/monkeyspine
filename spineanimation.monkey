@@ -21,9 +21,10 @@ Class SpineAnimation
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
 
 		'apply looped animation
+		'this will convert the entire timeline into a single loop
 		If loop And Duration <> 0
-			lastTime Mod= Duration
-			time Mod= Duration
+			lastTime = lastTime Mod Duration
+			time = time Mod Duration
 		EndIf
 		
 		'iterate over all timelines attached to animation
@@ -279,8 +280,6 @@ Class SpineTranslateTimeline Extends SpineCurveTimeline
 
 		bone.X += ( (bone.Data.X + lastFrameX + (Frames[frameIndex + FRAME_X] - lastFrameX) * percent - bone.X) * alpha)
 		bone.Y += ( (bone.Data.Y + lastFrameY + (Frames[frameIndex + FRAME_Y] - lastFrameY) * percent - bone.Y) * alpha)
-		
-		Print "SpineTranslateTimeline.apply() for '" + bone.Data.Name + "' bone.X = " + bone.X
 	End
 End
 
@@ -523,7 +522,7 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, events:List<SpineEvent>)
 		If time < Frames[0] Return ' Time is before first frame.
-
+		
 		Local frameIndex:Int
 		If time >= Frames[Frames.Length - 1] ' Time is after last frame.
 			frameIndex = Frames.Length - 1

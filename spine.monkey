@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 17
+' - added MixAnimation to gluespineentity see example2 for example of usage
 'version 16
 ' - fixed issue with draworder not resetting for non loopd animations (cheers rikman)
 'version 15

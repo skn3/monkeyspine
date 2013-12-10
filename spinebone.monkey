@@ -52,8 +52,6 @@ Class SpineBone
 			WorldScaleX = ScaleX
 			WorldScaleY = ScaleY
 			WorldRotation = Rotation
-			
-			Print "worldX for '" + Data.Name + "' = " + WorldX
 		EndIf
 		
 		Local cos:float = Cos(WorldRotation)

@@ -19,6 +19,10 @@ Class SpineEntity
 	Field callback:SpineEntityCallback
 	
 	Field animation:SpineAnimation
+	Field mixAnimation:SpineAnimation
+	Field mixAmount:Float
+	Field mixLooping:Bool
+	
 	Field speed:Float = 1.0
 	Field playing:Bool
 	Field looping:Bool
@@ -255,9 +259,16 @@ Class SpineEntity
 			'increase animation time in skeleton
 			skeleton.Update(delta * speed)
 			
-			'update the animation
+			'reset the draw order
+			skeleton.ResetSlotOrder()
+						
 			'we now pass in an events list
 			animation.Apply(skeleton, skeleton.LastTime, skeleton.Time, looping, events)
+			
+			'mix in animations
+			If mixAnimation mixAnimation.Mix(skeleton, skeleton.LastTime, skeleton.Time, looping, events, mixAmount)
+			
+			'flag dirty as its dirty!
 			dirty = True
 			
 			'need to process events
@@ -272,12 +283,11 @@ Class SpineEntity
 					'fire callback
 					If callback callback.OnSpineEntityAnimationComplete(Self, animation.Name)
 				Else
-					'Print "reset time"
 					'reset time
 					'skeleton.SetToBindPose()'dont do this because it messes up teh animation
-					skeleton.ResetSlotOrder()
-					skeleton.Time = 0.0
-					skeleton.LastTime = 0.0
+					'this has been disabled because the spine system deals with it anyway!
+					'skeleton.Time = 0.0
+					'skeleton.LastTime = 0.0
 				EndIf
 			EndIf
 		EndIf
@@ -728,6 +738,10 @@ Class SpineEntity
 	
 	Method SetAnimation:Void(animation:SpineAnimation, looping:Bool = False)
 		' --- change animation by animation ---
+		'clear out the mix
+		mixAnimation = Null
+		mixAmount = 0.0
+		
 		'set the current animation
 		Self.animation = animation
 		skeleton.Time = 0.0
@@ -746,6 +760,20 @@ Class SpineEntity
 		
 		'flag that the entity is dirty again
 		dirty = True
+	End
+	
+	Method MixAnimation:Void(name:String, amount:Float, looping:Bool = False)
+		' --- set another animation to mix in ---
+		'calling set animation will reset this
+		MixAnimation(GetAnimation(name), amount, looping)
+	End
+	
+	Method MixAnimation:Void(animation:SpineAnimation, amount:Float, looping:Bool = False)
+		' --- set another animation to mix in ---
+		'calling set animation will reset this
+		mixAnimation = animation
+		mixAmount = amount
+		mixLooping = looping
 	End
 	
 	Method IsAnimationRunning:Bool()

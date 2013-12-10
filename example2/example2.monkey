@@ -24,6 +24,7 @@ Class MyApp Extends App
 			spineBoy = New SpineEntity("spineboy.json", "spineboy_seperate", SpineSeperateImageLoader.instance)
 			spineBoy.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spineBoy.SetAnimation("walk", True)
+			spineBoy.MixAnimation("jump", 0.5, True)
 			spineBoy.SetDebugDraw(True, True, True)
 			
 		Catch exception:SpineException
