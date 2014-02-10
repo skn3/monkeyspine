@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 18
+' - added RevertColor() and RevertAlpha() to spine entity (cheers rikman)
 'version 17
 ' - added MixAnimation to gluespineentity see example2 for example of usage
 'version 16

@@ -666,6 +666,21 @@ Class SpineEntity
 		skeleton.A = alpha
 	End
 	
+	Method RevertColor:Void()
+		' --- revert color to its built in value ---
+		skeleton.R = 1.0
+		skeleton.G = 1.0
+		skeleton.B = 1.0
+		
+		'flag dirty
+		dirty = True
+	End
+	
+	Method RevertAlpha:Void()
+		' --- revert alpha to its built in value ---
+		skeleton.A = 1.0
+	End
+	
 	Method GetColor:Int[] ()
 		' --- get color of skeleton ---
 		Return[Int(skeleton.R * 255), Int(skeleton.G * 255), Int(skeleton.B * 255)]
