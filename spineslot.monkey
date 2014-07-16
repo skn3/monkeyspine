@@ -46,7 +46,6 @@ Class SpineSlot
 		SetToBindPose()
 	End
 
-	Private
 	Method SetToBindPose:Void(slotIndex:int)
 		R = Data.R
 		G = Data.G
@@ -58,7 +57,6 @@ Class SpineSlot
 			Attachment = Skeleton.GetAttachment(slotIndex, Data.AttachmentName)
 		EndIf
 	End
-	Public
 
 	Method SetToBindPose:Void()
 		For Local indexOf:= 0 Until Skeleton.Data.Slots.Length

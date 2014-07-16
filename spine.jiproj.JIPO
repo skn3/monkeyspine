@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<JiProjUserOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+<JiProjUserOptions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Files>
     <DocUserOptions Filename=".\attachments\spineatlasattachmentloader.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="155">
       <CursorPos>
@@ -371,7 +371,7 @@
       </CursorPos>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\attachments\spineregionattachment.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\attachments\spineregionattachment.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>39</X>
         <Y>65</Y>
@@ -2674,7 +2674,7 @@
       </OutLiningSplitSerialization>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\example2\example2.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\example2\example2.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>32</X>
         <Y>29</Y>
@@ -11811,7 +11811,7 @@
       </OutLiningSplitSerialization>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\glue\gluespineentity.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\glue\gluespineentity.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>2</X>
         <Y>673</Y>
@@ -13223,6 +13223,21 @@
           <StartPoint>
             <X>26</X>
             <Y>668</Y>
+          </StartPoint>
+          <Text>...</Text>
+          <Expanded>true</Expanded>
+        </Folding_Nodes_Collection>
+        <Folding_Nodes_Collection>
+          <Collapsed_Text>...</Collapsed_Text>
+          <EndPoint>
+            <X>4</X>
+            <Y>681</Y>
+          </EndPoint>
+          <IsEmpty>false</IsEmpty>
+          <ASTNestingLevel>1</ASTNestingLevel>
+          <StartPoint>
+            <X>26</X>
+            <Y>678</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -17838,6 +17853,21 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
+            <Y>681</Y>
+          </EndPoint>
+          <IsEmpty>false</IsEmpty>
+          <ASTNestingLevel>1</ASTNestingLevel>
+          <StartPoint>
+            <X>26</X>
+            <Y>678</Y>
+          </StartPoint>
+          <Text>...</Text>
+          <Expanded>true</Expanded>
+        </Folding_Nodes_Collection>
+        <Folding_Nodes_Collection>
+          <Collapsed_Text>...</Collapsed_Text>
+          <EndPoint>
+            <X>4</X>
             <Y>686</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
@@ -21042,7 +21072,7 @@
       <OutLiningSplitSerialization />
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spine.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spine.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>73</X>
         <Y>4</Y>
@@ -21052,7 +21082,7 @@
       <DocGUID>d750083a-7264-4b11-962f-b5563ddac2a1</DocGUID>
       <Bookmarks />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spineanimation.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spineanimation.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>7</X>
         <Y>373</Y>
@@ -26057,7 +26087,7 @@
       </OutLiningSplitSerialization>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spineskeleton.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spineskeleton.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>2</X>
         <Y>80</Y>
@@ -29350,7 +29380,7 @@
       </OutLiningSplitSerialization>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spineskeletonjson.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spineskeletonjson.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>13</X>
         <Y>124</Y>
@@ -31709,17 +31739,17 @@
       </CursorPos>
       <DocGUID />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spineslot.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spineslot.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
-        <X>10</X>
-        <Y>50</Y>
+        <X>4</X>
+        <Y>58</Y>
       </CursorPos>
       <OutLiningSerialization>
         <Folding_Nodes_Collection>
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>3</X>
-            <Y>75</Y>
+            <Y>73</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>0</ASTNestingLevel>
@@ -31854,13 +31884,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>59</Y>
+            <Y>58</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>41</X>
-            <Y>49</Y>
+            <Y>48</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31869,13 +31899,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>7</X>
-            <Y>58</Y>
+            <Y>57</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>2</ASTNestingLevel>
           <StartPoint>
             <X>35</X>
-            <Y>54</Y>
+            <Y>53</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31884,13 +31914,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>70</Y>
+            <Y>68</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>28</X>
-            <Y>62</Y>
+            <Y>60</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31899,13 +31929,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>6</X>
-            <Y>68</Y>
+            <Y>66</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>2</ASTNestingLevel>
           <StartPoint>
             <X>11</X>
-            <Y>63</Y>
+            <Y>61</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31914,13 +31944,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>8</X>
-            <Y>67</Y>
+            <Y>65</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>3</ASTNestingLevel>
           <StartPoint>
             <X>41</X>
-            <Y>64</Y>
+            <Y>62</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31929,13 +31959,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>74</Y>
+            <Y>72</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>25</X>
-            <Y>72</Y>
+            <Y>70</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -31946,7 +31976,7 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>3</X>
-            <Y>75</Y>
+            <Y>73</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>0</ASTNestingLevel>
@@ -32081,13 +32111,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>59</Y>
+            <Y>58</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>41</X>
-            <Y>49</Y>
+            <Y>48</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32096,13 +32126,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>7</X>
-            <Y>58</Y>
+            <Y>57</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>2</ASTNestingLevel>
           <StartPoint>
             <X>35</X>
-            <Y>54</Y>
+            <Y>53</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32111,13 +32141,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>70</Y>
+            <Y>68</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>28</X>
-            <Y>62</Y>
+            <Y>60</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32126,13 +32156,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>6</X>
-            <Y>68</Y>
+            <Y>66</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>2</ASTNestingLevel>
           <StartPoint>
             <X>11</X>
-            <Y>63</Y>
+            <Y>61</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32141,13 +32171,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>8</X>
-            <Y>67</Y>
+            <Y>65</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>3</ASTNestingLevel>
           <StartPoint>
             <X>41</X>
-            <Y>64</Y>
+            <Y>62</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32156,13 +32186,13 @@
           <Collapsed_Text>...</Collapsed_Text>
           <EndPoint>
             <X>4</X>
-            <Y>74</Y>
+            <Y>72</Y>
           </EndPoint>
           <IsEmpty>false</IsEmpty>
           <ASTNestingLevel>1</ASTNestingLevel>
           <StartPoint>
             <X>25</X>
-            <Y>72</Y>
+            <Y>70</Y>
           </StartPoint>
           <Text>...</Text>
           <Expanded>true</Expanded>
@@ -32171,7 +32201,7 @@
       <DocGUID>bfe5ed3a-da82-486b-9636-a52f2984c658</DocGUID>
       <Bookmarks />
     </DocUserOptions>
-    <DocUserOptions Filename=".\spineslotdata.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="155">
+    <DocUserOptions Filename=".\spineslotdata.monkey" Open="true" SplitView="false" SplitIsVertical="false" SplitSize="179">
       <CursorPos>
         <X>2</X>
         <Y>20</Y>
