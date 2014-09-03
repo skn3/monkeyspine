@@ -29,6 +29,13 @@
         <Y>0</Y>
       </CursorPos>
     </Document>
+    <Document Filename=".\attachments\spinemeshattachment.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
+      <DocGUID />
+      <CursorPos>
+        <X>0</X>
+        <Y>0</Y>
+      </CursorPos>
+    </Document>
     <Document Filename=".\attachments\spineregionattachment.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
       <DocGUID />
       <CursorPos>
@@ -233,5 +240,5 @@
       </CursorPos>
     </Document>
   </Files>
-  <CompilerConfig Configuration="debug" BuildMode="run" Target="Glfw_Game" />
+  <CompilerConfig Configuration="debug" BuildMode="run" Target="Desktop_Game" />
 </JiProj>

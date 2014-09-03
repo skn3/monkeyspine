@@ -17,6 +17,8 @@ Class SpineSlot
 	Private
 	Field attachment:SpineAttachment
 	Field attachmentTime:float
+	Field attachmentVertices:Float[0]
+	Field attachmentVerticesCount:Int
 	Public
 	
 	Method Attachment:SpineAttachment() Property

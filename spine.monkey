@@ -99,3 +99,4 @@ Import attachments.spineattachment
 Import attachments.spineattachmentloader
 Import attachments.spineattachmenttype
 Import attachments.spineregionattachment
+Import attachments.spinemeshattachment
