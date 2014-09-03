@@ -88,7 +88,7 @@ Class SpineSkeletonJson
 				
 				boneData = New SpineBoneData(jsonObject.GetItem("name", ""), boneParentData)
 				
-				boneData.Length = jsonObject.GetItem("length", 0.0) * Scale
+				boneData.Length() = jsonObject.GetItem("length", 0.0) * Scale
 				boneData.X = jsonObject.GetItem("x", 0.0) * Scale
 				boneData.Y = jsonObject.GetItem("y", 0.0) * Scale
 				boneData.Rotation = jsonObject.GetItem("rotation", 0.0)
@@ -228,7 +228,7 @@ Class SpineSkeletonJson
 	End
 
 	Function ToColor:float(hex:String, colorIndex:int)
-		If hex.Length <> 8 Throw New SpineArgumentNullException("Color hexidecimal length must be 8, recieved: " + hex)
+		If hex.Length() <> 8 Throw New SpineArgumentNullException("Color hexidecimal length must be 8, recieved: " + hex)
 		
 		Local val:Int = 0
 		Local offset:Int = colorIndex * 2
@@ -295,7 +295,7 @@ Class SpineSkeletonJson
 							Next
 							
 							'add timeline (maybe resize array)
-							If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 							timelines[timelineCount] = timeline
 							timelineCount += 1
 		
@@ -324,7 +324,7 @@ Class SpineSkeletonJson
 								frameIndex += 1
 							Next
 							
-							If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 							timelines[timelineCount] = timeline
 							timelineCount += 1
 							
@@ -370,7 +370,7 @@ Class SpineSkeletonJson
 								frameIndex += 1
 							Next
 							
-							If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 							timelines[timelineCount] = timeline
 							timelineCount += 1
 							
@@ -390,7 +390,7 @@ Class SpineSkeletonJson
 								frameIndex += 1
 							Next
 							
-							If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 							timelines[timelineCount] = timeline
 							timelineCount += 1
 							
@@ -440,7 +440,7 @@ Class SpineSkeletonJson
 			Next
 			
 			'add timeline
-			If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+			If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 			timelines[timelineCount] = timeline
 			timelineCount += 1
 			
@@ -538,7 +538,7 @@ Class SpineSkeletonJson
 			Next
 			
 			'add timeline
-			If timelineCount >= timelines.Length timelines = timelines.Resize(timelines.Length * 2 + 10)
+			If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
 			timelines[timelineCount] = timeline
 			timelineCount += 1
 			
@@ -547,7 +547,7 @@ Class SpineSkeletonJson
 		EndIf
 
 		'trim timeline
-		If timelineCount < timelines.Length timelines = timelines.Resize(timelineCount)
+		If timelineCount < timelines.Length() timelines = timelines.Resize(timelineCount)
 		
 		skeletonData.AddAnimation(new SpineAnimation(name, timelines, duration))
 	End

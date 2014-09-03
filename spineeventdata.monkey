@@ -10,7 +10,7 @@ Class SpineEventData
 	Field StringValue:String
 
 	Method New(name:String)
-		If name.Length = 0 Throw New SpineArgumentNullException("name cannot be null.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be null.")
 		Self.Name = name
 	End
 

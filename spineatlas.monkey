@@ -37,7 +37,7 @@ Class SpineAtlas
 	'constructor / destructor
 	Method New(path:String = "", fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance, atlasLoader:SpineAtlasLoader = SpineMakeAtlasJSONAtlasLoader.instance, imageLoader:SpineImageLoader = SpineDefaultImageLoader.instance)
 		' --- load a new atlas using the provided loaders ---
-		If path.Length = 0 Throw New SpineArgumentNullException("atlas path cannot be empty.")
+		If path.Length() = 0 Throw New SpineArgumentNullException("atlas path cannot be empty.")
 		If atlasLoader = Null Throw New SpineArgumentNullException("file loader cannot be null.")
 		If atlasLoader = Null Throw New SpineArgumentNullException("atlas loader cannot be null.")
 		If imageLoader = Null Throw New SpineArgumentNullException("image loader cannot be null.")
@@ -51,7 +51,7 @@ Class SpineAtlas
 	End
 
 	Method FindRegion:SpineAtlasRegion(name:String)
-		For Local i:= 0 Until regions.Length
+		For Local i:= 0 Until regions.Length()
 			If regions[i].name = name Return regions[i]
 		Next
 		Return Null
@@ -60,7 +60,7 @@ Class SpineAtlas
 	Method Free:Void()
 		' --- dispose of this atlas ---
 		'unlink all regions from their pointers
-		For index = 0 Until regions.Length
+		For index = 0 Until regions.Length()
 			regions[index].page = Null
 			regions[index].image = Null
 			regions[index] = Null
@@ -68,7 +68,7 @@ Class SpineAtlas
 		
 		'free each page image using the initial image loader
 		Local index:= 0
-		For index = 0 Until pages.Length
+		For index = 0 Until pages.Length()
 			imageLoader.OnFreeImage(pages[index].image, pages[index].path)
 			pages[index].image = Null
 		Next

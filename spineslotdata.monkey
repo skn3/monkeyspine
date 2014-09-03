@@ -14,7 +14,7 @@ Class SpineSlotData
 	Field AttachmentName:String
 
 	Method New(name:String, boneData:SpineBoneData)
-		If name.Length = 0 Throw New SpineArgumentNullException("name cannot be empty.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")
 		If boneData = Null Throw New SpineArgumentNullException("boneData cannot be null.")
 		Name = name
 		BoneData = boneData

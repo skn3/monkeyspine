@@ -4,74 +4,76 @@ Strict
 Import spine
  
 Class SpineAnimation
-	Field Name:String
 	Field Timelines:SpineTimeline[]
 	Field Duration:float
+	Field Name:String
 
 	Method New(name:String, timelines:SpineTimeline[], duration:float)
-		If name.Length = 0 Throw New SpineArgumentNullException("name cannot be empty.")
-		If timelines.Length = 0 Throw New SpineArgumentNullException("timelines cannot be null.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")
+		If timelines.Length() = 0 Throw New SpineArgumentNullException("timelines cannot be null.")
 		Name = name
 		Timelines = timelines
 		Duration = duration
 	End
 
 	'Poses the skeleton at the specified time for this animation.
-	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, loop:Bool, events:List<SpineEvent>)
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, events:List<SpineEvent>, loop:Bool)
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
 
 		'apply looped animation
 		'this will convert the entire timeline into a single loop
 		If loop And Duration <> 0
-			lastTime = lastTime Mod Duration
 			time = time Mod Duration
+			lastTime = lastTime Mod Duration
 		EndIf
 		
 		'iterate over all timelines attached to animation
-		For Local i:= 0 Until Timelines.Length
-			Timelines[i].Apply(skeleton, lastTime, time, 1, events)
+		For Local i:= 0 Until Timelines.Length()
+			Timelines[i].Apply(skeleton, lastTime, time, events, 1.0)
 		Next
 	End
 
+	'Poses the skeleton at the specified time for this animation mixed with the current pose.
+	'@param alpha The amount of this animation that affects the current pose.
+	Method Mix:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, loop:bool, events:List<SpineEvent>, alpha:float)
+		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
+
+		If loop And Duration <> 0
+			time Mod= Duration
+			lastTime Mod= Duration
+		EndIf
+
+		For Local i:= 0 Until Timelines.Length()
+			Timelines[i].Apply(skeleton, lastTime, time, events, alpha)
+		Next
+	End
+	
 	Method Mix:Void(skeleton:SpineSkeleton, time:float, loop:bool, alpha:float)
 		Mix(skeleton, MAX_FLOAT, time, loop, Null, alpha)
 	End
 	
-	'Poses the skeleton at the specified time for this animation mixed with the current pose.
-	'@param alpha The amount of this animation that affects the current pose.
-	Method Mix:Void(skeleton:SpineSkeleton, timeLast:Float, time:float, loop:bool, events:List<SpineEvent>, alpha:float)
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
-
-		If loop And Duration <> 0 time Mod= Duration
-
-		For Local i:= 0 Until Timelines.Length
-			Timelines[i].Apply(skeleton, timeLast, time, alpha, events)
-		Next
-	End
-
 	'@param target After the first and before the last entry.
 	Private
-	Function binarySearch:Int(values:float[], target:float, theStep:int)
+	Function binarySearch:Int(values:float[], target:float)
 		Local low:Int = 0
-		Local high:Int = values.Length / theStep - 2
-		
-		If high = 0 Return theStep
+		Local high:Int = values.Length() -2
+		If high = 0 Return 1
 		Local current:Int = high shr 1
 		While True
-			If values[ (current + 1) * theStep] <= target
+			If values[current + 1] <= target
 				low = current + 1
 			else
 				high = current
 			EndIf
 			
-			If low = high Return (low + 1) * theStep
+			If low = high Return low + 1
 			current = (low + high) Shr 1
 		Wend
 	End
 
 	Function linearSearch:Int(values:float[], target:float, theStep:Int)
 		Local i:= 0
-		Local last:= values.Length - theStep
+		Local last:= values.Length() - theStep
 		While i <= last
 			If values[i] > target Return i
 			i += theStep
@@ -82,94 +84,112 @@ End
 
 Interface SpineTimeline
 	'Sets the value(s) for the specified time.
-	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, events:List<SpineEvent>)
-	Method FrameCount:Int()
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, alpha:Float)
 End
 
 'Base class for frames that use an interpolation bezier curve.
 Class SpineCurveTimeline Implements SpineTimeline Abstract
 	Const LINEAR:= 0.0
-	Const STEPPED:= -1.0
+	Const STEPPED:= 1.0
+	Const BEZIER:= 2.0
+	
 	Const BEZIER_SEGMENTS:= 10
+	Const BEZIER_SIZE:= BEZIER_SEGMENTS * 2 - 1
 
 	Private
 	Field curves:Float[0] 'dfx, dfy, ddfx, ddfy, dddfx, dddfy, ...
 	
-	Public
-	Method FrameCount:Int()
-		Return curves.Length / 6 + 1
-	End
-
 	Method New(frameCount:Int = 0)
-		curves = New float[ (frameCount - 1) * 6]
+		curves = New float[ (frameCount - 1) * BEZIER_SIZE]
+	End
+	
+	Public	
+	Method FrameCount:Int()
+		Return curves.Length() / BEZIER_SIZE + 1
 	End
 
-	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, alpha:float, events:List<SpineEvent>) Abstract
+	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:float, events:List<SpineEvent>, alpha:float) Abstract
 
 	Method SetLinear:Void(frameIndex:Int)
-		curves[frameIndex * 6] = LINEAR
+		curves[frameIndex * BEZIER_SIZE] = LINEAR
 	End
 
 	Method SetStepped:Void(frameIndex:Int)
-		curves[frameIndex * 6] = STEPPED
+		curves[frameIndex * BEZIER_SIZE] = STEPPED
 	End
 
 	'Sets the control handle positions for an interpolation bezier curve used to transition from this keyframe to the next.
  	'cx1 and cx2 are from 0 to 1, representing the percent of time between the two keyframes. cy1 and cy2 are the percent of
  	'the difference between the keyframe's values.
 	Method SetCurve:Void(frameIndex:int, cx1:float, cy1:float, cx2:float, cy2:float)
-		Local subdiv_step:Float = 1.0 / BEZIER_SEGMENTS
-		Local subdiv_step2:Float = subdiv_step * subdiv_step
-		Local subdiv_step3:Float = subdiv_step2 * subdiv_step
-		Local pre1:Float = 3 * subdiv_step
-		Local pre2:Float = 3 * subdiv_step2
-		Local pre4:Float = 6 * subdiv_step2
-		Local pre5:Float = 6 * subdiv_step3
+		Local subdiv1:Float = 1.0 / BEZIER_SEGMENTS
+		Local subdiv2:Float = subdiv1 * subdiv1
+		Local subdiv3:Float = subdiv2 * subdiv1
+		Local pre1:Float = 3 * subdiv1
+		Local pre2:Float = 3 * subdiv2
+		Local pre4:Float = 6 * subdiv2
+		Local pre5:Float = 6 * subdiv3
 		Local tmp1x:Float = -cx1 * 2 + cx2
 		Local tmp1y:Float = -cy1 * 2 + cy2
 		Local tmp2x:Float = (cx1 - cx2) * 3 + 1
 		Local tmp2y:Float = (cy1 - cy2) * 3 + 1
 		
-		Local i:int = frameIndex * 6
-		Local curves:float[] = Self.curves
-		curves[i] = cx1 * pre1 + tmp1x * pre2 + tmp2x * subdiv_step3
-		curves[i + 1] = cy1 * pre1 + tmp1y * pre2 + tmp2y * subdiv_step3
-		curves[i + 2] = tmp1x * pre4 + tmp2x * pre5
-		curves[i + 3] = tmp1y * pre4 + tmp2y * pre5
-		curves[i + 4] = tmp2x * pre5
-		curves[i + 5] = tmp2y * pre5
-	End
+		Local ddfx:Float = tmp1x * pre4 + tmp2x * pre5
+		Local ddfy:Float = tmp1y * pre4 + tmp2y * pre5
+		Local dddfx:Float = tmp2x * pre5
+		Local dddfy:Float = tmp2y * pre5
 
-	Method GetCurvePercent:float(frameIndex:Int, percent:float)
-		Local curveIndex:Int = frameIndex * 6
-		Local curves:float[] = Self.curves
-		Local dfx:Float = curves[curveIndex]
-		if (dfx = LINEAR) return percent
-		if (dfx = STEPPED) return 0
-		Local dfy:float = curves[curveIndex + 1]
-		Local ddfx:float = curves[curveIndex + 2]
-		Local ddfy:float = curves[curveIndex + 3]
-		Local dddfx:float = curves[curveIndex + 4]
-		Local dddfy:float = curves[curveIndex + 5]
-		Local x:float = dfx
-		Local y:float = dfy
-		Local i:Int = BEZIER_SEGMENTS - 2
-		While True
-			If x >= percent
-				Local lastX:float = x - dfx
-				Local lastY:float = y - dfy
-				return lastY + (y - lastY) * (percent - lastX) / (x - lastX)
-			EndIf
-			If i = 0 Exit
-			i -= 1
+		Local i:= frameIndex * BEZIER_SIZE
+		Curves[i] = BEZIER
+		i += 1
+
+		Local x:= dfx
+		Local y:= dfy
+		
+		Local n:= i + BEZIER_SIZE - 1
+		For i = i - 1 Until n Step 2
+			Curves[i] = x
+			Curves[i + 1] = y
 			dfx += ddfx
 			dfy += ddfy
 			ddfx += dddfx
 			ddfy += dddfy
 			x += dfx
 			y += dfy
-		Wend
-		return y + (1 - y) * (percent - x) / (1 - x) ' Last point is 1,1.
+		Next
+	End
+
+	Method GetCurvePercent:float(frameIndex:Int, percent:float)
+		Local i:= frameIndex * BEZIER_SIZE
+		Local type:Float = Curves[i]
+		
+		If type = LINEAR Return percent
+		If type = STEPPED Return 0
+		
+		i += 1
+		Local x:Float
+		Local start:= i
+		Local n:= i + BEZIER_SIZE - 1
+		For i = i Until n Step 2
+			x = Curves[i]
+			If x >= percent
+				Local prevX:Float
+				Local prevY:Float
+				
+				If i = start
+					prevX = 0
+					prevY = 0
+				Else
+					prevX = Curves[i - 2]
+					prevY = Curves[i - 1]
+				EndIf
+				
+				Return prevY + (Curves[i + 1] - prevY) * (percent - prevX) / (x - prevX)
+			EndIf
+		Next
+		
+		Local y:Float = Curves[i - 1]
+		Return y + (1 - y) * (percent - x) / (1 - x)'Last point is 1, 1.
 	End
 End
 
@@ -199,8 +219,8 @@ Class SpineRotateTimeline Extends SpineCurveTimeline
 		Local amount:Float
 
 		'check if time is after last frame.
-		If time >= Frames[Frames.Length - 2]
-			amount = bone.Data.Rotation + Frames[Frames.Length - 1] - bone.Rotation
+		If time >= Frames[Frames.Length() - 2]
+			amount = bone.Data.Rotation + Frames[Frames.Length() - 1] - bone.Rotation
 			While amount > 180
 				amount -= 360
 			Wend
@@ -264,9 +284,9 @@ Class SpineTranslateTimeline Extends SpineCurveTimeline
 
 		Local bone:SpineBone = skeleton.Bones[BoneIndex]
 
-		If time >= Frames[Frames.Length - 3] ' Time is after last frame.
-			bone.X += ( (bone.Data.X + Frames[Frames.Length - 2] - bone.X) * alpha)
-			bone.Y += ( (bone.Data.Y + Frames[Frames.Length - 1] - bone.Y) * alpha)
+		If time >= Frames[Frames.Length() - 3] ' Time is after last frame.
+			bone.X += ( (bone.Data.X + Frames[Frames.Length() - 2] - bone.X) * alpha)
+			bone.Y += ( (bone.Data.Y + Frames[Frames.Length() - 1] - bone.Y) * alpha)
 			return
 		EndIf
 
@@ -293,9 +313,9 @@ Class SpineScaleTimeline Extends SpineTranslateTimeline
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local bone:SpineBone = skeleton.Bones[BoneIndex]
-		If time >= Frames[Frames.Length - 3] ' Time is after last frame.
-			bone.ScaleX += ( (bone.Data.ScaleX - 1 + Frames[Frames.Length - 2] - bone.ScaleX) * alpha)
-			bone.ScaleY += ( (bone.Data.ScaleY - 1 + Frames[Frames.Length - 1] - bone.ScaleY) * alpha)
+		If time >= Frames[Frames.Length() - 3] ' Time is after last frame.
+			bone.ScaleX += ( (bone.Data.ScaleX - 1 + Frames[Frames.Length() - 2] - bone.ScaleX) * alpha)
+			bone.ScaleY += ( (bone.Data.ScaleY - 1 + Frames[Frames.Length() - 1] - bone.ScaleY) * alpha)
 			return
 		EndIf
 
@@ -342,8 +362,8 @@ Class SpineColorTimeline Extends SpineCurveTimeline
 
 		Local slot:SpineSlot = skeleton.Slots[SlotIndex]
 
-		If time >= Frames[Frames.Length - 5] ' Time is after last frame.
-			Local i:Int = Frames.Length - 1
+		If time >= Frames[Frames.Length() - 5] ' Time is after last frame.
+			Local i:Int = Frames.Length() - 1
 			slot.R = Frames[i - 3]
 			slot.G = Frames[i - 2]
 			slot.B = Frames[i - 1]
@@ -385,7 +405,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 	Field AttachmentNames:String[]
 	
 	Method FrameCount:Int()
-		Return Frames.Length
+		Return Frames.Length()
 	End
 
 	Method New(frameCount:Int)
@@ -403,14 +423,14 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		If time < Frames[0] Return ' Time is before first frame.
 
 		Local frameIndex:Int
-		If time >= Frames[Frames.Length - 1] ' Time is after last frame.
-			frameIndex = Frames.Length - 1
+		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
+			frameIndex = Frames.Length() - 1
 		else
 			frameIndex = SpineAnimation.binarySearch(Frames, time, 1) - 1
 		EndIf
 
 		Local attachmentName:String = AttachmentNames[frameIndex]
-		If attachmentName.Length = 0
+		If attachmentName.Length() = 0
 			skeleton.Slots[SlotIndex].Attachment = Null
 		Else
 			skeleton.Slots[SlotIndex].Attachment = skeleton.GetAttachment(SlotIndex, attachmentName)
@@ -429,7 +449,7 @@ Class SpineEventTimeline Implements SpineTimeline
 	End
 
 	Method FrameCount:Int()
-		Return Frames.Length
+		Return Frames.Length()
 	End
 
 	Method GetFrames:Float[]()
@@ -449,7 +469,7 @@ Class SpineEventTimeline Implements SpineTimeline
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, alpha:Float, firedEvents:List<SpineEvent>)
 		'we should only fire events that have happened in the space between lastTime and time
 		'check for instant cancel
-		If firedEvents = Null or Frames.Length = 0 Return
+		If firedEvents = Null or Frames.Length() = 0 Return
 		
 		'check to see if the time (current) is before the first frame
 		Local Frames:Float[] = Self.Frames
@@ -457,11 +477,11 @@ Class SpineEventTimeline Implements SpineTimeline
 
 		'check to see if the last checked time is after the last frame stored in the event timeline
 		'this means the event would have already been fired
-		Local frameCount:Int = Frames.Length
+		Local frameCount:Int = Frames.Length()
 		if lastTime >= Frames[frameCount - 1] Return ' Last time is after last frame.
 
 		'simplified event checking... (strange...)
-		For Local index:= 0 Until Frames.Length
+		For Local index:= 0 Until Frames.Length()
 			If Frames[index] >= lastTime
 				'check for past current time
 				If Frames[index] > time Exit
@@ -503,7 +523,7 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 	End
 
 	Method FrameCount:Int()
-		Return Frames.Length
+		Return Frames.Length()
 	End
 
 	Method GetFrames:Float[]()
@@ -524,13 +544,13 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 		If time < Frames[0] Return ' Time is before first frame.
 		
 		Local frameIndex:Int
-		If time >= Frames[Frames.Length - 1] ' Time is after last frame.
-			frameIndex = Frames.Length - 1
+		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
+			frameIndex = Frames.Length() - 1
 		else
 			frameIndex = SpineAnimation.binarySearch(Frames, time, 1) - 1
 		EndIf
 
-		For Local index:= 0 Until DrawOrders[frameIndex].Length
+		For Local index:= 0 Until DrawOrders[frameIndex].Length()
 			skeleton.DrawOrder[index] = skeleton.Slots[DrawOrders[frameIndex][index]]
 		Next
 	End

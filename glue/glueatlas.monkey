@@ -96,7 +96,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 			'are we starting a new page ?
 			If pageNew = True
 				'ignore blank lines
-				If line.Length > 0
+				If line.Length() > 0
 					If pageHasStart = False
 						'first line has no ':' it states the image file
 						'get image path
@@ -148,7 +148,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 				EndIf
 			Else
 				'need to check for end of page
-				If line.Length = 0
+				If line.Length() = 0
 					'page is finished
 					pageNew = True
 					pageHasHeader = False
@@ -326,7 +326,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 			If jsonDataItem <> Null pageFileName = jsonDataItem
 			
 			'add the page if correct details are there
-			If pageFileName.Length > 0
+			If pageFileName.Length() > 0
 				'build valid path for image
 				pageFilePath = SpineCombinePaths(imagesDir, pageFileName)
 				
@@ -482,12 +482,12 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		If force or refCount <= 0
 			Local index:Int
 			
-			For index = 0 Until regions.Length
+			For index = 0 Until regions.Length()
 				regions[index].page = Null
 				regions[index].image = Null
 			Next
 			
-			For index = 0 Until pages.Length
+			For index = 0 Until pages.Length()
 				pages[index].image.Discard()
 				pages[index].image = Null
 			Next
@@ -510,7 +510,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		If page.image = Null Throw New SpineException("Invalid atlas page image '" + path + "'")
 		
 		'add to pages
-		If pagesCount >= pages.Length pages = pages.Resize(pages.Length * 2 + 10)
+		If pagesCount >= pages.Length() pages = pages.Resize(pages.Length() * 2 + 10)
 		pages[pagesCount] = page
 		pagesCount += 1
 		
@@ -542,7 +542,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		region.image.SetHandle(0, 0)'offsetX + (originalWidth / 2.0), offsetY + (originalHeight / 2.0))
 		
 		'add to regions
-		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
+		If regionsCount >= regions.Length() regions = regions.Resize(regions.Length() * 2 + 10)
 		regions[regionsCount] = region
 		regionsCount += 1
 		
@@ -553,13 +553,13 @@ Class SpineDefaultAtlas Implements SpineAtlas
 	Method UnLock:Void()
 		' --- atlas has finished being created ---
 		'trim arrays
-		If pagesCount < pages.Length pages = pages.Resize(pagesCount)
-		If regionsCount < regions.Length regions = regions.Resize(regionsCount)
+		If pagesCount < pages.Length() pages = pages.Resize(pagesCount)
+		If regionsCount < regions.Length() regions = regions.Resize(regionsCount)
 	End
 	
 	Method GetRegion:SpineAtlasRegion(name:String)
 		' --- lookup region by name ---
-		For Local index:= 0 Until regions.Length
+		For Local index:= 0 Until regions.Length()
 			If regions[index].name = name Return regions[index]
 		Next
 		Return Null
@@ -671,7 +671,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		
 		'only free if reference count says so
 		If force or refCount <= 0
-			For Local index:Int = 0 Until regions.Length
+			For Local index:Int = 0 Until regions.Length()
 				regions[index].image.Discard()
 				regions[index].image = Null
 			Next
@@ -708,7 +708,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		EndIf
 		
 		'add to regions
-		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
+		If regionsCount >= regions.Length() regions = regions.Resize(regions.Length() * 2 + 10)
 		regions[regionsCount] = region
 		regionsCount += 1
 		
@@ -719,7 +719,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 	Method UnLock:Void()
 		' --- atlas has finished being created ---
 		'trim arrays
-		If regionsCount < regions.Length regions = regions.Resize(regionsCount)
+		If regionsCount < regions.Length() regions = regions.Resize(regionsCount)
 		locked = False
 	End
 	
@@ -730,7 +730,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 			Return AddRegion(Null, name, 0, 0, 0, 0, 0, 0, 0, 0)
 		Else
 			'gettting region at runtime
-			For Local index:= 0 Until regions.Length
+			For Local index:= 0 Until regions.Length()
 				If regions[index].name = name Return regions[index]
 			Next
 		EndIf

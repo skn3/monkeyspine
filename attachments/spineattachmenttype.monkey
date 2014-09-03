@@ -13,7 +13,7 @@ Class SpineAttachmentType'FAKE ENUM
 		Select name.ToLower()
 			Case "region"
 				Return region
-			Case "regionsequence"
+			Case "boundingbox"
 				Return boundingbox
 			Case "mesh"
 				Return mesh

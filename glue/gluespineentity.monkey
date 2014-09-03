@@ -180,7 +180,7 @@ Class SpineEntity
 		'update region vertices
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
-		For Local index:= 0 Until skeleton.Slots.Length
+		For Local index:= 0 Until skeleton.Slots.Length()
 			slot = skeleton.Slots[index]
 			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
 			
@@ -211,7 +211,7 @@ Class SpineEntity
 		Local attachment:SpineRegionAttachment
 		
 		'iterate over visible elements
-		For Local index:= 0 Until skeleton.Slots.Length
+		For Local index:= 0 Until skeleton.Slots.Length()
 			'get slot
 			slot = skeleton.Slots[index]
 			
@@ -328,7 +328,7 @@ Class SpineEntity
 		
 		'render bounding for regions
 		If debugBounding
-			For index = 0 Until skeleton.Slots.Length
+			For index = 0 Until skeleton.Slots.Length()
 				'get slot
 				slot = skeleton.Slots[index]
 				
@@ -346,7 +346,7 @@ Class SpineEntity
 		
 		'render images
 		If debugHideImages = False
-			For index = 0 Until skeleton.DrawOrder.Length
+			For index = 0 Until skeleton.DrawOrder.Length()
 				'get slot
 				slot = skeleton.DrawOrder[index]
 				
@@ -369,7 +369,7 @@ Class SpineEntity
 		
 		'render slots
 		If debugSlots
-			For index = 0 Until skeleton.Slots.Length
+			For index = 0 Until skeleton.Slots.Length()
 				'get slot
 				slot = skeleton.Slots[index]
 				
@@ -392,13 +392,13 @@ Class SpineEntity
 			'draw line bones
 			mojo.SetColor(255, 0, 0)
 			mojo.SetAlpha(1.0)
-			For index = 0 Until skeleton.Bones.Length
+			For index = 0 Until skeleton.Bones.Length()
 				bone = skeleton.Bones[index]
-				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
+				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length() * bone.M00 + bone.WorldX, bone.Data.Length() * bone.M10 + bone.WorldY)
 			Next
 			
 			'bone origins
-			For index = 0 Until skeleton.Bones.Length
+			For index = 0 Until skeleton.Bones.Length()
 				bone = skeleton.Bones[index]
 				
 				If index = 0
@@ -487,7 +487,7 @@ Class SpineEntity
 		Local attachment:SpineRegionAttachment
 				
 		'go in reverse order using the zOrder so we return the attachment closest to screen
-		For Local index:= skeleton.DrawOrder.Length - 1 To 0 Step - 1
+		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
 			
@@ -543,7 +543,7 @@ Class SpineEntity
 		EndIf
 				
 		'go in reverse order using the zOrder so we return the attachment closest to screen
-		For Local index:= skeleton.DrawOrder.Length - 1 To 0 Step - 1
+		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
 			
@@ -988,21 +988,21 @@ Class SpineEntity
 	'slot api
 	Method GetFirstSlot:SpineSlot()
 		' --- return first slot ---
-		If skeleton.Slots.Length = 0 Return Null
+		If skeleton.Slots.Length() = 0 Return Null
 		Return skeleton.Slots[0]
 	End
 	
 	Method GetLastSlot:SpineSlot()
 		' --- return last slot ---
-		If skeleton.Slots.Length = 0 Return Null
-		Return skeleton.Slots[skeleton.Slots.Length - 1]
+		If skeleton.Slots.Length() = 0 Return Null
+		Return skeleton.Slots[skeleton.Slots.Length() - 1]
 	End
 	
 	Method GetNextSlot:SpineSlot(slot:SpineSlot)
 		' --- get next slot ---
 		If slot = Null Return Null
 		Local index:= slot.parentIndex + 1
-		If index >= skeleton.Slots.Length Return Null
+		If index >= skeleton.Slots.Length() Return Null
 		Return skeleton.Slots[index]
 	End
 	
@@ -1027,10 +1027,10 @@ Class SpineEntity
 	
 	Method FindFirstSlotWithAttachment:SpineSlot()
 		' --- return first slot with attachment ---
-		If skeleton.Slots.Length = 0 Return Null
+		If skeleton.Slots.Length() = 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
-		For Local index:= 0 Until skeleton.Slots.Length
+		For Local index:= 0 Until skeleton.Slots.Length()
 			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
 			If attachment Return skeleton.Slots[index]
 		Next
@@ -1040,10 +1040,10 @@ Class SpineEntity
 	
 	Method FindLastSlotWithAttachment:SpineSlot()
 		' --- return last slot with attachment ---
-		If skeleton.Slots.Length = 0 Return Null
+		If skeleton.Slots.Length() = 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
-		For Local index:= skeleton.Slots.Length - 1 To 0 Step - 1
+		For Local index:= skeleton.Slots.Length() - 1 To 0 Step - 1
 			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
 			If attachment Return skeleton.Slots[index]
 		Next
@@ -1053,10 +1053,10 @@ Class SpineEntity
 	
 	Method FindNextSlotWithAttachment:SpineSlot(slot:SpineSlot)
 		' --- return next slot with attachment ---
-		If slot = Null or skeleton.Slots.Length = 0 or slot.parentIndex + 1 >= skeleton.Slots.Length Return Null
+		If slot = Null or skeleton.Slots.Length() = 0 or slot.parentIndex + 1 >= skeleton.Slots.Length() Return Null
 		
 		Local attachment:SpineRegionAttachment
-		For Local index:= slot.parentIndex + 1 Until skeleton.Slots.Length
+		For Local index:= slot.parentIndex + 1 Until skeleton.Slots.Length()
 			attachment = SpineRegionAttachment(skeleton.Slots[index].Attachment)
 			If attachment Return skeleton.Slots[index]
 		Next
@@ -1066,7 +1066,7 @@ Class SpineEntity
 	
 	Method FindPreviousSlotWithAttachment:SpineSlot(slot:SpineSlot)
 		' --- return previous slot with attachment ---
-		If slot = Null or skeleton.Slots.Length = 0 or slot.parentIndex - 1 < 0 Return Null
+		If slot = Null or skeleton.Slots.Length() = 0 or slot.parentIndex - 1 < 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
 		For Local index:= slot.parentIndex - 1 To 0 Step - 1
@@ -1085,7 +1085,7 @@ Class SpineEntity
 		Local attachment:SpineRegionAttachment
 		
 		'go in reverse order using the zOrder so we return the attachment closest to screen
-		For index = skeleton.DrawOrder.Length - 1 To 0 Step - 1
+		For index = skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
 			
@@ -1119,7 +1119,7 @@ Class SpineEntity
 		Local attachment:SpineRegionAttachment
 				
 		'go in reverse order using the zOrder so we return the attachment closest to screen
-		For index = skeleton.DrawOrder.Length - 1 To 0 Step - 1
+		For index = skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
 			

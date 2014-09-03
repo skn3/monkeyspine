@@ -16,7 +16,7 @@ Class SpineBoneData
 
 	'param parent May be null. 
 	Method New(name:String, parent:SpineBoneData)
-		If name.Length = 0 Throw New SpineArgumentNullException("name cannot be null.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be null.")
 		Name = name
 		Parent = parent
 		ScaleX = 1

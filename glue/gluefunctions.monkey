@@ -30,12 +30,12 @@ End
 Function SpineCombinePaths:String(path1:String, path2:String)
 	'combine 2 paths And take into account slashes
 	Local index:Int
-	Local length1:Int = path1.Length
+	Local length1:Int = path1.Length()
 	Local start2:Int = 0
 	Local slash:bool
 	
 	'look for end of slash in path 1
-	For index = path1.Length - 1 To 0 Step - 1
+	For index = path1.Length() - 1 To 0 Step - 1
 		If slash = False
 			'havn't found first slash
 			If path1[index] = 47 or path1[index] = 92
@@ -63,7 +63,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	
 	'look for start of slash in part 2
 	slash = False
-	For index = 0 Until path2.Length
+	For index = 0 Until path2.Length()
 		If slash = False
 			'havn't found first slash
 			If path2[index] = 47 or path2[index] = 92
@@ -91,11 +91,11 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	
 	'combine two paths
 	'do more effecient combination to avoid creating wasted strings
-	If length1 > 0 And start2 < path2.Length
+	If length1 > 0 And start2 < path2.Length()
 		'two paths
-		If length1 < path1.Length And start2 > 0
+		If length1 < path1.Length() And start2 > 0
 			Return path1[0 .. length1] + "/" + path2[start2 ..]
-		ElseIf length1 < path1.Length
+		ElseIf length1 < path1.Length()
 			Return path1[0 .. length1] + "/" + path2
 		ElseIf start2 > 0
 			Return path1 + "/" + path2[start2 ..]
@@ -104,12 +104,12 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 		EndIf
 	ElseIf length1 > 0
 		'only first path
-		If length1 < path1.Length
+		If length1 < path1.Length()
 			Return path1[0 .. length1]
 		Else
 			Return path1
 		EndIf
-	ElseIf start2 < path2.Length
+	ElseIf start2 < path2.Length()
 		'only second path
 		If start2 > 0
 			Return path2[start2 ..]
@@ -243,15 +243,15 @@ Function SpineRectsOverlap:Bool(x:Float, y:Float, width:Float, height:Float, ver
 End Function
 
 Function SpinePointInPoly:Bool(pointX:Float, pointY:Float, xy:Float[])
-	If xy.Length < 6 Or (xy.Length & 1) Return False
+	If xy.Length() < 6 Or (xy.Length() & 1) Return False
 	
-	Local x1:Float=xy[xy.Length-2]
-	Local y1:Float=xy[xy.Length-1]
+	Local x1:Float=xy[xy.Length()-2]
+	Local y1:Float=xy[xy.Length()-1]
 	Local curQuad:Int = SpineGetQuad(pointX, pointY, x1, y1)
 	Local nextQuad:Int
 	Local total:Int
 	
-	For Local i:= 0 Until xy.Length Step 2
+	For Local i:= 0 Until xy.Length() Step 2
 		Local x2:Float=xy[i]
 		Local y2:Float=xy[i+1]
 		nextQuad = SpineGetQuad(pointX, pointY, x2, y2)
@@ -279,25 +279,25 @@ End Function
 
 Function SpinePolyToPoly:Bool(p1Xy:Float[], p2Xy:Float[])
 	
-	If p1Xy.Length<6 Or (p1Xy.Length&1) Return False
-	If p2Xy.Length<6 Or (p2Xy.Length&1) Return False
+	If p1Xy.Length()<6 Or (p1Xy.Length()&1) Return False
+	If p2Xy.Length()<6 Or (p2Xy.Length()&1) Return False
 	
-	For Local i:Int=0 Until p1Xy.Length Step 2
+	For Local i:Int=0 Until p1Xy.Length() Step 2
 		If SpinePointInPoly(p1Xy[i], p1Xy[i + 1], p2Xy) Then Return True
 	Next
-	For Local i:Int=0 Until p2Xy.Length Step 2
+	For Local i:Int=0 Until p2Xy.Length() Step 2
 		If SpinePointInPoly(p2Xy[i], p2Xy[i + 1], p1Xy) Then Return True
 	Next
 	
-	Local l1X1:Float=p1Xy[p1Xy.Length-2]
-	Local l1Y1:Float=p1Xy[p1Xy.Length-1]
-	For Local i1:Int=0 Until p1Xy.Length Step 2
+	Local l1X1:Float=p1Xy[p1Xy.Length()-2]
+	Local l1Y1:Float=p1Xy[p1Xy.Length()-1]
+	For Local i1:Int=0 Until p1Xy.Length() Step 2
 		Local l1X2:= p1Xy[i1]
 		Local l1Y2:= p1Xy[i1 + 1]
 		
-		Local l2X1:Float=p2Xy[p2Xy.Length-2]
-		Local l2Y1:Float=p2Xy[p2Xy.Length-1]
-		For Local i2:Int=0 Until p2Xy.Length Step 2
+		Local l2X1:Float=p2Xy[p2Xy.Length()-2]
+		Local l2Y1:Float=p2Xy[p2Xy.Length()-1]
+		For Local i2:Int=0 Until p2Xy.Length() Step 2
 			Local l2X2:= p2Xy[i2]
 			Local l2Y2:= p2Xy[i2 + 1]
 			
@@ -316,7 +316,7 @@ End Function
 
 Function SpineGetPolyBounding:Void(poly:Float[], out:Float[])
 	' --- calculate teh dimensions of the given polygon ---
-	If poly.Length < 6
+	If poly.Length() < 6
 		'no poly (well not one that has area)
 		out[0] = 0
 		out[1] = 0
@@ -333,7 +333,7 @@ Function SpineGetPolyBounding:Void(poly:Float[], out:Float[])
 		Local maxY:Float = poly[1]
 		
 		'skip the first point
-		For index = 2 Until poly.Length Step 2
+		For index = 2 Until poly.Length() Step 2
 			If poly[index] < minX minX = poly[index]
 			If poly[index] > maxX maxX = poly[index]
 			If poly[index+1] < minY minY = poly[index+1]
@@ -364,22 +364,22 @@ End
 Function SpineDrawLinePoly:Void(vertices:Float[])
 	' --- draw a lined poly ---
 	'draw none
-	If vertices.Length < 2 Return
+	If vertices.Length() < 2 Return
 	
 	'draw point
-	If vertices.Length < 4
+	If vertices.Length() < 4
 		DrawPoint(vertices[0], vertices[1])
 		Return
 	EndIf
 	
 	'draw line
-	If vertices.Length < 6
+	If vertices.Length() < 6
 		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
 		Return
 	EndIf
 	
 	'draw lines
-	If vertices.Length < 8
+	If vertices.Length() < 8
 		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
 		DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
 		Return		
@@ -388,7 +388,7 @@ Function SpineDrawLinePoly:Void(vertices:Float[])
 	'draw poly
 	Local lastX:Float
 	Local lastY:float
-	For Local index:= 2 Until vertices.Length Step 2
+	For Local index:= 2 Until vertices.Length() Step 2
 		lastX = vertices[index]
 		lastY = vertices[index + 1]
 		DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)

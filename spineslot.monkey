@@ -17,9 +17,10 @@ Class SpineSlot
 	Private
 	Field attachment:SpineAttachment
 	Field attachmentTime:float
-	Field attachmentVertices:Float[0]
-	Field attachmentVerticesCount:Int
 	Public
+	
+	Field AttachmentVertices:Float[]
+	Field AttachmentVerticesCount:Int
 	
 	Method Attachment:SpineAttachment() Property
 		Return attachment
@@ -53,7 +54,7 @@ Class SpineSlot
 		G = Data.G
 		B = Data.B
 		A = Data.A
-		If Data.AttachmentName.Length = 0
+		If Data.AttachmentName.Length() = 0
 			Attachment = Null
 		Else
 			Attachment = Skeleton.GetAttachment(slotIndex, Data.AttachmentName)
@@ -61,7 +62,7 @@ Class SpineSlot
 	End
 
 	Method SetToBindPose:Void()
-		For Local indexOf:= 0 Until Skeleton.Data.Slots.Length
+		For Local indexOf:= 0 Until Skeleton.Data.Slots.Length()
 			If Skeleton.Data.Slots[indexOf] = Data
 				SetToBindPose(indexOf)
 				Return

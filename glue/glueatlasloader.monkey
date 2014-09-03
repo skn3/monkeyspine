@@ -14,8 +14,8 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 		' --- read spine produced atlas file ---
 		
 		'trim the atlas arrays
-		If pagesCount < atlas.pages.Length atlas.pages = atlas.pages.Resize(pagesCount)
-		If regionsCount < atlas.regions.Length atlas.regions = atlas.regions.Resize(regionsCount)
+		If pagesCount < atlas.pages.Length() atlas.pages = atlas.pages.Resize(pagesCount)
+		If regionsCount < atlas.regions.Length() atlas.regions = atlas.regions.Resize(regionsCount)
 	End
 End
 
@@ -27,7 +27,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		' --- read Make Atlas JSON texture file ---
 		
 		'trim the atlas arrays
-		If pagesCount < atlas.pages.Length atlas.pages = atlas.pages.Resize(pagesCount)
-		If regionsCount < atlas.regions.Length atlas.regions = atlas.regions.Resize(regionsCount)
+		If pagesCount < atlas.pages.Length() atlas.pages = atlas.pages.Resize(pagesCount)
+		If regionsCount < atlas.regions.Length() atlas.regions = atlas.regions.Resize(regionsCount)
 	End
 End

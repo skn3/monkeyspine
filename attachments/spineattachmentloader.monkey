@@ -5,5 +5,8 @@ Import spine
 
 Interface SpineAttachmentLoader
 	'return May be null to not load any attachment. 
-	Method NewAttachment:SpineAttachment(skin:SpineSkin, type:Int, name:String)
+	Method NewRegionAttachment:SpineRegionAttachment(skin:SpineSkin, name:String)
+	Method NewMeshAttachment:SpineMeshAttachment(skin:SpineSkin, name:String)
+	Method NewSkinnedMeshAttachment:SpineSkinnedMeshAttachment(skin:SpineSkin, name:String)
+	Method NewBoundingBoxAttachment:SpineBoundingBoxAttachment(skin:SpineSkin, name:String)
 End

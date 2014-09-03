@@ -44,7 +44,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 		
 		'create buffer
 		Local data:String = LoadString(path)
-		total = data.Length
+		total = data.Length()
 		buffer = New DataBuffer(total)
 		buffer.PokeString(0, data)
 		

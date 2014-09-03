@@ -22,11 +22,11 @@ Class SpineSkeletonData
 	'glue
 	Method TrimArrays:Void()
 		' --- this repalces the TrimExcess ported and will trim all arrays to their proper capacity ---
-		If bonesCount < Bones.Length Bones = Bones.Resize(bonesCount)
-		If slotsCount < Slots.Length Slots = Slots.Resize(slotsCount)
-		If eventsCount < Events.Length Events = Events.Resize(eventsCount)
-		If skinsCount < Skins.Length Skins = Skins.Resize(skinsCount)
-		If animationsCount < Animations.Length Animations = Animations.Resize(animationsCount)
+		If bonesCount < Bones.Length() Bones = Bones.Resize(bonesCount)
+		If slotsCount < Slots.Length() Slots = Slots.Resize(slotsCount)
+		If eventsCount < Events.Length() Events = Events.Resize(eventsCount)
+		If skinsCount < Skins.Length() Skins = Skins.Resize(skinsCount)
+		If animationsCount < Animations.Length() Animations = Animations.Resize(animationsCount)
 	End
 	
 	' --- Bones.
@@ -34,7 +34,7 @@ Class SpineSkeletonData
 		If bone = Null Throw New SpineArgumentNullException("bone cannot be null.")
 		
 		'check resize array
-		If bonesCount >= Bones.Length Bones = Bones.Resize(Bones.Length * 2 + 10)
+		If bonesCount >= Bones.Length() Bones = Bones.Resize(Bones.Length() * 2 + 10)
 		
 		'set it
 		Bones[bonesCount] = bone
@@ -43,7 +43,7 @@ Class SpineSkeletonData
 
 	'return May be null. 
 	Method FindBone:SpineBoneData(boneName:String)
-		If boneName.Length = 0 Return Null
+		If boneName.Length() = 0 Return Null
 		For Local i:= 0 Until bonesCount
 			If Bones[i].Name = boneName Return Bones[i]
 		Next
@@ -52,7 +52,7 @@ Class SpineSkeletonData
 
 	'return -1 if the was:bone not found. 
 	Method FindBoneIndex:int(boneName:String)
-		If boneName.Length = 0 Return - 1
+		If boneName.Length() = 0 Return - 1
 		For Local i:= 0 Until bonesCount
 			If Bones[i].Name = boneName Return i
 		Next
@@ -64,7 +64,7 @@ Class SpineSkeletonData
 		If slot = Null Throw New SpineArgumentNullException("slot cannot be null.")
 		
 		'check resize array
-		If slotsCount >= Slots.Length Slots = Slots.Resize(Slots.Length * 2 + 10)
+		If slotsCount >= Slots.Length() Slots = Slots.Resize(Slots.Length() * 2 + 10)
 		
 		'set it
 		Slots[slotsCount] = slot
@@ -73,7 +73,7 @@ Class SpineSkeletonData
 
 	'return May be null. 
 	Method FindSlot:SpineSlotData(slotName:String)
-		If slotName.Length = 0 Return Null
+		If slotName.Length() = 0 Return Null
 		For Local i:= 0 Until slotsCount
 			If Slots[i].Name = slotName Return Slots[i]
 		Next
@@ -82,7 +82,7 @@ Class SpineSkeletonData
 
 	'return -1 if the was:bone not found. 
 	Method FindSlotIndex:int(slotName:String)
-		If slotName.Length = 0 Return - 1
+		If slotName.Length() = 0 Return - 1
 		For Local i:= 0 Until slotsCount
 			If Slots[i].Name = slotName Return i
 		Next
@@ -94,7 +94,7 @@ Class SpineSkeletonData
 		If event = Null Throw New SpineArgumentNullException("event cannot be null.")
 		
 		'check resize array
-		If eventsCount >= Events.Length Events = Events.Resize(Events.Length * 2 + 10)
+		If eventsCount >= Events.Length() Events = Events.Resize(Events.Length() * 2 + 10)
 		
 		'set it
 		Events[eventsCount] = event
@@ -103,7 +103,7 @@ Class SpineSkeletonData
 
 	'return May be null. 
 	Method FindEvent:SpineEventData(eventName:String)
-		If eventName.Length = 0 Return Null
+		If eventName.Length() = 0 Return Null
 		For Local i:= 0 Until eventsCount
 			If Events[i].Name = eventName Return Events[i]
 		Next
@@ -112,7 +112,7 @@ Class SpineSkeletonData
 
 	'return -1 if the was:bone not found. 
 	Method FindEventIndex:int(eventName:String)
-		If eventName.Length = 0 Return - 1
+		If eventName.Length() = 0 Return - 1
 		For Local i:= 0 Until eventsCount
 			If Events[i].Name = eventName Return i
 		Next
@@ -124,7 +124,7 @@ Class SpineSkeletonData
 		If skin = Null Throw New SpineArgumentNullException("skin cannot be null.")
 		
 		'check resize array
-		If skinsCount >= Skins.Length Skins = Skins.Resize(Skins.Length * 2 + 10)
+		If skinsCount >= Skins.Length() Skins = Skins.Resize(Skins.Length() * 2 + 10)
 		
 		'set it
 		Skins[skinsCount] = skin
@@ -133,7 +133,7 @@ Class SpineSkeletonData
 
 	'return May be null. 
 	Method FindSkin:SpineSkin(skinName:String)
-		If skinName.Length = 0 Return Null
+		If skinName.Length() = 0 Return Null
 		For Local i:= 0 Until skinsCount
 			If Skins[i].Name = skinName Return Skins[i]
 		Next
@@ -145,7 +145,7 @@ Class SpineSkeletonData
 		If animation = Null Throw New SpineArgumentNullException("animation cannot be null.")
 		
 		'check resize array
-		If animationsCount >= Animations.Length Animations = Animations.Resize(Animations.Length * 2 + 10)
+		If animationsCount >= Animations.Length() Animations = Animations.Resize(Animations.Length() * 2 + 10)
 		
 		'set it
 		Animations[animationsCount] = animation
@@ -154,7 +154,7 @@ Class SpineSkeletonData
 
 	'return May be null. 
 	Method FindAnimation:SpineAnimation(animationName:String)
-		If animationName.Length = 0 Return Null
+		If animationName.Length() = 0 Return Null
 		For Local i:= 0 Until animationsCount
 			If Animations[i].Name = animationName Return Animations[i]
 		Next

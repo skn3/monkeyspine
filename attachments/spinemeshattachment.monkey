@@ -7,41 +7,39 @@ Import spine
 Class SpineMeshAttachment Extends SpineAttachment
 	Field Vertices:float[]
 	Field UVs:Float[]
+	
 	Field RegionUVs:Float[]
-	Field Triangles:int[]
-	Field regionOffsetX:Float
-	Field regionOffsetY:Float
-	Field regionWidth:Float
-	Field regionHeight:Float
-	Field regionOriginalWidth:Float
-	Field regionOriginalHeight:Float
-	Field R:Float = 1.0
-	Field G:Float = 1.0
-	Field B:Float = 1.0
-	Field A:Float = 1.0
-
-	Field HullLength:Int
-
-	Field Path:String
-	Field RendererObject:Object
 	Field RegionU:Float
 	Field RegionV:Float
 	Field RegionU2:Float
 	Field RegionV2:Float
 	Field RegionRotate:Bool
 	Field RegionOffsetX:Float
-	Field RegionOffsetY:Float 'Pixels stripped from the bottom left, unrotated.
+	Field RegionOffsetY:Float
 	Field RegionWidth:Float
-	Field RegionHeight:Float 'Unrotated, stripped size.
+	Field RegionHeight:Float
 	Field RegionOriginalWidth:Float
-	Field RegionOriginalHeight:Float 'Unrotated, unstripped size.
+	Field RegionOriginalHeight:Float
+	
+	Field R:Float = 1.0
+	Field G:Float = 1.0
+	Field B:Float = 1.0
+	Field A:Float = 1.0
+
+	Field HullLength:Int
+	
+	Field Triangles:int[]
+
+	Field Path:String
+	Field RendererObject:Object
 
 	'Nonessential.
 	Field Edges:int[]
 	Field Width:Float
 	Field Height:Float
 
-	Method New(name:String)
+	Method New()
+		Type = SpineAttachmentType.mesh
 	End
 
 	Method UpdateUVs:Void()

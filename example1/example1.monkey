@@ -350,13 +350,13 @@ Class MyApp Extends App
 	
 	Method NextSkin:Void()
 		' --- change skin if there are any to change ---
-		If currentItem.skins.Length = 0
+		If currentItem.skins.Length() = 0
 			currentItem.skinIndex = 0
 			Return
 		EndIf
 		
 		'next ot wrap
-		If currentItem.skinIndex = currentItem.skins.Length - 1
+		If currentItem.skinIndex = currentItem.skins.Length() - 1
 			currentItem.skinIndex = 0
 		Else
 			currentItem.skinIndex += 1
@@ -369,7 +369,7 @@ Class MyApp Extends App
 	Method NextAnimation:Void()
 		' --- change to next animation in current entity ---
 		'next ot wrap
-		If currentItem.animationIndex = currentItem.animations.Length - 1
+		If currentItem.animationIndex = currentItem.animations.Length() - 1
 			currentItem.animationIndex = 0
 		Else
 			currentItem.animationIndex += 1
@@ -382,7 +382,7 @@ Class MyApp Extends App
 	Method NextEntity:Void()
 		' --- hange to new item ---
 		'next or wrap
-		If itemIndex = items.Length - 1
+		If itemIndex = items.Length() - 1
 			itemIndex = 0
 		Else
 			itemIndex += 1

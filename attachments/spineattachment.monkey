@@ -8,7 +8,7 @@ Class SpineAttachment Abstract
 	Field Type:Int
 
 	Method New(name:String, type:Int)
-		If name.Length = 0 Throw New SpineArgumentNullException("name cannot be empty.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")
 		Type = type
 		Name = name
 	End
