@@ -17,12 +17,13 @@ Class SpineAnimationStateData
 	Private
 	Field animationToMixTime:SpineAnimationMap<SpineAnimationMap<FloatObject>>
 	Public
+	Field DefaultMix:Float
 
 	Method New(skeletonData:SpineSkeletonData)
 		SkeletonData = skeletonData
 	End
 
-	Method SetMix:Void(fromName:String, toName:String, duration:float)
+	Method SetMix:Void(fromName:String, toName:String, duration:Float)
 		Local fromAnimation:SpineAnimation = SkeletonData.FindAnimation(fromName)
 		If fromAnimation = Null Throw New SpineArgumentNullException("SpineAnimation not found: " + fromName)
 		Local toAnimation:SpineAnimation = SkeletonData.FindAnimation(toName)
@@ -30,7 +31,7 @@ Class SpineAnimationStateData
 		SetMix(fromAnimation, toAnimation, duration)
 	End
 
-	Method SetMix:Void(fromAnimation:SpineAnimation, toAnimation:SpineAnimation, duration:float)
+	Method SetMix:Void(fromAnimation:SpineAnimation, toAnimation:SpineAnimation, duration:Float)
 		If fromAnimation = Null Throw New SpineArgumentNullException("from cannot be null.")
 		If toAnimation = Null Throw New SpineArgumentNullException("to cannot be null.")
 		
@@ -44,20 +45,20 @@ Class SpineAnimationStateData
 		
 		Local floatObject:= fromMap.ValueForKey(toAnimation)
 		If floatObject
-			'reuse old float object
+			'reuse old Float object
 			floatObject.value = duration
 		Else
-			'create new float object
+			'create new Float object
 			fromMap.Insert(toAnimation, New FloatObject(duration))
 		EndIf
 	End
 
-	Method GetMix:float(fromAnimation:SpineAnimation, ToAnimation:SpineAnimation)
-		If animationToMixTime = Null Return 0.0
+	Method GetMix:Float(fromAnimation:SpineAnimation, toAnimation:SpineAnimation)
+		If animationToMixTime = Null Return DefaultMix
 		Local fromMap:= animationToMixTime.ValueForKey(fromAnimation)
-		If fromMap = Null Return 0.0
-		Local floatObject:= fromMap.ValueForKey(ToAnimation)
-		If floatObject = Null Return 0.0
+		If fromMap = Null Return DefaultMix
+		Local floatObject:= fromMap.ValueForKey(toAnimation)
+		If floatObject = Null Return DefaultMix
 		Return floatObject.value
 	End
 End

@@ -113,7 +113,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 		Offset[Y4] = localYCos + localX2Sin
 	End
 	
-	Method ComputeWorldVertices:Void(bone:SpineBone, worldVertices:float[])
+	Method ComputeWorldVertices:Void(bone:SpineBone, worldVertices:Float[])
 		Local x:Float = bone.Skeleton.x + bone.WorldX
 		Local y:Float = bone.Skeleton.y + bone.WorldY
 		Local m00:Float = bone.M00

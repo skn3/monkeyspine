@@ -23,7 +23,7 @@ Strict
 ' - added event callback to SpineEntityCallback interface
 ' - implemented spine events
 ' - implemeneted spine draw order
-' - added SetSnapToPixels() to spineentity, this will draw images at int coordinates
+' - added SetSnapToPixels() to spineentity, this will draw images at Int coordinates
 ' - Added GetSlotAlpha() and SetSlotAlpha()
 ' - fixed seperate image loader collisions + bounding not working
 'version 12
@@ -55,12 +55,12 @@ Strict
 'version 3
 ' - moved module into root modules folder
 'version 2
-' - fixed getflip return type to bool, cheers Zwer99
+' - fixed getflip return type to Bool, cheers Zwer99
 'version 1
 ' - first public commit
 
 'spine requires these file types to operate normally
-#TEXT_FILES += "*.atlas;*.json;"
+#TEXT_FILES += "*.atlas*.json"
 
 'core
 Import mojo

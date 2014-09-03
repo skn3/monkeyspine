@@ -13,7 +13,7 @@ Class SpineSkin
 		Name = name
 	End
 
-	Method AddAttachment:Void(slotIndex:int, name:String, attachment:SpineAttachment)
+	Method AddAttachment:Void(slotIndex:Int, name:String, attachment:SpineAttachment)
 		If attachment = Null Throw New SpineArgumentNullException("attachment cannot be null.")
 		If attachments = Null attachments = New IntMap<StringMap<SpineAttachment>>
 		Local slotMap:= attachments.ValueForKey(slotIndex)
@@ -25,14 +25,14 @@ Class SpineSkin
 	End
 
 	'return May be null. 
-	Method GetAttachment:SpineAttachment(slotIndex:int, name:String)
+	Method GetAttachment:SpineAttachment(slotIndex:Int, name:String)
 		If attachments = Null Return Null
 		Local slotMap:= attachments.ValueForKey(slotIndex)
 		If slotMap = Null Return Null
 		Return slotMap.ValueForKey(name)
 	End
 
-	Method FindNamesForSlot:String[] (slotIndex:int)
+	Method FindNamesForSlot:String[] (slotIndex:Int)
 		If attachments = Null Return New String[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
 		If slotMap = Null Return New String[0]
@@ -47,7 +47,7 @@ Class SpineSkin
 		Return results
 	End
 
-	Method FindAttachmentsForSlot:SpineAttachment[] (slotIndex:int)
+	Method FindAttachmentsForSlot:SpineAttachment[] (slotIndex:Int)
 		
 		If attachments = Null Return New SpineAttachment[0]
 		Local slotMap:= attachments.ValueForKey(slotIndex)
@@ -74,7 +74,7 @@ Class SpineSkin
 		
 		Local slot:SpineSlot
 		Local slotMap:StringMap<SpineAttachment>
-		Local name:string
+		Local name:String
 		Local attachment:SpineAttachment
 		
 		'fugly

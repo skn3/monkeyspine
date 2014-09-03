@@ -5,7 +5,7 @@ Import spine
 
 'Attachment that displays a texture region.
 Class SpineMeshAttachment Extends SpineAttachment
-	Field Vertices:float[]
+	Field Vertices:Float[]
 	Field UVs:Float[]
 	
 	Field RegionUVs:Float[]
@@ -28,13 +28,13 @@ Class SpineMeshAttachment Extends SpineAttachment
 
 	Field HullLength:Int
 	
-	Field Triangles:int[]
+	Field Triangles:Int[]
 
 	Field Path:String
 	Field RendererObject:Object
 
 	'Nonessential.
-	Field Edges:int[]
+	Field Edges:Int[]
 	Field Width:Float
 	Field Height:Float
 
@@ -43,8 +43,8 @@ Class SpineMeshAttachment Extends SpineAttachment
 	End
 
 	Method UpdateUVs:Void()
-		Local width:float = RegionU2 - RegionU
-		Local height:float = RegionV2 - RegionV
+		Local width:Float = RegionU2 - RegionU
+		Local height:Float = RegionV2 - RegionV
 		
 		If UVs.Length() <> RegionUVs.Length()
 			UVs = New Float[RegionUVs.Length()]

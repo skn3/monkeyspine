@@ -29,13 +29,13 @@ Class SpineMeshAttachment Extends SpineAttachment
 
 	Field HullLength:Int
 	
-	Field Triangles:int[]
+	Field Triangles:Int[]
 
 	Field Path:String
 	Field RendererObject:Object
 
 	'Nonessential.
-	Field Edges:int[]
+	Field Edges:Int[]
 	Field Width:Float
 	Field Height:Float
 
@@ -44,8 +44,8 @@ Class SpineMeshAttachment Extends SpineAttachment
 	End
 
 	Method UpdateUVs:Void()
-		Local width:float = RegionU2 - RegionU
-		Local height:float = RegionV2 - RegionV
+		Local width:Float = RegionU2 - RegionU
+		Local height:Float = RegionV2 - RegionV
 		
 		If UVs.Length() <> RegionUVs.Length()
 			UVs = New Float[RegionUVs.Length()]
@@ -83,7 +83,7 @@ Class SpineMeshAttachment Extends SpineAttachment
 		Local n:= Bones.Length()
 		
 		If slot.attachmentVerticesCount = 0
-			'for (int w = 0, v = 0, b = 0, n = bones.Length(); v < n; w += 2) {
+			'for (Int w = 0, v = 0, b = 0, n = bones.Length() v < n w += 2) {
 			While v < n
 				wx = 0
 				wy = 0
@@ -115,7 +115,7 @@ Class SpineMeshAttachment Extends SpineAttachment
 			Local ffd:= slot.AttachmentVertices
 			Local f:= 0
 			
-			'for (int w = 0, v = 0, b = 0, f = 0, n = bones.Length(); v < n; w += 2) {
+			'for (Int w = 0, v = 0, b = 0, f = 0, n = bones.Length() v < n w += 2) {
 			While v < n
 				wx = 0
 				wy = 0
@@ -124,7 +124,7 @@ Class SpineMeshAttachment Extends SpineAttachment
 				v += 1
 				nn += v
 				
-				'for (; v < nn; v++, b += 3, f += 2) {
+				'for ( v < nn v++, b += 3, f += 2) {
 				While v < nn
 					bone = skeletonBones[Bones[v]]
 					vx = Weights[b] + ffd[f]

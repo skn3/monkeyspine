@@ -51,7 +51,7 @@ Class SpineSkeletonData
 	End
 
 	'return -1 if the was:bone not found. 
-	Method FindBoneIndex:int(boneName:String)
+	Method FindBoneIndex:Int(boneName:String)
 		If boneName.Length() = 0 Return - 1
 		For Local i:= 0 Until bonesCount
 			If Bones[i].Name = boneName Return i
@@ -81,7 +81,7 @@ Class SpineSkeletonData
 	End
 
 	'return -1 if the was:bone not found. 
-	Method FindSlotIndex:int(slotName:String)
+	Method FindSlotIndex:Int(slotName:String)
 		If slotName.Length() = 0 Return - 1
 		For Local i:= 0 Until slotsCount
 			If Slots[i].Name = slotName Return i
@@ -111,7 +111,7 @@ Class SpineSkeletonData
 	End
 
 	'return -1 if the was:bone not found. 
-	Method FindEventIndex:int(eventName:String)
+	Method FindEventIndex:Int(eventName:String)
 		If eventName.Length() = 0 Return - 1
 		For Local i:= 0 Until eventsCount
 			If Events[i].Name = eventName Return i

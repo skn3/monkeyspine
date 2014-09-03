@@ -17,7 +17,7 @@ Class SpineSkeletonJson
 	Field attachmentLoader:SpineAttachmentLoader
 	Field fileLoader:SpineFileLoader
 	Public
-	Field Scale:float
+	Field Scale:Float
 
 	Method New(atlas:SpineAtlas = Null, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
 		If atlas = Null Throw New SpineArgumentNullException("atlas cannot be null.")
@@ -227,7 +227,7 @@ Class SpineSkeletonJson
 		return attachment
 	End
 
-	Function ToColor:float(hex:String, colorIndex:int)
+	Function ToColor:Float(hex:String, colorIndex:Int)
 		If hex.Length() <> 8 Throw New SpineArgumentNullException("Color hexidecimal length must be 8, recieved: " + hex)
 		
 		Local val:Int = 0
@@ -250,7 +250,7 @@ Class SpineSkeletonJson
 		Local timelines:SpineTimeline[]
 		Local timelineCount:Int
 
-		Local duration:float = 0.0
+		Local duration:Float = 0.0
 
 		Local index:Int
 		Local jsonGroupObject:JSONObject
@@ -263,7 +263,7 @@ Class SpineSkeletonJson
 		Local boneIndex:Int
 		Local timelineName:String
 		Local frameIndex:Int
-		Local timelineScale:float
+		Local timelineScale:Float
 		
 		jsonGroupObject = JSONObject(jsonAnimation.GetItem("bones"))
 		If jsonGroupObject <> Null
@@ -340,7 +340,7 @@ Class SpineSkeletonJson
 		Local slotName:String
 		Local slotIndex:Int
 		Local jsonSlot:JSONObject
-		Local color:string
+		Local color:String
 		
 		jsonGroupObject = JSONObject(jsonAnimation.GetItem("slots"))
 		If jsonGroupObject <> Null
@@ -428,9 +428,9 @@ Class SpineSkeletonJson
 				
 				'create new event
 				event = New SpineEvent(eventData)
-				event.IntValue = jsonEvent.GetItem("int", eventData.GetInt())
-				event.FloatValue = jsonEvent.GetItem("float", eventData.GetFloat())
-				event.StringValue = jsonEvent.GetItem("string", eventData.GetString())
+				event.IntValue = jsonEvent.GetItem("Int", eventData.GetInt())
+				event.FloatValue = jsonEvent.GetItem("Float", eventData.GetFloat())
+				event.StringValue = jsonEvent.GetItem("String", eventData.GetString())
 				
 				'process frame in timeline
 				timeline.SetFrame(frameIndex, jsonEvent.GetItem("time", 0.0), event)
@@ -478,9 +478,9 @@ Class SpineSkeletonJson
 				jsonOffsetTotal = jsonOffsetArray.values.Count()
 				
 				'create draw order array and reset it
-				Local drawOrder:= New int[slotsCount]
+				Local drawOrder:= New Int[slotsCount]
 				For slotIndex = slotsCount - 1 To 0 Step - 1
-					drawOrder[slotIndex] = -1;
+					drawOrder[slotIndex] = -1
 				Next
 				
 				'create unchanged array				
@@ -498,7 +498,7 @@ Class SpineSkeletonJson
 					slotIndex = skeletonData.FindSlotIndex(slotName)
 					
 					'check slot is valid
-					If slotIndex = -1 Throw New SpineException("Slot not found: " + slotName);
+					If slotIndex = -1 Throw New SpineException("Slot not found: " + slotName)
 										
 					'collect unchanges items
 					While originalIndex <> slotIndex
@@ -552,7 +552,7 @@ Class SpineSkeletonJson
 		skeletonData.AddAnimation(new SpineAnimation(name, timelines, duration))
 	End
 
-	Method ReadCurve:Void(timeline:SpineCurveTimeline, frameIndex:int, jsonTimelineFrame:JSONObject)
+	Method ReadCurve:Void(timeline:SpineCurveTimeline, frameIndex:Int, jsonTimelineFrame:JSONObject)
 		Local jsonItem:JSONDataItem
 		
 		jsonItem = jsonTimelineFrame.GetItem("curve")
@@ -562,7 +562,7 @@ Class SpineSkeletonJson
 		If jsonArray <> Null
 			'bezier curve
 			Local curve:= jsonArray.values.ToArray()
-			timeline.SetCurve(frameIndex, float(curve[0]), float(curve[1]), float(curve[2]), float(curve[3]))
+			timeline.SetCurve(frameIndex, Float(curve[0]), Float(curve[1]), Float(curve[2]), Float(curve[3]))
 		Else
 			'named curve
 			Select jsonItem.ToString()

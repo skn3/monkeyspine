@@ -25,7 +25,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		' --- event has triggered ---
 		Select entity
 			Case spinetest
-				showMessageText = "event:" + event + ", int:" + intValue + ", float: " + floatValue + ", string: " + stringValue
+				showMessageText = "event:" + event + ", Int:" + intValue + ", Float: " + floatValue + ", String: " + stringValue
 				showMessageAlpha = 4.0
 		End
 	End

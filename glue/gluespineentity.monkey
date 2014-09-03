@@ -46,10 +46,10 @@ Class SpineEntity
 	Field events:= New List<SpineEvent>
 	
 	Field x:Float = 0.0
-	Field y:float = 0.0
+	Field y:Float = 0.0
 	Field scaleX:Float = 1.0
 	Field scaleY:Float = 1.0
-	Field rotation:float = 0.0
+	Field rotation:Float = 0.0
 	Field flipX:Bool
 	Field flipY:Bool
 	
@@ -1174,7 +1174,7 @@ Class SpineEntity
 		If slot = Null Return[0, 0, 0]
 		
 		'local
-		Return[int(slot.R * 255), int(slot.G * 255), int(slot.B * 255)]
+		Return[Int(slot.R * 255), Int(slot.G * 255), Int(slot.B * 255)]
 	End
 	
 	Method GetSlotColor:Void(name:String, rgb:Int[])
@@ -1226,7 +1226,7 @@ Class SpineEntity
 		Return slot.A
 	End
 	
-	Method SetSlotAlpha:Void(name:String, alpha:float)
+	Method SetSlotAlpha:Void(name:String, alpha:Float)
 		' --- change the alpha of a slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
@@ -1263,7 +1263,7 @@ Class SpineEntity
 		Return[attachment.X, attachment.Y]
 	End
 	
-	Method GetSlotPosition:Void(name:String, xy:float[], world:Bool = False)
+	Method GetSlotPosition:Void(name:String, xy:Float[], world:Bool = False)
 		' --- this will return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
@@ -1504,7 +1504,7 @@ Class SpineEntity
 		Return GetBone(name) <> Null
 	End
 	
-	Method GetBone:SpineBone(name:string)
+	Method GetBone:SpineBone(name:String)
 		' --- find bone by name ---
 		'check for quick lookup
 		If name = lastBoneLookupName Return lastBoneLookup

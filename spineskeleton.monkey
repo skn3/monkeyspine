@@ -8,15 +8,16 @@ Class SpineSkeleton
 	Field Bones:SpineBone[]
 	Field Slots:SpineSlot[]
 	Field DrawOrder:SpineSlot[]
+	Field IkConstraints:SpineIkConstraint[]
 	Field Skin:SpineSkin
-	Field R:float
-	Field G:float
-	Field B:float
-	Field A:float
-	Field Time:float
-	Field LastTime:float
-	Field FlipX:bool
-	Field FlipY:bool
+	Field R:Float
+	Field G:Float
+	Field B:Float
+	Field A:Float
+	Field Time:Float
+	Field LastTime:Float
+	Field FlipX:Bool
+	Field FlipY:Bool
 	
 	Method RootBone:SpineBone()
 		If Bones.Length() = 0 Return Null
@@ -121,7 +122,7 @@ Class SpineSkeleton
 		return null
 	End
 
-	Method FindBoneIndex:int(boneName:String)
+	Method FindBoneIndex:Int(boneName:String)
 		If boneName.Length() = 0 Return - 1
 		For Local i:= 0 Until Bones.Length()
 			If Bones[i].Data.Name = boneName Return i
@@ -137,7 +138,7 @@ Class SpineSkeleton
 		Return Null
 	End
 
-	Method FindSlotIndex:int(slotName:String)
+	Method FindSlotIndex:Int(slotName:String)
 		If slotName.Length() = 0 Return - 1
 		For Local i:= 0 Until Slots.Length()
 			If Slots[i].Data.Name = slotName Return i
@@ -160,7 +161,7 @@ Class SpineSkeleton
 		return GetAttachment(Data.FindSlotIndex(slotName), attachmentName)
 	End
 
-	Method GetAttachment:SpineAttachment(slotIndex:int, attachmentName:String)
+	Method GetAttachment:SpineAttachment(slotIndex:Int, attachmentName:String)
 		If attachmentName.Length() = 0 Return Null
 		If Skin <> Null
 			Local attachment:SpineAttachment = Skin.GetAttachment(slotIndex, attachmentName)
@@ -187,7 +188,7 @@ Class SpineSkeleton
 		throw new SpineException("SpineSlot not found: " + slotName)
 	End
 
-	Method Update:Void(delta:float)
+	Method Update:Void(delta:Float)
 		LastTime = Time
 		Time += delta
 	End

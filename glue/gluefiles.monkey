@@ -37,7 +37,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	Field start:Int
 	
 	Method Load:Bool(path:String)
-		'convert string into buffer
+		'convert String into buffer
 		Self.path = path
 		index = 0
 		start = 0
@@ -73,7 +73,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	End
 	
 	Method ReadAll:String()
-		'just return the entire contents in a string
+		'just return the entire contents in a String
 		Local result:= buffer.PeekString(start)
 		start = total
 		Return result

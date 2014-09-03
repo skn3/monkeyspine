@@ -32,7 +32,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	Local index:Int
 	Local length1:Int = path1.Length()
 	Local start2:Int = 0
-	Local slash:bool
+	Local slash:Bool
 	
 	'look for end of slash in path 1
 	For index = path1.Length() - 1 To 0 Step - 1
@@ -387,7 +387,7 @@ Function SpineDrawLinePoly:Void(vertices:Float[])
 	
 	'draw poly
 	Local lastX:Float
-	Local lastY:float
+	Local lastY:Float
 	For Local index:= 2 Until vertices.Length() Step 2
 		lastX = vertices[index]
 		lastY = vertices[index + 1]

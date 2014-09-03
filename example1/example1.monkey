@@ -6,7 +6,7 @@ Import spine
 
 'Syntax checks in order to let all the Spine APIS be compiled:
 Import reflection
-#REFLECTION_FILTER="*"; 
+#REFLECTION_FILTER="*" 
 
 Function Main:Int()
 	New MyApp
@@ -22,7 +22,7 @@ Class ExampleItem
 End
 
 Class MyApp Extends App
-	Field showInfo:bool
+	Field showInfo:Bool
 	Field timestamp:Int
 	Field overSlot:SpineSlot
 	Field items:ExampleItem[]

@@ -11,12 +11,12 @@ Class SpineSlot
 	Field R:Float
 	Field G:Float
 	Field B:Float
-	Field A:float
+	Field A:Float
 
 	' May be null.
 	Private
 	Field attachment:SpineAttachment
-	Field attachmentTime:float
+	Field attachmentTime:Float
 	Public
 	
 	Field AttachmentVertices:Float[]
@@ -31,7 +31,7 @@ Class SpineSlot
 		attachmentTime = Skeleton.Time
 	End
 
-	Method AttachmentTime:float() Property
+	Method AttachmentTime:Float() Property
 		Return Skeleton.Time - attachmentTime
 	End
 	
@@ -49,7 +49,7 @@ Class SpineSlot
 		SetToBindPose()
 	End
 
-	Method SetToBindPose:Void(slotIndex:int)
+	Method SetToBindPose:Void(slotIndex:Int)
 		R = Data.R
 		G = Data.G
 		B = Data.B

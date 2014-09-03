@@ -6,10 +6,10 @@ Import spine
 Class SpineSlotData
 	Field Name:String
 	Field BoneData:SpineBoneData
-	Field R:float
-	Field G:float
-	Field B:float
-	Field A:float
+	Field R:Float
+	Field G:Float
+	Field B:Float
+	Field A:Float
 	'param attachmentName May be null. 
 	Field AttachmentName:String
 
