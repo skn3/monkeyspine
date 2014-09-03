@@ -3,7 +3,7 @@ Strict
 
 Import spine
 
-Public Class SpineIkConstraintData
+Class SpineIkConstraintData
 	Field Name:String
 	Field Bones:SpineBoneData[]
 	Field Target:SpineBoneData
@@ -11,7 +11,7 @@ Public Class SpineIkConstraintData
 	Field Mix:= 1.0
 
 	Method New(name:String)
-		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be null.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be Null.")
 		Name = name
 	End
 

@@ -4,7 +4,7 @@ Strict
 Import spine
 
 Class SpineBoneData
-	' May be null. 
+	' May be Null. 
 	Field Parent:SpineBoneData
 	Field Name:String
 	Field Length:Float
@@ -16,14 +16,14 @@ Class SpineBoneData
 	Field InheritScale:= True
 	Field InheirtRotation:= True
 
-	'param parent May be null. 
+	'param parent May be Null. 
 	Method New(name:String, parent:SpineBoneData)
-		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be null.")
+		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be Null.")
 		Name = name
 		Parent = parent
 	End
 
 	Method ToString:String()
-		return Name
+		Return Name
 	End
 End

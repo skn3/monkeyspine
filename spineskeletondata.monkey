@@ -7,31 +7,37 @@ Class SpineSkeletonData
 	Field Name:String
 	Field Bones:SpineBoneData[]
 	Field Slots:SpineSlotData[]
-	Field Events:SpineEventData[]
 	Field Skins:SpineSkin[]
-	' May be null. 
 	Field DefaultSkin:SpineSkin
+	Field Events:SpineEventData[]
 	Field Animations:SpineAnimation[]
+	Field IkConstraints:SpineIkConstraint[]
+	Field Width:Float
+	Field Height:Float
+	Field Version:String
+	Field Hash:String
 
+	Private
 	Field bonesCount:Int
 	Field slotsCount:Int
 	Field eventsCount:Int
 	Field skinsCount:Int
 	Field animationsCount:Int
+	Field ikConstraintsCount:Int
+	Public
 
-	'glue
+	' --- glue
 	Method TrimArrays:Void()
-		' --- this repalces the TrimExcess ported and will trim all arrays to their proper capacity ---
 		If bonesCount < Bones.Length() Bones = Bones.Resize(bonesCount)
 		If slotsCount < Slots.Length() Slots = Slots.Resize(slotsCount)
-		If eventsCount < Events.Length() Events = Events.Resize(eventsCount)
 		If skinsCount < Skins.Length() Skins = Skins.Resize(skinsCount)
+		If eventsCount < Events.Length() Events = Events.Resize(eventsCount)
 		If animationsCount < Animations.Length() Animations = Animations.Resize(animationsCount)
+		If ikConstraintsCount < IkConstraints.Length() IkConstraints = IkConstraints.Resize(ikConstraintsCount)
 	End
 	
-	' --- Bones.
 	Method AddBone:Void(bone:SpineBoneData)
-		If bone = Null Throw New SpineArgumentNullException("bone cannot be null.")
+		If bone = Null Throw New SpineArgumentNullException("bone cannot be Null.")
 		
 		'check resize array
 		If bonesCount >= Bones.Length() Bones = Bones.Resize(Bones.Length() * 2 + 10)
@@ -40,28 +46,9 @@ Class SpineSkeletonData
 		Bones[bonesCount] = bone
 		bonesCount += 1
 	End
-
-	'return May be null. 
-	Method FindBone:SpineBoneData(boneName:String)
-		If boneName.Length() = 0 Return Null
-		For Local i:= 0 Until bonesCount
-			If Bones[i].Name = boneName Return Bones[i]
-		Next
-		return null
-	End
-
-	'return -1 if the was:bone not found. 
-	Method FindBoneIndex:Int(boneName:String)
-		If boneName.Length() = 0 Return - 1
-		For Local i:= 0 Until bonesCount
-			If Bones[i].Name = boneName Return i
-		Next
-		Return -1
-	End
-
-	' --- Slots.
+	
 	Method AddSlot:Void(slot:SpineSlotData)
-		If slot = Null Throw New SpineArgumentNullException("slot cannot be null.")
+		If slot = Null Throw New SpineArgumentNullException("slot cannot be Null.")
 		
 		'check resize array
 		If slotsCount >= Slots.Length() Slots = Slots.Resize(Slots.Length() * 2 + 10)
@@ -70,28 +57,9 @@ Class SpineSkeletonData
 		Slots[slotsCount] = slot
 		slotsCount += 1
 	End
-
-	'return May be null. 
-	Method FindSlot:SpineSlotData(slotName:String)
-		If slotName.Length() = 0 Return Null
-		For Local i:= 0 Until slotsCount
-			If Slots[i].Name = slotName Return Slots[i]
-		Next
-		Return Null
-	End
-
-	'return -1 if the was:bone not found. 
-	Method FindSlotIndex:Int(slotName:String)
-		If slotName.Length() = 0 Return - 1
-		For Local i:= 0 Until slotsCount
-			If Slots[i].Name = slotName Return i
-		Next
-		Return -1
-	End
 	
-	' --- Events.
 	Method AddEvent:Void(event:SpineEventData)
-		If event = Null Throw New SpineArgumentNullException("event cannot be null.")
+		If event = Null Throw New SpineArgumentNullException("event cannot be Null.")
 		
 		'check resize array
 		If eventsCount >= Events.Length() Events = Events.Resize(Events.Length() * 2 + 10)
@@ -100,28 +68,9 @@ Class SpineSkeletonData
 		Events[eventsCount] = event
 		eventsCount += 1
 	End
-
-	'return May be null. 
-	Method FindEvent:SpineEventData(eventName:String)
-		If eventName.Length() = 0 Return Null
-		For Local i:= 0 Until eventsCount
-			If Events[i].Name = eventName Return Events[i]
-		Next
-		Return Null
-	End
-
-	'return -1 if the was:bone not found. 
-	Method FindEventIndex:Int(eventName:String)
-		If eventName.Length() = 0 Return - 1
-		For Local i:= 0 Until eventsCount
-			If Events[i].Name = eventName Return i
-		Next
-		Return -1
-	End
-
-	' --- Skins.
+	
 	Method AddSkin:Void(skin:SpineSkin)
-		If skin = Null Throw New SpineArgumentNullException("skin cannot be null.")
+		If skin = Null Throw New SpineArgumentNullException("skin cannot be Null.")
 		
 		'check resize array
 		If skinsCount >= Skins.Length() Skins = Skins.Resize(Skins.Length() * 2 + 10)
@@ -130,19 +79,9 @@ Class SpineSkeletonData
 		Skins[skinsCount] = skin
 		skinsCount += 1
 	End
-
-	'return May be null. 
-	Method FindSkin:SpineSkin(skinName:String)
-		If skinName.Length() = 0 Return Null
-		For Local i:= 0 Until skinsCount
-			If Skins[i].Name = skinName Return Skins[i]
-		Next
-		Return Null
-	End
-
-	' --- Animations.
+	
 	Method AddAnimation:Void(animation:SpineAnimation)
-		If animation = Null Throw New SpineArgumentNullException("animation cannot be null.")
+		If animation = Null Throw New SpineArgumentNullException("animation cannot be Null.")
 		
 		'check resize array
 		If animationsCount >= Animations.Length() Animations = Animations.Resize(Animations.Length() * 2 + 10)
@@ -152,16 +91,114 @@ Class SpineSkeletonData
 		animationsCount += 1
 	End
 
-	'return May be null. 
-	Method FindAnimation:SpineAnimation(animationName:String)
-		If animationName.Length() = 0 Return Null
-		For Local i:= 0 Until animationsCount
-			If Animations[i].Name = animationName Return Animations[i]
+	' --- bones
+	
+	'Return May be Null. 
+	Method FindBone:SpineBoneData(boneName:String)
+		If boneName.Length() Throw New SpineArgumentNullException("boneName cannot be Null.")
+		
+		Local bone:SpineBoneData
+		For Local i:= 0 Until bonesCount
+			bone = Bones[i]
+			If bone.Name = boneName Return bone
 		Next
 		Return Null
 	End
 
+	'Return -1 if the was:bone not found. 
+	Method FindBoneIndex:Int(boneName:String)
+		If boneName.Length() Throw New SpineArgumentNullException("boneName cannot be Null.")
+		
+		Local bone:SpineBoneData
+		For Local i:= 0 Until bonesCount
+			bone = Bones[i]
+			If bone.Name = boneName Return i
+		Next
+		Return -1
+	End
+
+	' --- Slots.
+
+	'Return May be Null. 
+	Method FindSlot:SpineSlotData(slotName:String)
+		If slotName.Length() Throw New SpineArgumentNullException("slotName cannot be Null.")
+		
+		Local slot:SpineSlotData
+		For Local i:= 0 Until slotsCount
+			slot = Slots[i]
+			If slot.Name = slotName Return slot
+		Next
+		Return Null
+	End
+
+	'Return -1 if the was:bone not found. 
+	Method FindSlotIndex:Int(slotName:String)
+		If slotName.Length() Throw New SpineArgumentNullException("slotName cannot be Null.")
+		
+		Local slot:SpineSlotData
+		For Local i:= 0 Until slotsCount
+			slot = Slots[i]
+			If slot.Name = slotName Return i
+		Next
+		Return -1
+	End
+
+	' --- Skins.
+
+	'Return May be Null.
+	Method FindSkin:SpineSkin(skinName:String)
+		If skinName.Length() Throw New SpineArgumentNullException("skinName cannot be Null.")
+		
+		Local skin:SpineSkin
+		For Local i:= 0 Until skinsCount
+			skin = Skins[i]
+			If skin.Name = skinName Return skin
+		Next
+		Return Null
+	End
+		
+	' --- Events.
+
+	'Return May be Null. 
+	Method FindEvent:SpineEventData(eventDataName:String)
+		If eventDataName.Length() Throw New SpineArgumentNullException("eventDataName cannot be Null.")
+		
+		Local event:SpineEventData
+		For Local i:= 0 Until eventsCount
+			event = Events[i]
+			If event.Name = eventDataName Return event
+		Next
+		Return Null
+	End
+
+	' --- Animations.
+
+	'Return May be Null. 
+	Method FindAnimation:SpineAnimation(animationName:String)
+		If animationName.Length() Throw New SpineArgumentNullException("animationName cannot be Null.")
+		
+		Local animation:SpineAnimation
+		For Local i:= 0 Until animationsCount
+			animation = Animations[i]
+			If animation.Name = animationName Return animation
+		Next
+		Return Null
+	End
+
+	' --- IK
+	Method FindIkConstraint:IkConstraintData(ikConstraintName:String)
+		If ikConstraintName.Length() = 0 Throw New SpineArgumentNullException("ikConstraintName cannot be null.")
+		
+		Local ikConstraint:SpineIkConstraintData
+		For Local:i = 0 Until ikConstraintsCount
+			ikConstraint = ikConstraints[i]
+			If ikConstraint.Name = ikConstraintName Return ikConstraint
+		Next
+		return null
+	End
+	
 	' ---
+	
 	Method ToString:String()
 		Return Name
 	End

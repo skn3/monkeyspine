@@ -14,7 +14,7 @@ Class SpineSkin
 	End
 
 	Method AddAttachment:Void(slotIndex:Int, name:String, attachment:SpineAttachment)
-		If attachment = Null Throw New SpineArgumentNullException("attachment cannot be null.")
+		If attachment = Null Throw New SpineArgumentNullException("attachment cannot be Null.")
 		If attachments = Null attachments = New IntMap<StringMap<SpineAttachment>>
 		Local slotMap:= attachments.ValueForKey(slotIndex)
 		If slotMap = Null
@@ -24,7 +24,7 @@ Class SpineSkin
 		slotMap.Insert(name, attachment)
 	End
 
-	'return May be null. 
+	'Return May be Null. 
 	Method GetAttachment:SpineAttachment(slotIndex:Int, name:String)
 		If attachments = Null Return Null
 		Local slotMap:= attachments.ValueForKey(slotIndex)
@@ -64,7 +64,7 @@ Class SpineSkin
 	End
 
 	Method ToString:String()
-		return Name
+		Return Name
 	End
 
 	' Attach all attachments from this if:skin the corresponding attachment from the old is:skin currently attached. 

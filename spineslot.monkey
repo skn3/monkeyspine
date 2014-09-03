@@ -13,7 +13,7 @@ Class SpineSlot
 	Field B:Float
 	Field A:Float
 
-	' May be null.
+	' May be Null.
 	Private
 	Field attachment:SpineAttachment
 	Field attachmentTime:Float
@@ -40,9 +40,9 @@ Class SpineSlot
 	End	
 
 	Method New(data:SpineSlotData, skeleton:SpineSkeleton, bone:SpineBone)
-		If data = Null Throw New SpineArgumentNullException("data cannot be null.")
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
-		If bone = Null Throw New SpineArgumentNullException("bone cannot be null.")
+		If data = Null Throw New SpineArgumentNullException("data cannot be Null.")
+		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
+		If bone = Null Throw New SpineArgumentNullException("bone cannot be Null.")
 		Data = data
 		Skeleton = skeleton
 		Bone = bone
@@ -72,6 +72,6 @@ Class SpineSlot
 	End
 
 	Method ToString:String()
-		return Data.Name
+		Return Data.Name
 	End
 End

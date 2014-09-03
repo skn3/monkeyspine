@@ -62,7 +62,7 @@ Class MyApp Extends App
 			Error("Exception: " + exception)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -115,7 +115,7 @@ Class MyApp Extends App
 			End
 						
 			If overSlot = Null
-				DrawText("Mouse is over: <null>", 5, 125)
+				DrawText("Mouse is over: <Null>", 5, 125)
 			Else
 				DrawText("Mouse is over: '" + overSlot.Data.Name + "'", 5, 125)
 			EndIf
@@ -139,7 +139,7 @@ Class MyApp Extends App
 				SpineDrawLineRect(MouseX() -40, MouseY() -40, 80, 80)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -246,7 +246,7 @@ Class MyApp Extends App
 			EndIf
 		EndIf
 			
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	

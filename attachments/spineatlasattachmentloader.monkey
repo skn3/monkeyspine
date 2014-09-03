@@ -10,7 +10,7 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 
 	Method New(atlas:SpineAtlas)
 		' --- create new attachment loader using atlas ---
-		If atlas = Null Throw New SpineArgumentNullException("atlas cannot be null.")
+		If atlas = Null Throw New SpineArgumentNullException("atlas cannot be Null.")
 		Self.atlas = atlas
 	End
 

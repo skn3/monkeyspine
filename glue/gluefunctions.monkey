@@ -23,7 +23,7 @@ Function SpineExtractFilenameWithoutExtension:String(path:String)
 	If i=-1 i=path.FindLast( "\" )
 	If i <> - 1 path = path[i + 1 ..]
 	
-	'return result
+	'Return result
 	Return path
 End
 
@@ -34,7 +34,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	Local start2:Int = 0
 	Local slash:Bool
 	
-	'look for end of slash in path 1
+	'look for End of slash in path 1
 	For index = path1.Length() - 1 To 0 Step - 1
 		If slash = False
 			'havn't found first slash
@@ -118,7 +118,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 		EndIf
 	EndIf
 	
-	'no path to return
+	'no path to Return
 	Return ""
 End
 
@@ -130,7 +130,7 @@ Function SpineLoadAtlas:SpineAtlas(path:String = "")
 	'increase reference count on atlas
 	atlas.Use()
 	
-	'return it
+	'Return it
 	Return atlas
 End
 
@@ -141,7 +141,7 @@ Function SpineLoadAtlas:SpineAtlas(path:String = "", atlasLoader:SpineAtlasLoade
 	'increase reference count on atlas
 	atlas.Use()
 	
-	'return it
+	'Return it
 	Return atlas
 End
 
@@ -152,7 +152,7 @@ Function SpineLoadAtlas:SpineAtlas(path:String = "", fileLoader:SpineFileLoader)
 	'increase reference count on atlas
 	atlas.Use()
 	
-	'return it
+	'Return it
 	Return atlas
 End
 
@@ -163,7 +163,7 @@ Function SpineLoadAtlas:SpineAtlas(path:String = "", atlasLoader:SpineAtlasLoade
 	'increase reference count on atlas
 	atlas.Use()
 	
-	'return it
+	'Return it
 	Return atlas
 End
 
@@ -208,7 +208,7 @@ Function SpineLinesCross:Bool(x0:Float, y0:Float, x1:Float, y1:Float, x2:Float, 
 			End If
 		End If
 	
-		' Lines didn't cross, because the intersection was beyond the end points of the lines
+		' Lines didn't cross, because the intersection was beyond the End points of the lines
 	EndIf
 
 	' Lines do Not cross!
@@ -228,14 +228,14 @@ Function SpinePointInRect:Bool(pointX:Float, pointY:Float, vertices:Float[])
 End Function
 
 Function SpineRectsOverlap:Bool(x1:Float, y1:Float, width1:Float, height1:Float, x2:Float, y2:Float, width2:Float, height2:Float)
-	' --- return true if rects overlap ---
+	' --- Return true if rects overlap ---
 	If x1 > (x2 + width2) Or (x1 + width1) < x2 Then Return False
 	If y1 > (y2 + height2) Or (y1 + height1) < y2 Then Return False
 	Return True
 End Function
 
 Function SpineRectsOverlap:Bool(x:Float, y:Float, width:Float, height:Float, vertices:Float[])
-	' --- return true if rects overlap ---
+	' --- Return true if rects overlap ---
 	'this assumes that the vertices are in order top left, top right, bottom right, bottom left
 	If x > vertices[2] Or (x + width) < vertices[0] Then Return False
 	If y > vertices[5] Or (y + height) < vertices[1] Then Return False

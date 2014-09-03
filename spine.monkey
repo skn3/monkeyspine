@@ -41,11 +41,11 @@ Strict
 ' - added SpineLoadAtlas() function to load an atlas outside of creating a spine entity
 ' - added SpineAtlas.Use() so that the spine glue will reference count an atlas
 ' - changed SpineAtlas.Free(force=false) added a force flag which will force teh atlas to be freed.
-'   If force is false and atlas is being used by something else then only a eference count will be decreased
+'   If force is false and atlas is being used by something Else then only a eference count will be decreased
 'version 7
 ' - fixed map issues, thanks ziggy
 'version 6
-' - Added IsAnimationRunning() to SpineEntity this will return true if the animation is still running
+' - Added IsAnimationRunning() to SpineEntity this will Return true if the animation is still running
 ' - Added GetAnimationTime() to SpineEntity this will get the current time in ms for the animation
 ' - Added Free() to spineentity and certain acompanying objects
 'version 5
@@ -55,7 +55,7 @@ Strict
 'version 3
 ' - moved module into root modules folder
 'version 2
-' - fixed getflip return type to Bool, cheers Zwer99
+' - fixed getflip Return type to Bool, cheers Zwer99
 'version 1
 ' - first public commit
 
@@ -83,11 +83,13 @@ Import glue.gluespineentity
 Import spineanimation
 Import spineanimationstate
 Import spineanimationstatedata
-Import spineatlas
+'Import spineatlas
 Import spinebone
 Import spinebonedata
 Import spineevent
 Import spineeventdata
+Import spineikconstraint
+Import spineikconstraintdata
 Import spineskeleton
 Import spineskeletondata
 Import spineskeletonjson
@@ -98,5 +100,7 @@ Import attachments.spineatlasattachmentloader
 Import attachments.spineattachment
 Import attachments.spineattachmentloader
 Import attachments.spineattachmenttype
-Import attachments.spineregionattachment
+Import attachments.spineboundingboxattachment
 Import attachments.spinemeshattachment
+Import attachments.spineregionattachment
+Import attachments.spineskinnedmeshattachment

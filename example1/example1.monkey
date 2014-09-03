@@ -95,7 +95,7 @@ Class MyApp Extends App
 			Error("Exception: " + exception)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -161,7 +161,7 @@ Class MyApp Extends App
 				DrawText("Checking for collision with entire entity", 5, 125)
 			Else
 				If collisionSlot = Null
-					DrawText("Checking for collision with slot <null> (press left or right to change)", 5, 125)
+					DrawText("Checking for collision with slot <Null> (press left or right to change)", 5, 125)
 				Else
 					DrawText("Checking for collision with slot '" + collisionSlot.Data.Name + "' (press left or right to change)", 5, 125)
 				EndIf
@@ -174,7 +174,7 @@ Class MyApp Extends App
 			EndIf
 						
 			If overSlot = Null
-				DrawText("Mouse is over: <null>", 5, 155)
+				DrawText("Mouse is over: <Null>", 5, 155)
 			Else
 				DrawText("Mouse is over: '" + overSlot.Data.Name + "'", 5, 155)
 			EndIf
@@ -198,7 +198,7 @@ Class MyApp Extends App
 				SpineDrawLineRect(MouseX() -40, MouseY() -40, 80, 80)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -344,7 +344,7 @@ Class MyApp Extends App
 			EndIf
 		EndIf
 			
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	

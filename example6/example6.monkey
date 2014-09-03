@@ -41,7 +41,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			Error("Exception: " + exception)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -52,7 +52,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'simples! render current item
 		spinetest.Render()
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -70,7 +70,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'update item entity
 		spinetest.Update(deltaFloat)
 
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 End

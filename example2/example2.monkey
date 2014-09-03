@@ -31,7 +31,7 @@ Class MyApp Extends App
 			Error("Exception: " + exception)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -50,7 +50,7 @@ Class MyApp Extends App
 			DrawText("collided", 5, 5)
 		EndIf
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -70,7 +70,7 @@ Class MyApp Extends App
 		
 		collided = spineBoy.PointInside(MouseX(), MouseY(), 2)
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 End

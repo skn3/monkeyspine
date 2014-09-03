@@ -31,8 +31,8 @@ Class SpineBone
 	Field WorldScaleY:Float
 	
 	Method New(data:SpineBoneData, skeleton:SpineSkeleton, parent:SpineBone)
-		If data = Null Throw New SpineArgumentNullException("data cannot be null.")
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
+		If data = Null Throw New SpineArgumentNullException("data cannot be Null.")
+		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
 		Data = data
 		Skeleton = skeleton
 		Parent = parent
@@ -135,6 +135,6 @@ Class SpineBone
 	End
 
 	Method ToString:String()
-		return Data.Name
+		Return Data.Name
 	End
 End

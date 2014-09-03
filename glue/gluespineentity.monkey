@@ -113,7 +113,7 @@ Class SpineEntity
 		skeleton = New SpineSkeleton(data)
 		skeleton.SetToBindPose()
 		
-		'return success
+		'Return success
 		Return True
 	End
 	
@@ -455,17 +455,17 @@ Class SpineEntity
 	End
 	
 	Method GetDebugDrawSlots:Bool()
-		' --- return state of debug draw ---
+		' --- Return state of debug draw ---
 		Return debugSlots
 	End
 	
 	Method GetDebugDrawBones:Bool()
-		' --- return state of debug draw ---
+		' --- Return state of debug draw ---
 		Return debugBones
 	End
 	
 	Method GetDebugDrawBounding:Bool()
-		' --- return state of debug draw ---
+		' --- Return state of debug draw ---
 		Return debugBounding
 	End
 	
@@ -486,7 +486,7 @@ Class SpineEntity
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
 				
-		'go in reverse order using the zOrder so we return the attachment closest to screen
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
@@ -510,7 +510,7 @@ Class SpineEntity
 			EndIf
 		Next
 		
-		'return fail
+		'Return fail
 		Return False
 	End
 	
@@ -542,7 +542,7 @@ Class SpineEntity
 			spineTempVertices[7] = y + height
 		EndIf
 				
-		'go in reverse order using the zOrder so we return the attachment closest to screen
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
@@ -566,7 +566,7 @@ Class SpineEntity
 			EndIf
 		Next
 		
-		'return fail
+		'Return fail
 		Return False
 	End
 	
@@ -599,7 +599,7 @@ Class SpineEntity
 			EndIf
 		EndIf
 		
-		'return fail
+		'Return fail
 		Return False
 	End
 	
@@ -646,7 +646,7 @@ Class SpineEntity
 			EndIf
 		EndIf
 		
-		'return fail
+		'Return fail
 		Return False
 	End
 	
@@ -827,12 +827,12 @@ Class SpineEntity
 	End
 	
 	Method GetAnimation:SpineAnimation(id:String)
-		' --- return teh animation object ---
+		' --- Return teh animation object ---
 		Return data.FindAnimation(id)
 	End
 	
 	Method GetAnimationTime:Int()
-		' --- return time of animation ---
+		' --- Return time of animation ---
 		Return skeleton.Time * 1000
 	End
 	
@@ -859,23 +859,23 @@ Class SpineEntity
 	End
 	
 	Method GetPosition:Float[] ()
-		' --- return local position ---
+		' --- Return local position ---
 		Return[x, y]
 	End
 	
 	Method GetPosition:Void(xy:Float[])
-		' --- return local position ---
+		' --- Return local position ---
 		xy[0] = x
 		xy[1] = y
 	End
 	
 	Method GetX:Float()
-		' --- return local position ---
+		' --- Return local position ---
 		Return x
 	End
 	
 	Method GetY:Float()
-		' --- return local position ---
+		' --- Return local position ---
 		Return y
 	End
 	
@@ -897,23 +897,23 @@ Class SpineEntity
 	End
 	
 	Method GetScale:Float[] ()
-		' --- return local scale ---
+		' --- Return local scale ---
 		Return[scaleX, scaleY]
 	End
 	
 	Method GetScale:Void(scaleXY:Float[])
-		' --- return local scale ---
+		' --- Return local scale ---
 		scaleXY[0] = scaleX
 		scaleXY[1] = scaleY
 	End
 	
 	Method GetScaleX:Float()
-		' --- return local scale ---
+		' --- Return local scale ---
 		Return scaleX
 	End
 	
 	Method GetScaleY:Float()
-		' --- return local scale ---
+		' --- Return local scale ---
 		Return scaleY
 	End	
 	
@@ -926,7 +926,7 @@ Class SpineEntity
 	End
 	
 	Method GetRotation:Float()
-		' --- return local angle ---
+		' --- Return local angle ---
 		Return rotation
 	End
 	
@@ -966,7 +966,7 @@ Class SpineEntity
 		'calculate first
 		CalculateBounding()
 		
-		'copy bounding into return
+		'copy bounding into Return
 		Local out:Float[8]
 		For Local index:Int = 0 Until 8
 			out[index] = bounding[index]
@@ -979,7 +979,7 @@ Class SpineEntity
 		'calculate first
 		CalculateBounding()
 		
-		'copy bounding into return
+		'copy bounding into Return
 		For Local index:Int = 0 Until 8
 			out[index] = bounding[index]
 		Next
@@ -987,13 +987,13 @@ Class SpineEntity
 	
 	'slot api
 	Method GetFirstSlot:SpineSlot()
-		' --- return first slot ---
+		' --- Return first slot ---
 		If skeleton.Slots.Length() = 0 Return Null
 		Return skeleton.Slots[0]
 	End
 	
 	Method GetLastSlot:SpineSlot()
-		' --- return last slot ---
+		' --- Return last slot ---
 		If skeleton.Slots.Length() = 0 Return Null
 		Return skeleton.Slots[skeleton.Slots.Length() - 1]
 	End
@@ -1026,7 +1026,7 @@ Class SpineEntity
 	End
 	
 	Method FindFirstSlotWithAttachment:SpineSlot()
-		' --- return first slot with attachment ---
+		' --- Return first slot with attachment ---
 		If skeleton.Slots.Length() = 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
@@ -1039,7 +1039,7 @@ Class SpineEntity
 	End
 	
 	Method FindLastSlotWithAttachment:SpineSlot()
-		' --- return last slot with attachment ---
+		' --- Return last slot with attachment ---
 		If skeleton.Slots.Length() = 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
@@ -1052,7 +1052,7 @@ Class SpineEntity
 	End
 	
 	Method FindNextSlotWithAttachment:SpineSlot(slot:SpineSlot)
-		' --- return next slot with attachment ---
+		' --- Return next slot with attachment ---
 		If slot = Null or skeleton.Slots.Length() = 0 or slot.parentIndex + 1 >= skeleton.Slots.Length() Return Null
 		
 		Local attachment:SpineRegionAttachment
@@ -1065,7 +1065,7 @@ Class SpineEntity
 	End
 	
 	Method FindPreviousSlotWithAttachment:SpineSlot(slot:SpineSlot)
-		' --- return previous slot with attachment ---
+		' --- Return previous slot with attachment ---
 		If slot = Null or skeleton.Slots.Length() = 0 or slot.parentIndex - 1 < 0 Return Null
 		
 		Local attachment:SpineRegionAttachment
@@ -1084,7 +1084,7 @@ Class SpineEntity
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
 		
-		'go in reverse order using the zOrder so we return the attachment closest to screen
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For index = skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
@@ -1099,13 +1099,13 @@ Class SpineEntity
 			If (ignoreInvisible = False or attachment.WorldAlpha > 0.0) Return slot
 		Next
 		
-		'return nothing found
+		'Return nothing found
 		Return Null		
 	End
 	
 	Method FindSlotAtPoint:SpineSlot(x:Float, y:Float, ignoreInvisible:Bool = True)
-		' --- this will return the highest zorder attachment at point ---
-		'only region attachments will return
+		' --- this will Return the highest zorder attachment at point ---
+		'only region attachments will Return
 		'need to calculate first (wont do anything if not flagged as dirty)
 		'this will also cause a calculate()
 		CalculateBounding()
@@ -1118,7 +1118,7 @@ Class SpineEntity
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
 				
-		'go in reverse order using the zOrder so we return the attachment closest to screen
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For index = skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
@@ -1134,7 +1134,7 @@ Class SpineEntity
 			If (ignoreInvisible = False or attachment.WorldAlpha > 0.0) and SpinePointInRect(x, y, attachment.BoundingVertices) and SpinePointInPoly(x, y, attachment.Vertices) Return slot
 		Next
 		
-		'return nothing found
+		'Return nothing found
 		Return Null
 	End
 	
@@ -1240,7 +1240,7 @@ Class SpineEntity
 	
 	'slot position api
 	Method GetSlotPosition:Float[] (name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return[0.0, 0.0]
@@ -1248,14 +1248,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return[slot.Bone.WorldX, slot.Bone.WorldY]
 			Return[0.0, 0.0]
 		EndIf
 		
-		'return attachment psotion
+		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1264,7 +1264,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotPosition:Void(name:String, xy:Float[], world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null
@@ -1276,7 +1276,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world
@@ -1289,7 +1289,7 @@ Class SpineEntity
 			Return
 		EndIf
 		
-		'return attachment psotion
+		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1304,7 +1304,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotX:Float(name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return 0.0
@@ -1312,14 +1312,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return slot.Bone.WorldX
 			Return 0.0
 		EndIf
 		
-		'return attachment psotion
+		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1328,7 +1328,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotY:Float(name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return 0.0
@@ -1336,14 +1336,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return slot.Bone.WorldY
 			Return 0.0
 		EndIf
 		
-		'return attachment psotion
+		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1353,7 +1353,7 @@ Class SpineEntity
 	
 	'slot rotation api
 	Method GetSlotRotation:Float(name:String, world:Bool = False)
-		' --- return bone rotation for a given slot ---
+		' --- Return bone rotation for a given slot ---
 		'must be applied after calling Update() on entity
 		'lookup slot
 		Local slot:= GetSlot(name)
@@ -1362,14 +1362,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return slot.Bone.WorldRotation
 			Return 0.0
 		EndIf
 			
-		'return attachment rotation
+		'Return attachment rotation
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1379,7 +1379,7 @@ Class SpineEntity
 	
 	'slot scale api
 	Method GetSlotScale:Float[] (name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return[0.0, 0.0]
@@ -1387,14 +1387,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return[slot.Bone.WorldScaleX, slot.Bone.WorldScaleY]
 			Return[0.0, 0.0]
 		EndIf
 		
-		'return attachment scale
+		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1403,7 +1403,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotScale:Void(name:String, scaleXY:Float[], world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null
@@ -1415,7 +1415,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world
@@ -1427,7 +1427,7 @@ Class SpineEntity
 			EndIf
 		Else
 		
-			'return attachment scale
+			'Return attachment scale
 			Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 			'world or local?
@@ -1444,7 +1444,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotScaleX:Float(name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return 0.0
@@ -1452,14 +1452,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return slot.Bone.WorldScaleX
 			Return 0.0
 		EndIf
 		
-		'return attachment scale
+		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1468,7 +1468,7 @@ Class SpineEntity
 	End
 	
 	Method GetSlotScaleY:Float(name:String, world:Bool = False)
-		' --- this will return the position of the given slot ---
+		' --- this will Return the position of the given slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return 0.0
@@ -1476,14 +1476,14 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return bone if slot doesn't have a psotional attachment
+		'Return bone if slot doesn't have a psotional attachment
 		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
 			'world or local?
 			If world Return slot.Bone.WorldScaleY
 			Return 0.0
 		EndIf
 		
-		'return attachment scale
+		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
 		'world or local?
@@ -1499,7 +1499,7 @@ Class SpineEntity
 	End
 	
 	Method HasBone:Bool(name:String)
-		' --- return true if bone exists ---
+		' --- Return true if bone exists ---
 		'this is a lazy way of doing it
 		Return GetBone(name) <> Null
 	End
@@ -1564,7 +1564,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return[bone.WorldX, bone.WorldY]
 		Return[bone.X, bone.Y]
 	End
@@ -1581,7 +1581,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world
 			xy[0] = bone.WorldX
 			xy[1] = bone.WorldY
@@ -1600,7 +1600,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return bone.WorldX
 		Return bone.X
 	End
@@ -1614,7 +1614,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return bone.WorldY
 		Return bone.Y
 	End
@@ -1646,7 +1646,7 @@ Class SpineEntity
 	End
 	
 	Method GetBoneRotation:Float(name:String, world:Bool = False)
-		' --- return bone rotation for a given bone ---
+		' --- Return bone rotation for a given bone ---
 		'must be applied after calling Update() on entity
 		'lookup bone
 		Local bone:= GetBone(name)
@@ -1655,7 +1655,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return it world or local?
+		'Return it world or local?
 		If world Return bone.WorldRotation
 		Return bone.Rotation
 	End
@@ -1706,7 +1706,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return[bone.WorldScaleX, bone.WorldScaleY]
 		Return[bone.ScaleX, bone.ScaleY]
 	End
@@ -1724,7 +1724,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world
 			scaleXY[0] = bone.WorldScaleX
 			scaleXY[1] = bone.WorldScaleY
@@ -1743,7 +1743,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return bone.WorldScaleX
 		Return bone.ScaleX
 	End
@@ -1757,7 +1757,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'return
+		'Return
 		If world Return bone.WorldScaleY
 		Return bone.ScaleY
 	End
@@ -1799,7 +1799,7 @@ Class SpineEntity
 	
 	'api
 	Method GetName:String()
-		' --- return name of skeleton ---
+		' --- Return name of skeleton ---
 		Return skeleton.Data.Name
 	End
 	

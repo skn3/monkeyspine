@@ -14,6 +14,6 @@ Class SpineAttachment Abstract
 	End
 
 	Method ToString:String()
-		return Name
+		Return Name
 	End
 End

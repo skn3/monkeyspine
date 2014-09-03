@@ -32,8 +32,8 @@ Class SpineAnimationStateData
 	End
 
 	Method SetMix:Void(fromAnimation:SpineAnimation, toAnimation:SpineAnimation, duration:Float)
-		If fromAnimation = Null Throw New SpineArgumentNullException("from cannot be null.")
-		If toAnimation = Null Throw New SpineArgumentNullException("to cannot be null.")
+		If fromAnimation = Null Throw New SpineArgumentNullException("from cannot be Null.")
+		If toAnimation = Null Throw New SpineArgumentNullException("to cannot be Null.")
 		
 		If animationToMixTime = Null animationToMixTime = New SpineAnimationMap<SpineAnimationMap<FloatObject>>
 		

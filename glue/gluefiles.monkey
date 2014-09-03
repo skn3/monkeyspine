@@ -48,7 +48,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 		buffer = New DataBuffer(total)
 		buffer.PokeString(0, data)
 		
-		'return success
+		'Return success
 		Return True
 	End
 	
@@ -60,7 +60,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 		If buffer = Null or index >= total Return ""
 		
 		For index = index Until total
-			'check for end of line
+			'check for End of line
 			If buffer.PeekByte(index) = 10
 				Local result:String = buffer.PeekString(start, (index - start))
 				index = index + 1
@@ -73,7 +73,7 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	End
 	
 	Method ReadAll:String()
-		'just return the entire contents in a String
+		'just Return the entire contents in a String
 		Local result:= buffer.PeekString(start)
 		start = total
 		Return result

@@ -54,7 +54,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			Error("Exception: " + exception)
 		End
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -72,7 +72,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			DrawText(showMessageText, 5, 5)
 		EndIf
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 	
@@ -95,7 +95,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			showMessageAlpha -= 0.05
 		EndIf
 		
-		'must alwasy return
+		'must alwasy Return
 		Return 0
 	End
 End

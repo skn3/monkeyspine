@@ -147,7 +147,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 					EndIf
 				EndIf
 			Else
-				'need to check for end of page
+				'need to check for End of page
 				If line.Length() = 0
 					'page is finished
 					pageNew = True
@@ -234,7 +234,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 				EndIf
 			EndIf
 			
-			'if we are at teh end of the file lets force region to save
+			'if we are at teh End of the file lets force region to save
 			If fileStream.Eof() And pageHasHeader And regionNew = False
 				'force save the region as eof
 				regionSave = True
@@ -257,7 +257,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 		'finalise atlas loading
 		atlas.UnLock()
 		
-		'return the loaded atlas
+		'Return the loaded atlas
 		Return atlas
 	End
 End
@@ -440,7 +440,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		'finalise atlas loading
 		atlas.UnLock()
 		
-		'return the loaded atlas
+		'Return the loaded atlas
 		Return atlas
 	End
 End
@@ -454,7 +454,7 @@ Class SpineSeperateImageLoader Implements SpineAtlasLoader
 		Local atlas:= New SpineSeperateImageAtlas
 		atlas.path = path
 		
-		'return it
+		'Return it
 		Return atlas
 	End
 End
@@ -514,7 +514,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		pages[pagesCount] = page
 		pagesCount += 1
 		
-		'return page
+		'Return page
 		Return page
 	End
 	
@@ -546,7 +546,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		regions[regionsCount] = region
 		regionsCount += 1
 		
-		'return it
+		'Return it
 		Return region
 	End
 	
@@ -571,12 +571,12 @@ Class SpineDefaultAtlasPage Implements SpineAtlasPage
 	Field image:Image
 	
 	Method GetWidth:Int()
-		' --- return page info ---
+		' --- Return page info ---
 		Return image.Width()
 	End
 	
 	Method GetHeight:Int()
-		' --- return page info ---
+		' --- Return page info ---
 		Return image.Height()
 	End
 End
@@ -611,42 +611,42 @@ Class SpineDefaultAtlasRegion Implements SpineAtlasRegion
 	End
 
 	Method GetX:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return x
 	End
 	
 	Method GetY:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return y
 	End
 		
 	Method GetWidth:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return width
 	End
 	
 	Method GetHeight:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return height
 	End
 	
 	Method GetOffsetX:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return offsetX
 	End
 	
 	Method GetOffsetY:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return offsetY
 	End
 	
 	Method GetOriginalWidth:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return originalWidth
 	End
 	
 	Method GetOriginalHeight:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return originalHeight
 	End
 End
@@ -712,7 +712,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		regions[regionsCount] = region
 		regionsCount += 1
 		
-		'return it
+		'Return it
 		Return region
 	End
 	
@@ -757,45 +757,45 @@ Class SpineSeperateImageAtlasRegion Implements SpineAtlasRegion
 	End
 
 	Method GetX:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return 0
 	End
 	
 	Method GetY:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return 0
 	End
 		
 	Method GetWidth:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		If image = Null Return 0
 		Return image.Width()
 	End
 	
 	Method GetHeight:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		If image = Null Return 0
 		Return image.Height()
 	End
 	
 	Method GetOffsetX:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return 0
 	End
 	
 	Method GetOffsetY:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		Return 0
 	End
 	
 	Method GetOriginalWidth:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		If image = Null Return 0
 		Return image.Width()
 	End
 	
 	Method GetOriginalHeight:Int()
-		' --- return info about region ---
+		' --- Return info about region ---
 		If image = Null Return 0
 		Return image.Height()
 	End

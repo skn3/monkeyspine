@@ -176,11 +176,11 @@ Class SpineRegionAttachment Extends SpineAttachment
 		If slot.Skeleton.FlipX Then
 			WorldScaleX = -WorldScaleX
 			WorldRotation = -WorldRotation
-		end
+		End
 		If slot.Skeleton.FlipY Then
 			WorldScaleY = -WorldScaleY
 			WorldRotation = -WorldRotation
-		end
+		End
 	End
 	
 	Method UpdateBounding:Void()
@@ -219,5 +219,5 @@ Class SpineRegionAttachment Extends SpineAttachment
 		Offset[X4] = localX2Cos - localYSin
 		Offset[Y4] = localYCos + localX2Sin
 	End
-	#end
+	#End
 End

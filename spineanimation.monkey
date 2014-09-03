@@ -10,7 +10,7 @@ Class SpineAnimation
 
 	Method New(name:String, timelines:SpineTimeline[], duration:Float)
 		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")
-		If timelines.Length() = 0 Throw New SpineArgumentNullException("timelines cannot be null.")
+		If timelines.Length() = 0 Throw New SpineArgumentNullException("timelines cannot be Null.")
 		Name = name
 		Timelines = timelines
 		Duration = duration
@@ -18,7 +18,7 @@ Class SpineAnimation
 
 	'Poses the skeleton at the specified time for this animation.
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, loop:Bool)
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
+		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
 
 		'apply looped animation
 		'this will convert the entire timeline into a single loop
@@ -36,7 +36,7 @@ Class SpineAnimation
 	'Poses the skeleton at the specified time for this animation mixed with the current pose.
 	'@param alpha The amount of this animation that affects the current pose.
 	Method Mix:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, loop:Bool, events:List<SpineEvent>, alpha:Float)
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be null.")
+		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
 
 		If loop And Duration <> 0
 			time Mod= Duration
@@ -62,7 +62,7 @@ Class SpineAnimation
 		While True
 			If values[ (current + 1) * theStep] <= target
 				low = current + 1
-			else
+			Else
 				high = current
 			EndIf
 			
@@ -79,7 +79,7 @@ Class SpineAnimation
 		While True
 			If values[current + 1] <= target
 				low = current + 1
-			else
+			Else
 				high = current
 			EndIf
 			
@@ -246,7 +246,7 @@ Class SpineRotateTimeline Extends SpineCurveTimeline
 				amount += 360
 			Wend
 			bone.Rotation += (amount * alpha)
-			return
+			Return
 		EndIf
 		
 		'interpolate between the last frame and the current frame.
@@ -305,7 +305,7 @@ Class SpineTranslateTimeline Extends SpineCurveTimeline
 		If time >= Frames[Frames.Length() - 3] ' Time is after last frame.
 			bone.X += ( (bone.Data.X + Frames[Frames.Length() - 2] - bone.X) * alpha)
 			bone.Y += ( (bone.Data.Y + Frames[Frames.Length() - 1] - bone.Y) * alpha)
-			return
+			Return
 		EndIf
 
 		' Interpolate between the last frame and the current frame.
@@ -334,7 +334,7 @@ Class SpineScaleTimeline Extends SpineTranslateTimeline
 		If time >= Frames[Frames.Length() - 3] ' Time is after last frame.
 			bone.ScaleX += ( (bone.Data.ScaleX - 1 + Frames[Frames.Length() - 2] - bone.ScaleX) * alpha)
 			bone.ScaleY += ( (bone.Data.ScaleY - 1 + Frames[Frames.Length() - 1] - bone.ScaleY) * alpha)
-			return
+			Return
 		EndIf
 
 		' Interpolate between the last frame and the current frame.
@@ -444,7 +444,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, alpha:Float)
 		If time < Frames[0]
 			'If (lastTime > time) Apply(skeleton, lastTime, Int.MaxValue, Null, 0)
-			'return
+			'Return
 			time = MAX_FLOAT
 			events = Null
 			alpha = 0.0
@@ -455,7 +455,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		Local frameIndex:Int
 		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
-		else
+		Else
 			frameIndex = SpineAnimation.binarySearch(Frames, time) - 1
 		EndIf
 		
@@ -501,15 +501,15 @@ Class SpineEventTimeline Implements SpineTimeline
 			Apply(skeleton, lastTime, Int.MaxValue, firedEvents, alpha)
 			lastTime = -1.0
 		ElseIf lastTime >= Frames[frameCount - 1] 'Last time is after last frame.
-			return
-		EndIF
+			Return
+		EndIf
 
-		if time < Frames[0] return 'Time is before first frame.
+		if time < Frames[0] Return 'Time is before first frame.
 
 		Local frameIndex:Int
 		if lastTime < Frames[0]
 			frameIndex = 0
-		else
+		Else
 			frameIndex = Animation.binarySearch(Frames, lastTime)
 			Local frame:Float = Frames[frameIndex]
 			while frameIndex > 0 'Fire multiple events with the same frame.
@@ -550,7 +550,7 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 		Local frameIndex:Int
 		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
-		else
+		Else
 			frameIndex = SpineAnimation.binarySearch(Frames, time) - 1
 		EndIf
 
@@ -591,11 +591,11 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, firedEvents:List<SpineEvent>, alpha:Float)
 		Local slot := skeleton.Slots[SlotIndex]
-		if slot.Attachment <> Attachment return
+		if slot.Attachment <> Attachment Return
 
 		if time < Frames[0]
 			slot.AttachmentVerticesCount = 0
-			return ' Time is before first frame.
+			Return ' Time is before first frame.
 		EndIf
 
 		Local vertexCount := FrameVertices[0].Length()
@@ -637,7 +637,7 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 				Local prev := prevVertices[i]
 				vertices[i] += (prev + (nextVertices[i] - prev) * percent - vertices[i]) * alpha
 			Next
-		else
+		Else
 			for Local i := 0 until vertexCount
 				Local prev := prevVertices[i]
 				vertices[i] = prev + (nextVertices[i] - prev) * percent
@@ -670,14 +670,14 @@ Class SpineIkConstraintTimeline Extends SpineCurveTimeline
 	End
 
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, firedEvents:List<SpineEvent>, alpha:Float)
-		if time < Frames[0] return ' Time is before first frame.
+		if time < Frames[0] Return ' Time is before first frame.
 
 		Local ikConstraint:SpineIkConstraint = skeleton.IkConstraints[ikConstraintIndex]
 
 		if time >= Frames[Frames.Length() - 3]' Time is after last frame.
 			ikConstraint.Mix += (Frames[Frames.Length() -2] - ikConstraint.Mix) * alpha
 			ikConstraint.BendDirection = Frames[Frames.Length() -1]
-			return
+			Return
 		EndIf
 
 		' Interpolate between the previous frame and the current frame.

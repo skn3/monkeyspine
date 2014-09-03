@@ -23,7 +23,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-#end
+#End
 Strict
 
 Import spine
@@ -41,7 +41,7 @@ Class SpineAnimationState
 	Field CompleteDelegate:SpineAnimationStateCompleteDelegate
 
 	Method New(data:SpineAnimationStateData)
-		If data = Null Throw New SpineArgumentNullException("data cannot be null.")
+		If data = Null Throw New SpineArgumentNullException("data cannot be Null.")
 		Data = data
 	End
 
@@ -61,7 +61,7 @@ Class SpineAnimationState
 			Local endTime:Float = current.EndTime
 
 			current.Time = time
-			if current._previous <> null
+			if current._previous <> Null
 				current._previous.Time += trackDelta
 				current.mixTime += trackDelta
 			EndIf
@@ -78,7 +78,7 @@ Class SpineAnimationState
 				_next.Time = current.LastTime - _next.Delay
 				If _next.Time >= 0 SetCurrent(i, _next)
 			Else
-				'End non-looping animation when it reaches its end time and there is no _next entry.
+				'End non-looping animation when it reaches its End time and there is no _next entry.
 				If Not current.Loop And current.LastTime >= current.EndTime ClearTrack(i)
 			EndIf
 		Next
@@ -106,7 +106,7 @@ Class SpineAnimationState
 			If previous = Null
 				If current.Mix = 1.0
 					current.animation.Apply(skeleton, current.LastTime, time, loop, Events)
-				else
+				Else
 					current.animation.Mix(skeleton, current.LastTime, time, loop, Events, current.Mix)
 				EndIf
 			Else
@@ -128,7 +128,7 @@ Class SpineAnimationState
 			'for (Int ii = 0, nn = events.Count ii < nn ii++) {
 			'	Event e = events[ii]
 			'	current.OnEvent(this, i, e)
-			'	if (Event != null) Event(this, i, e)
+			'	if (Event != Null) Event(this, i, e)
 			'}
 			Local node:= Events.First()
 			Local e:SpineEvent
@@ -174,7 +174,7 @@ Class SpineAnimationState
 	
 		if current
 			Local previous:SpineTrackEntry = current._previous
-			current._previous = null
+			current._previous = Null
 
 			current.OnEnd(Self, index)
 			If EndDelegate EndDelegate.OnSpineAnimationStateEnd(Self, index)
@@ -185,7 +185,7 @@ Class SpineAnimationState
 			'If a mix is in progress, mix from the closest animation.
 			If previous And current.mixTime / current.mixDuration < 0.5
 				entry._previous = previous
-			else
+			Else
 				entry._previous = current
 			EndIf
 		EndIf
@@ -241,7 +241,7 @@ Class SpineAnimationState
 		If delay <= 0
 			If last
 				delay += last.EndTime - Data.GetMix(last.Animation, animation)
-			else
+			Else
 				delay = 0
 			EndIf
 		EndIf
@@ -318,7 +318,7 @@ Class SpineTrackEntry
 	End
 	
 	Method ToString:String()
-		If Animation = null return "<none>"
-		return animation.Name
+		If Animation = Null Return "<none>"
+		Return animation.Name
 	End
 End

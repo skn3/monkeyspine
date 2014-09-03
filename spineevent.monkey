@@ -14,6 +14,6 @@ Class SpineEvent
 	End
 
 	Method ToString:String()
-		return Data.Name
+		Return Data.Name
 	End
 End

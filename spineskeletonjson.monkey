@@ -19,23 +19,13 @@ Class SpineSkeletonJson
 	Public
 	Field Scale:Float
 
-	Method New(atlas:SpineAtlas = Null, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
-		If atlas = Null Throw New SpineArgumentNullException("atlas cannot be null.")
-		If fileLoader = Null Throw New SpineArgumentNullException("file loader cannot be null.")
-		
-		'create atlas loader
-		Self.attachmentLoader = New SpineAtlasAttachmentLoader(atlas)
-		
-		'save the loader objects
-		Self.fileLoader = fileLoader
-		
-		'do some final setup
-		Scale = 1.0
+	Method New(atlas:SpineAtlas, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
+		New(New SpineAtlasAttachmentLoader(atlas), fileLoader)
 	End
 
 	Method New(attachmentLoader:SpineAttachmentLoader, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
-		If attachmentLoader = Null Throw New SpineArgumentNullException("attachment loader cannot be null.")
-		If fileLoader = Null Throw New SpineArgumentNullException("file loader cannot be null.")
+		If attachmentLoader = Null Throw New SpineArgumentNullException("attachment loader cannot be Null.")
+		If fileLoader = Null Throw New SpineArgumentNullException("file loader cannot be Null.")
 		
 		'save the loader objects
 		Self.attachmentLoader = attachmentLoader
@@ -46,13 +36,15 @@ Class SpineSkeletonJson
 	End
 
 	Method ReadSkeletonData:SpineSkeletonData(path:String)
-		' --- read skeleton data from json ---
-		'use the file loader to do teh loading
-		Local fileStream:= fileLoader.LoadFile(path)
+		Return ReadSkeletonData(fileLoader.LoadFile(path))
+	End
+	
+	Method ReadSkeletonData:SpineSkeletonData(fileStream:SpineFileStream)
+		If fileStream = Null Throw New SpineArgumentNullException("fileStream cannot be Null.")
 		
 		'read 
 		Local skeletonData:SpineSkeletonData = New SpineSkeletonData
-		skeletonData.Name = SpineExtractFilenameWithoutExtension(path)
+		skeletonData.Name = SpineExtractFilenameWithoutExtension(fileStream.GetPath())
 
 		Local jsonRoot:= JSONObject(JSONData.ReadJSON(fileStream.ReadAll()))
 		If jsonRoot = Null Throw New SpineException("Invalid JSON.")
@@ -61,22 +53,32 @@ Class SpineSkeletonJson
 		Local jsonGroupObject:JSONObject
 		Local jsonName:String
 		Local jsonObjectDataItem:JSONDataItem
+		Local jsonArray:JSONArray
 		Local jsonObject:JSONObject
 		Local jsonItem:JSONDataItem
 
-		'bones
-		Local boneParentData:SpineBoneData
-		Local boneName:String
-		Local boneData:SpineBoneData
+		'Skeleton.
+		jsonItem = jsonRoot.GetItem("skeleton")
+		If jsonItem <> Null
+			jsonObject = JSONObject(jsonItem)
+			skeletonData.Hash = jsonObject.GetItem("hash", "")
+			skeletonData.Version = jsonObject.GetItem("version", "")
+			skeletonData.Width = jsonObject.GetItem("width", 0.0)
+			skeletonData.Height = jsonObject.GetItem("height", 0.0)
+		EndIf
+		
+		'Bones.
 		jsonGroupArray = JSONArray(jsonRoot.GetItem("bones"))
 		If jsonGroupArray <> Null
+			Local boneParentData:SpineBoneData
+			Local boneName:String
+			Local boneData:SpineBoneData
+			
 			'iterate over bone objects
 			For jsonObjectDataItem = EachIn jsonGroupArray
-				'convert to correct format
 				jsonObject = JSONObject(jsonObjectDataItem)
 				If jsonObject = Null Continue
 				
-				'process this object
 				boneParentData = Null
 				
 				jsonItem = jsonObject.GetItem("parent")
@@ -87,18 +89,43 @@ Class SpineSkeletonJson
 				EndIf
 				
 				boneData = New SpineBoneData(jsonObject.GetItem("name", ""), boneParentData)
-				
-				boneData.Length() = jsonObject.GetItem("length", 0.0) * Scale
+				boneData.Length = jsonObject.GetItem("length", 0.0) * Scale
 				boneData.X = jsonObject.GetItem("x", 0.0) * Scale
 				boneData.Y = jsonObject.GetItem("y", 0.0) * Scale
 				boneData.Rotation = jsonObject.GetItem("rotation", 0.0)
 				boneData.ScaleX = jsonObject.GetItem("scaleX", 1.0)
 				boneData.ScaleY = jsonObject.GetItem("scaleY", 1.0)
-				
+				boneData.InheritScale = jsonObject.GetItem("inheritScale", True)
+				boneData.InheirtRotation = jsonObject.GetItem("inheirtRotation", True)
 				skeletonData.AddBone(boneData)
 			Next
 		EndIf
 
+		'IK constraints.
+		jsonGroupArray = JSONArray(jsonRoot.GetItem("ik"))
+		If jsonGroupArray <> Null
+			Local ikConstraintData:SpineIkConstraintData
+			Local targetName:String
+			
+			For jsonObjectDataItem = EachIn jsonGroupArray
+				'convert to correct format
+				jsonObject = JSONObject(jsonObjectDataItem)
+				If jsonObject = Null Continue
+			
+				jsonArray = JSONArray(jsonObject.GetItem("bones"))
+				If jsonArray <> Null
+				'------------------------------------- GOT HERE ---------------------------------------------------------------
+				EndIf
+			
+				ikConstraintData = New SpineIkConstraintData(jsonObject.GetItem("name", ""))
+				
+				targetName = jsonObject.GetItem("target", "")
+				
+				boneData.Length = jsonObject.GetItem("length", 0.0)
+				skeletonData.AddIkConstraint(ikConstraintData)
+			Next
+		EndIf
+		
 		'slots
 		Local slotName:String
 		Local slotData:SpineSlotData
@@ -224,7 +251,7 @@ Class SpineSkeletonJson
 			regionAttachment.UpdateOffset()
 		EndIf
 
-		return attachment
+		Return attachment
 	End
 
 	Function ToColor:Float(hex:String, colorIndex:Int)
@@ -239,7 +266,7 @@ Class SpineSkeletonJson
 				val += (hex[i] - 48)
 			Else
 				val += (hex[i] - 55)
-			Endif
+			EndIf
 			
 		Next
 		Return val / 255.0

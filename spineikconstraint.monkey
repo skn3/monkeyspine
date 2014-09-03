@@ -6,11 +6,13 @@ Import spine
 Class SpineIkConstraint
 	'Const radDeg:Float = 180.0 / Math.PI
 
-	Field Data:IkConstraintData
+	Field Data:SpineIkConstraintData
 	Field Bones:SpineBone[]
 	Field Target:SpineBone
 	Field BendDirection:Int = 1
 	Field Mix:Float = 1.0
+	
+	Field parentIndex:Int
 
 	Method New(data:SpineIkConstraintData, skeleton:SpineSkeleton)
 		this.data = data
@@ -28,9 +30,9 @@ Class SpineIkConstraint
 
 	Method Apply:Void()
 		Select Bones.Length()
-			case 1:
+			Case 1
 				Apply(Bones[0], Target.WorldX, Target.WorldY, Mix)
-			Case 2:
+			Case 2
 				Apply(Bones[0], Bones[1], Target.WorldX, Target.WorldY, BendDirection, Mix)
 		End
 	End
@@ -63,7 +65,7 @@ Class SpineIkConstraint
 		if alpha = 0.0
 			child.RotationIK = childRotation
 			parent.RotationIK = parentRotation
-			return
+			Return
 		EndIf
 		
 		Local positionXY:Float[2]
@@ -80,22 +82,22 @@ Class SpineIkConstraint
 		If child.Parent = parent
 			positionXY[0] = child.X
 			positionXY[1] = child.Y
-		else
+		Else
 			child.Parent.LocalToWorld(child.X, child.Y, positionXY)
 			parent.WorldToLocal(positionXY[0], positionXY[1], positionXY)
 		EndIf
 		
 		Local childX:Float = positionXY[0] * parent.WorldScaleX, childY = positionXY[1] * parent.WorldScaleY
-		Local offset:float = ATan2(childY, childX)
+		Local offset:Float = ATan2(childY, childX)
 		Local len1:Float = Sqrt(childX * childX + childY * childY)
 		Local len2:Float = child.Data.Length * child.WorldScaleX
 		
 		'Based on code by Ryan Juckett with permission: Copyright (c) 2008-2009 Ryan Juckett, http://www.ryanjuckett.com/
 		Local cosDenom:Float = 2.0 * len1 * len2
 		If cosDenom < 0.0001
-			'child.rotationIK = childRotation + ( (float) Math.Atan2(targetY, targetX) * radDeg - parentRotation - childRotation) * alpha;
+			'child.rotationIK = childRotation + ( (Float) Math.Atan2(targetY, targetX) * radDeg - parentRotation - childRotation) * alpha
 			child.RotationIK = childRotation + (ATan2(targetY, targetX) - parentRotation - childRotation) * alpha
-			return
+			Return
 		EndIf
 		Local cos:Float = (targetX * targetX + targetY * targetY - len1 * len1 - len2 * len2) / cosDenom
 		If cos < - 1.0
@@ -107,7 +109,7 @@ Class SpineIkConstraint
 		Local childAngle:Float = ACos(cos) * bendDirection
 		Local adjacent:Float = len1 + len2 * cos, opposite = len2 * Sin(childAngle)
 		Local parentAngle = ATan2(targetY * adjacent - targetX * opposite, targetX * adjacent + targetY * opposite)
-		'float rotation = (parentAngle - offset) * radDeg - parentRotation;
+		'Float rotation = (parentAngle - offset) * radDeg - parentRotation
 		Local rotation = (parentAngle - offset) - parentRotation
 		If rotation > 180.0
 			rotation -= 360.0
@@ -115,7 +117,7 @@ Class SpineIkConstraint
 			rotation += 360.0
 		EndIf
 		parent.RotationIK = parentRotation + rotation * alpha
-		'rotation = (childAngle + offset) * radDeg - childRotation;
+		'rotation = (childAngle + offset) * radDeg - childRotation
 		rotation = (childAngle + offset) - childRotation
 		If rotation > 180.0
 			rotation -= 360.0

@@ -10,12 +10,12 @@ Class SpineSlotData
 	Field G:Float
 	Field B:Float
 	Field A:Float
-	'param attachmentName May be null. 
+	'param attachmentName May be Null. 
 	Field AttachmentName:String
 
 	Method New(name:String, boneData:SpineBoneData)
 		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")
-		If boneData = Null Throw New SpineArgumentNullException("boneData cannot be null.")
+		If boneData = Null Throw New SpineArgumentNullException("boneData cannot be Null.")
 		Name = name
 		BoneData = boneData
 		R = 1.0
@@ -25,6 +25,6 @@ Class SpineSlotData
 	End
 
 	Method ToString:String()
-		return Name
+		Return Name
 	End
 End
