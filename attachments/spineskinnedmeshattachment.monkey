@@ -4,7 +4,7 @@ Strict
 Import spine
 
 'Attachment that displays a texture region.
-Class SpineMeshAttachment Extends SpineAttachment
+Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	Field Bones:Int[]
 	Field Weights:Float[]
 	Field UVs:Float[]
@@ -66,7 +66,7 @@ Class SpineMeshAttachment Extends SpineAttachment
 			
 	Method ComputeWorldVertices:Void(slot:SpineSlot, worldVertices:Float[])
 		Local skeleton := slot.Bone.Skeleton
-		Local skeletonBones = skeleton.Bones
+		Local skeletonBones:= skeleton.Bones
 		Local x:= skeleton.x
 		Local y:= skeleton.y
 		

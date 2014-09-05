@@ -14,7 +14,7 @@ Class SpineBoneData
 	Field ScaleX:= 1.0
 	Field ScaleY:= 1.0
 	Field InheritScale:= True
-	Field InheirtRotation:= True
+	Field InheritRotation:= True
 
 	'param parent May be Null. 
 	Method New(name:String, parent:SpineBoneData)

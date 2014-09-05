@@ -125,7 +125,7 @@ Class SpineSkeleton
 			break = False
 			Repeat
 				For ikContraintIndex = 0 Until ikConstraintsCount
-					ikContraint = ikConstraints[ikContraintIndex]
+					ikContraint = IkConstraints[ikContraintIndex]
 					parent = ikContraint.Bones[0]
 					child = ikContraint.Bones[ikContraint.Bones.Length() -1]
 					Repeat
@@ -177,7 +177,7 @@ Class SpineSkeleton
 	End
 
 	'<summary>Sets the bones and slots to their setup pose values.</summary>
-	Method SetToBindPose:Void()
+	Method SetToSetupPose:Void()
 		SetBonesToSetupPose()
 		SetSlotsToSetupPose()
 	End
@@ -208,7 +208,7 @@ Class SpineSkeleton
 		Next
 		
 		For i = 0 Until n
-			Slots[i].SetToBindPose(i)
+			Slots[i].SetToSetupPose(i)
 		Next
 	End
 
@@ -233,7 +233,7 @@ Class SpineSkeleton
 	Method FindSlot:SpineSlot(slotName:String)
 		If slotName.Length() = 0 Throw New SpineArgumentNullException("slotName cannot be Null.")
 		Local n:= Slots.Length()
-		For Local i:= 0 Until
+		For Local i:= 0 Until n
 			If Slots[i].Data.Name = slotName Return Slots[i]
 		Next
 		Return Null
@@ -242,7 +242,7 @@ Class SpineSkeleton
 	Method FindSlotIndex:Int(slotName:String)
 		If slotName.Length() = 0 Throw New SpineArgumentNullException("slotName cannot be Null.")
 		Local n:= Slots.Length()
-		For Local i:= 0 Until
+		For Local i:= 0 Until n
 			If Slots[i].Data.Name = slotName Return i
 		Next
 		Return -1

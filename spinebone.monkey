@@ -36,7 +36,7 @@ Class SpineBone
 		Data = data
 		Skeleton = skeleton
 		Parent = parent
-		SetToBindPose()
+		SetToSetupPose()
 	End
 
 	'<summary>Computes the world SRT using the parent bone and the local SRT.</summary>
@@ -100,7 +100,7 @@ Class SpineBone
 		EndIf
 	End
 
-	Method SetToBindPose:Void()
+	Method SetToSetupPose:Void()
 		' --- sets to the bind pose ---
 		Local data:SpineBoneData = Data
 		X = data.X
@@ -112,12 +112,12 @@ Class SpineBone
 	End
 	
 	Method WorldToLocal:Void(worldX:Float, worldY:Float, out:Float[])
-		Local dx:= worldX - Self.worldX
-		Local dy:= worldY - Self.worldY
-		Local m00:= Self.M00
-		Local m10:= Self.M10
-		Local m01:= Self.M01
-		Local m11:= Self.M11
+		Local dx:= worldX - WorldX
+		Local dy:= worldY - WorldY
+		Local m00:= M00
+		Local m10:= M10
+		Local m01:= M01
+		Local m11:= M11
 		
 		If Skeleton.FlipX <> (Skeleton.FlipY <> yDown)
 			m00 *= -1

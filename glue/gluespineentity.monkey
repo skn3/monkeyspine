@@ -111,7 +111,7 @@ Class SpineEntity
 		
 		'create skeleton
 		skeleton = New SpineSkeleton(data)
-		skeleton.SetToBindPose()
+		skeleton.SetToSetupPose()
 		
 		'Return success
 		Return True
@@ -260,7 +260,7 @@ Class SpineEntity
 			skeleton.Update(delta * speed)
 			
 			'reset the draw order
-			skeleton.ResetSlotOrder()
+			'skeleton.ResetSlotOrder()
 						
 			'we now pass in an events list
 			animation.Apply(skeleton, skeleton.LastTime, skeleton.Time, looping, events)
@@ -284,7 +284,7 @@ Class SpineEntity
 					If callback callback.OnSpineEntityAnimationComplete(Self, animation.Name)
 				Else
 					'reset time
-					'skeleton.SetToBindPose()'dont do this because it messes up teh animation
+					'skeleton.SetToSetupPose()'dont do this because it messes up teh animation
 					'this has been disabled because the spine system deals with it anyway!
 					'skeleton.Time = 0.0
 					'skeleton.LastTime = 0.0
@@ -360,9 +360,9 @@ Class SpineEntity
 				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 				mojo.SetAlpha(attachment.WorldAlpha)
 				If snapToPixels
-					attachment.Region.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
+					attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				Else
-					attachment.Region.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.Region.GetWidth() / 2.0), -Int(attachment.Region.GetHeight() / 2.0), attachment.Vertices)
+					attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				EndIf
 			Next
 		EndIf
@@ -394,7 +394,7 @@ Class SpineEntity
 			mojo.SetAlpha(1.0)
 			For index = 0 Until skeleton.Bones.Length()
 				bone = skeleton.Bones[index]
-				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length() * bone.M00 + bone.WorldX, bone.Data.Length() * bone.M10 + bone.WorldY)
+				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
 			Next
 			
 			'bone origins
@@ -730,7 +730,7 @@ Class SpineEntity
 		Else
 			'set skin
 			skeleton.SetSkin(skin)
-			skeleton.SetToBindPose()
+			skeleton.SetToSetupPose()
 		EndIf
 	End
 	
@@ -765,9 +765,8 @@ Class SpineEntity
 		playing = True
 		
 		'apply the animation to the skeleton
-		animation.Apply(skeleton, skeleton.Time, skeleton.Time, looping, events)
-		skeleton.ResetSlotOrder()
-		skeleton.SetToBindPose()
+		animation.Apply(skeleton, skeleton.Time, skeleton.Time, events, looping)
+		skeleton.SetToSetupPose()
 		
 		'need to process events
 		'this will probably never do anything...

@@ -20,12 +20,12 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 		Local attachment:= New SpineRegionAttachment(name)
 		attachment.RendererObject = region
 		attachment.SetUVs(region.u, region.v, region.u2, region.v2, region.rotate)
-		attachment.RegionOffsetX = region.offsetX
-		attachment.RegionOffsetY = region.offsetY
-		attachment.RegionWidth = region.width
-		attachment.RegionHeight = region.height
-		attachment.RegionOriginalWidth = region.originalWidth
-		attachment.RegionOriginalHeight = region.originalHeight
+		attachment.RenderObjectOffsetX = region.offsetX
+		attachment.RenderObjectOffsetY = region.offsetY
+		attachment.RenderObjectWidth = region.width
+		attachment.RenderObjectHeight = region.height
+		attachment.RenderObjectOriginalWidth = region.originalWidth
+		attachment.RenderObjectOriginalHeight = region.originalHeight
 		Return attachment
 	End
 
@@ -34,17 +34,17 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 		If region = Null Throw New SpineArgumentNullException("Region not found in atlas: " + path + " (region attachment: " + name + ")")
 		Local attachment:= New SpineMeshAttachment(name)
 		attachment.RendererObject = region
-		attachment.RegionU = region.u
-		attachment.RegionV = region.v
-		attachment.RegionU2 = region.u2
-		attachment.RegionV2 = region.v2
-		attachment.RegionRotate = region.rotate
-		attachment.RegionOffsetX = region.offsetX
-		attachment.RegionOffsetY = region.offsetY
-		attachment.RegionWidth = region.width
-		attachment.RegionHeight = region.height
-		attachment.RegionOriginalWidth = region.originalWidth
-		attachment.RegionOriginalHeight = region.originalHeight
+		attachment.RenderObjectU = region.u
+		attachment.RenderObjectV = region.v
+		attachment.RenderObjectU2 = region.u2
+		attachment.RenderObjectV2 = region.v2
+		attachment.RenderObjectRotate = region.rotate
+		attachment.RenderObjectOffsetX = region.offsetX
+		attachment.RenderObjectOffsetY = region.offsetY
+		attachment.RenderObjectWidth = region.width
+		attachment.RenderObjectHeight = region.height
+		attachment.RenderObjectOriginalWidth = region.originalWidth
+		attachment.RenderObjectOriginalHeight = region.originalHeight
 		Return attachment
 	End
 	
@@ -53,17 +53,17 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 		If region = Null Throw New SpineArgumentNullException("Region not found in atlas: " + path + " (region attachment: " + name + ")")
 		Local attachment:= New SkinnedMeshAttachment(name)
 		attachment.RendererObject = region
-		attachment.RegionU = region.u
-		attachment.RegionV = region.v
-		attachment.RegionU2 = region.u2
-		attachment.RegionV2 = region.v2
-		attachment.RegionRotate = region.rotate
-		attachment.RegionOffsetX = region.offsetX
-		attachment.RegionOffsetY = region.offsetY
-		attachment.RegionWidth = region.width
-		attachment.RegionHeight = region.height
-		attachment.RegionOriginalWidth = region.originalWidth
-		attachment.RegionOriginalHeight = region.originalHeight
+		attachment.RenderObjectU = region.u
+		attachment.RenderObjectV = region.v
+		attachment.RenderObjectU2 = region.u2
+		attachment.RenderObjectV2 = region.v2
+		attachment.RenderObjectRotate = region.rotate
+		attachment.RenderObjectOffsetX = region.offsetX
+		attachment.RenderObjectOffsetY = region.offsetY
+		attachment.RenderObjectWidth = region.width
+		attachment.RenderObjectHeight = region.height
+		attachment.RenderObjectOriginalWidth = region.originalWidth
+		attachment.RenderObjectOriginalHeight = region.originalHeight
 		Return attachment
 	End
 	

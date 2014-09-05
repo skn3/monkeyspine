@@ -524,7 +524,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		Local region:= New SpineDefaultAtlasRegion
 		
 		'setup the details for the region
-		region.Name = name
+		region.name = name
 		region.page = SpineDefaultAtlasPage(page)
 		region.x = x
 		region.y = y

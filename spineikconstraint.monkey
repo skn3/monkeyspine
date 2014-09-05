@@ -15,11 +15,11 @@ Class SpineIkConstraint
 	Field parentIndex:Int
 
 	Method New(data:SpineIkConstraintData, skeleton:SpineSkeleton)
-		this.data = data
-		mix = data.mix
+		Data = data
+		Mix = data.Mix
 		BendDirection = data.BendDirection
 
-		Bones = New List<SpineBone>(data.Bones.Length())
+		Bones = New SpineBone[data.Bones.Length()]
 		Local boneData:SpineBoneData
 		For Local i:= 0 Until data.Bones.Length()
 			boneData = data.Bones[i]
@@ -50,7 +50,7 @@ Class SpineIkConstraint
 		Else
 			parentRotation = bone.Parent.WorldRotation
 		EndIf
-		Local rotation:Float = Bone.Rotation
+		Local rotation:Float = bone.Rotation
 		'Local rotationIK:Float = ATan2(targetY - bone.WorldY, targetX - bone.WorldX) * radDeg - parentRotation
 		Local rotationIK:Float = ATan2(targetY - bone.WorldY, targetX - bone.WorldX) - parentRotation
 		bone.RotationIK = rotation + (rotationIK - rotation) * alpha
@@ -87,7 +87,8 @@ Class SpineIkConstraint
 			parent.WorldToLocal(positionXY[0], positionXY[1], positionXY)
 		EndIf
 		
-		Local childX:Float = positionXY[0] * parent.WorldScaleX, childY = positionXY[1] * parent.WorldScaleY
+		Local childX:Float = positionXY[0] * parent.WorldScaleX
+		Local childY:Float = positionXY[1] * parent.WorldScaleY
 		Local offset:Float = ATan2(childY, childX)
 		Local len1:Float = Sqrt(childX * childX + childY * childY)
 		Local len2:Float = child.Data.Length * child.WorldScaleX
@@ -107,10 +108,11 @@ Class SpineIkConstraint
 		EndIf
 		
 		Local childAngle:Float = ACos(cos) * bendDirection
-		Local adjacent:Float = len1 + len2 * cos, opposite = len2 * Sin(childAngle)
-		Local parentAngle = ATan2(targetY * adjacent - targetX * opposite, targetX * adjacent + targetY * opposite)
+		Local adjacent:Float = len1 + len2 * cos
+		Local opposite:Float = len2 * Sin(childAngle)
+		Local parentAngle:Float = ATan2(targetY * adjacent - targetX * opposite, targetX * adjacent + targetY * opposite)
 		'Float rotation = (parentAngle - offset) * radDeg - parentRotation
-		Local rotation = (parentAngle - offset) - parentRotation
+		Local rotation:Float = (parentAngle - offset) - parentRotation
 		If rotation > 180.0
 			rotation -= 360.0
 		ElseIf rotation < - 180.0

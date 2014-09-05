@@ -22,7 +22,7 @@ class SpineBoundingBoxAttachment Extends SpineAttachment
 		
 		Local px:Float
 		Local py:Float
-		For Local:i = 0 Until Vertices.Length() Step 2
+		For Local i:= 0 Until Vertices.Length() Step 2
 			px = Vertices[i]
 			py = Vertices[i + 1]
 			worldVertices[i] = px * m00 + py * m01 + x

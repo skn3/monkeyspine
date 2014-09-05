@@ -38,7 +38,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field A:Float
 	
 	Field Path:String
-	Field RenderObject:Object
+	Field RenderObject:SpineAtlasRegion
 	
 	'these are so we have a place to update state at runtime
 	Field Vertices:Float[8]
@@ -131,7 +131,8 @@ Class SpineRegionAttachment Extends SpineAttachment
 		worldVertices[Y4] = Offset[X4] * m10 + Offset[Y4] * m11 + y
 	End
 	
-	#rem
+	' --- glue
+	
 	Method Update:Void(slot:SpineSlot)
 		' --- this will perform updates on teh state of the attachment ---
 		UpdateVertices(slot)
@@ -187,37 +188,4 @@ Class SpineRegionAttachment Extends SpineAttachment
 		' --- updates the bounding box ---
 		SpineGetPolyBounding(Vertices, BoundingVertices)
 	End
-	
-	Method UpdateOffset:Void()
-		' --- update offsets for the region ---
-		'this only really needs to be called when the the image is changed
-		'Print "Region.GetOriginalWidth() = "+Region.GetOriginalWidth()
-		Local regionScaleX:Float = Width / Region.GetOriginalWidth() * ScaleX
-		Local regionScaleY:Float = Height / Region.GetOriginalHeight() * ScaleY
-		Local localX:Float = -Width / 2.0 * ScaleX + Region.GetOffsetX() * regionScaleX
-		Local localY:Float = -Height / 2.0 * ScaleY + Region.GetOffsetY() * regionScaleY
-		Local localX2:Float = localX + Region.GetWidth() * regionScaleX
-		Local localY2:Float = localY + Region.GetHeight() * regionScaleY
-		Local cos:Float = Cos(Rotation)
-		Local sin:Float = Sin(Rotation)
-
-		Local localXCos:Float = localX * cos + X
-		Local localXSin:Float = localX * sin
-		Local localYCos:Float = localY * cos + Y
-		Local localYSin:Float = localY * sin
-		Local localX2Cos:Float = localX2 * cos + X
-		Local localX2Sin:Float = localX2 * sin
-		Local localY2Cos:Float = localY2 * cos + Y
-		Local localY2Sin:Float = localY2 * sin
-
-		Offset[X1] = localXCos - localYSin
-		Offset[Y1] = localYCos + localXSin
-		Offset[X2] = localXCos - localY2Sin
-		Offset[Y2] = localY2Cos + localXSin
-		Offset[X3] = localX2Cos - localY2Sin
-		Offset[Y3] = localY2Cos + localX2Sin
-		Offset[X4] = localX2Cos - localYSin
-		Offset[Y4] = localYCos + localX2Sin
-	End
-	#End
 End

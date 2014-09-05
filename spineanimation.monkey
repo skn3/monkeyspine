@@ -151,14 +151,15 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		Local tmp1y:Float = -cy1 * 2 + cy2
 		Local tmp2x:Float = (cx1 - cx2) * 3 + 1
 		Local tmp2y:Float = (cy1 - cy2) * 3 + 1
-		
+		Local dfx:Float = cx1 * pre1 + tmp1x * pre2 + tmp2x * subdiv3
+		Local dfy:Float = cy1 * pre1 + tmp1y * pre2 + tmp2y * subdiv3
 		Local ddfx:Float = tmp1x * pre4 + tmp2x * pre5
 		Local ddfy:Float = tmp1y * pre4 + tmp2y * pre5
 		Local dddfx:Float = tmp2x * pre5
 		Local dddfy:Float = tmp2y * pre5
 
 		Local i:= frameIndex * BEZIER_SIZE
-		Curves[i] = BEZIER
+		curves[i] = BEZIER
 		i += 1
 
 		Local x:= dfx
@@ -166,8 +167,8 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		
 		Local n:= i + BEZIER_SIZE - 1
 		For i = i - 1 Until n Step 2
-			Curves[i] = x
-			Curves[i + 1] = y
+			curves[i] = x
+			curves[i + 1] = y
 			dfx += ddfx
 			dfy += ddfy
 			ddfx += dddfx
@@ -179,7 +180,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 
 	Method GetCurvePercent:Float(frameIndex:Int, percent:Float)
 		Local i:= frameIndex * BEZIER_SIZE
-		Local type:Float = Curves[i]
+		Local type:Float = curves[i]
 		
 		If type = LINEAR Return percent
 		If type = STEPPED Return 0
@@ -189,7 +190,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		Local start:= i
 		Local n:= i + BEZIER_SIZE - 1
 		For i = i Until n Step 2
-			x = Curves[i]
+			x = curves[i]
 			If x >= percent
 				Local prevX:Float
 				Local prevY:Float
@@ -198,15 +199,15 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 					prevX = 0
 					prevY = 0
 				Else
-					prevX = Curves[i - 2]
-					prevY = Curves[i - 1]
+					prevX = curves[i - 2]
+					prevY = curves[i - 1]
 				EndIf
 				
-				Return prevY + (Curves[i + 1] - prevY) * (percent - prevX) / (x - prevX)
+				Return prevY + (curves[i + 1] - prevY) * (percent - prevX) / (x - prevX)
 			EndIf
 		Next
 		
-		Local y:Float = Curves[i - 1]
+		Local y:Float = curves[i - 1]
 		Return y + (1 - y) * (percent - x) / (1 - x)'Last point is 1, 1.
 	End
 End

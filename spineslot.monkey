@@ -7,7 +7,7 @@ Class SpineSlot
 	Field parentIndex:Int
 	Field Data:SpineSlotData
 	Field Bone:SpineBone
-	Field Skeleton:SpineSkeleton
+		
 	Field R:Float
 	Field G:Float
 	Field B:Float
@@ -22,34 +22,37 @@ Class SpineSlot
 	Field AttachmentVertices:Float[]
 	Field AttachmentVerticesCount:Int
 	
+	Method Skeleton:SpineSkeleton() Property
+		Return Bone.Skeleton
+	End
+	
 	Method Attachment:SpineAttachment() Property
 		Return attachment
 	End
 	
 	Method Attachment:Void(attachment:SpineAttachment) Property
 		Self.attachment = attachment
-		attachmentTime = Skeleton.Time
+		attachmentTime = Bone.Skeleton.Time
+		AttachmentVerticesCount = 0
 	End
 
 	Method AttachmentTime:Float() Property
-		Return Skeleton.Time - attachmentTime
+		Return Bone.Skeleton.Time - attachmentTime
 	End
 	
 	Method AttachmentTime:Void(time:Float) Property
-		attachmentTime = Skeleton.Time - time
+		attachmentTime = Bone.Skeleton.Time - time
 	End	
 
-	Method New(data:SpineSlotData, skeleton:SpineSkeleton, bone:SpineBone)
+	Method New(data:SpineSlotData, bone:SpineBone)
 		If data = Null Throw New SpineArgumentNullException("data cannot be Null.")
-		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
 		If bone = Null Throw New SpineArgumentNullException("bone cannot be Null.")
 		Data = data
-		Skeleton = skeleton
 		Bone = bone
-		SetToBindPose()
+		SetToSetupPose()
 	End
 
-	Method SetToBindPose:Void(slotIndex:Int)
+	Method SetToSetupPose:Void(slotIndex:Int)
 		R = Data.R
 		G = Data.G
 		B = Data.B
@@ -57,18 +60,20 @@ Class SpineSlot
 		If Data.AttachmentName.Length() = 0
 			Attachment = Null
 		Else
-			Attachment = Skeleton.GetAttachment(slotIndex, Data.AttachmentName)
+			Attachment = Bone.Skeleton.GetAttachment(slotIndex, Data.AttachmentName)
 		EndIf
 	End
 
-	Method SetToBindPose:Void()
-		For Local indexOf:= 0 Until Skeleton.Data.Slots.Length()
-			If Skeleton.Data.Slots[indexOf] = Data
-				SetToBindPose(indexOf)
+	Method SetToSetupPose:Void()
+		Local slots:= Bone.Skeleton.Data.Slots
+		Local length:= slots.Length()
+		For Local indexOf:= 0 Until length
+			If slots[indexOf] = Data
+				SetToSetupPose(indexOf)
 				Return
 			EndIf
 		Next
-		SetToBindPose(-1)
+		SetToSetupPose(-1)
 	End
 
 	Method ToString:String()
