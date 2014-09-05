@@ -11,6 +11,8 @@ End
 
 'class to wrap spine
 Class SpineEntity
+	Global tempVertices:Float[8]
+	
 	Field atlas:SpineAtlas
 	Field data:SpineSkeletonData
 	Field skeleton:SpineSkeleton
@@ -53,6 +55,7 @@ Class SpineEntity
 	Field flipX:Bool
 	Field flipY:Bool
 	
+	Field lastTime:Float
 	Field lastSlotLookupName:String
 	Field lastSlotLookup:SpineSlot
 	Field lastBoneLookupName:String
@@ -257,16 +260,17 @@ Class SpineEntity
 		' --- update the entity ---
 		If animation And playing
 			'increase animation time in skeleton
+			lastTime = skeleton.Time
 			skeleton.Update(delta * speed)
 			
 			'reset the draw order
 			'skeleton.ResetSlotOrder()
 						
 			'we now pass in an events list
-			animation.Apply(skeleton, skeleton.LastTime, skeleton.Time, looping, events)
+			animation.Apply(skeleton, lastTime, skeleton.Time, events, looping)
 			
 			'mix in animations
-			If mixAnimation mixAnimation.Mix(skeleton, skeleton.LastTime, skeleton.Time, looping, events, mixAmount)
+			If mixAnimation mixAnimation.Mix(skeleton, lastTime, skeleton.Time, looping, events, mixAmount)
 			
 			'flag dirty as its dirty!
 			dirty = True
@@ -532,14 +536,14 @@ Class SpineEntity
 		
 		'setup temp vertices for poly check
 		If precision > 1
-			spineTempVertices[0] = x
-			spineTempVertices[1] = y
-			spineTempVertices[2] = x + width
-			spineTempVertices[3] = y
-			spineTempVertices[4] = x + width
-			spineTempVertices[5] = y + height
-			spineTempVertices[6] = x
-			spineTempVertices[7] = y + height
+			tempVertices[0] = x
+			tempVertices[1] = y
+			tempVertices[2] = x + width
+			tempVertices[3] = y
+			tempVertices[4] = x + width
+			tempVertices[5] = y + height
+			tempVertices[6] = x
+			tempVertices[7] = y + height
 		EndIf
 				
 		'go in reverse order using the zOrder so we Return the attachment closest to screen
@@ -559,7 +563,7 @@ Class SpineEntity
 				If precision < 2 Return True
 				
 				'check with rotated polys
-				If SpinePolyToPoly(spineTempVertices, attachment.Vertices)
+				If SpinePolyToPoly(tempVertices, attachment.Vertices)
 					'here we could go one step further and check pixels.. but no.. not really in current monkey!
 					Return True
 				EndIf
@@ -621,14 +625,14 @@ Class SpineEntity
 				
 		'setup temp vertices for poly check
 		If precise
-			spineTempVertices[0] = x
-			spineTempVertices[1] = y
-			spineTempVertices[2] = x + width
-			spineTempVertices[3] = y
-			spineTempVertices[4] = x + width
-			spineTempVertices[5] = y + height
-			spineTempVertices[6] = x
-			spineTempVertices[7] = y + height
+			tempVertices[0] = x
+			tempVertices[1] = y
+			tempVertices[2] = x + width
+			tempVertices[3] = y
+			tempVertices[4] = x + width
+			tempVertices[5] = y + height
+			tempVertices[6] = x
+			tempVertices[7] = y + height
 		EndIf
 						
 		'get attachment in correct format
@@ -640,7 +644,7 @@ Class SpineEntity
 			If precise = False Return True
 			
 			'check with rotated polys
-			If SpinePolyToPoly(spineTempVertices, attachment.Vertices)
+			If SpinePolyToPoly(tempVertices, attachment.Vertices)
 				'here we could go one step further and check pixels.. but no.. not really in current monkey!
 				Return True
 			EndIf

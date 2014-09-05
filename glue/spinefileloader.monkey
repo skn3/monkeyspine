@@ -3,41 +3,35 @@ Strict
 
 Import spine
 
-'file interfaces
 Interface SpineFileLoader
-	Method LoadFile:SpineFileStream(path:String)
-End
-
-Interface SpineFileStream
-	Method GetPath:String()
-	Method Load:Bool(path:String)
+	Method Path:String() Property
+	Method Path:Void(value:String) Property
+	
+	Method Load:Void(path:String)
 	Method ReadLine:String()
 	Method ReadAll:String()
 	Method Eof:Bool()
+	Method Close:Void()
 End
 
-'default file implementation
-Class SpineDefaultFileLoader Implements SpineFileLoader
-	Global instance:= New SpineDefaultFileLoader
-	
-	'callbacks
-	Method LoadFile:SpineFileStream(path:String)
-		' --- load a new stream object ---
-		Local stream:= New SpineDefaultFileStream()
-		stream.Load(path)
-		Return stream
-	End
-End
-
-Class SpineDefaultFileStream Implements SpineFileStream
+Class SpineMojoFileLoader Implements SpineFileLoader
+	Private
 	Field path:String
 	Field buffer:DataBuffer
 	Field index:Int
 	Field total:Int
 	Field start:Int
+	Public
 	
-	Method Load:Bool(path:String)
-		'convert String into buffer
+	Method Path:String()
+		Return path
+	End
+	
+	Method Path:Void(value:string)
+		Self.path = value
+	End
+	
+	Method Load:Void(path:String)
 		Self.path = path
 		index = 0
 		start = 0
@@ -47,13 +41,6 @@ Class SpineDefaultFileStream Implements SpineFileStream
 		total = data.Length()
 		buffer = New DataBuffer(total)
 		buffer.PokeString(0, data)
-		
-		'Return success
-		Return True
-	End
-	
-	Method GetPath:String()
-		Return path
 	End
 	
 	Method ReadLine:String()
@@ -73,7 +60,8 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	End
 	
 	Method ReadAll:String()
-		'just Return the entire contents in a String
+		If buffer = Null Return ""
+		
 		Local result:= buffer.PeekString(start)
 		start = total
 		Return result
@@ -81,5 +69,12 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	
 	Method Eof:Bool()
 		Return index >= total
+	End
+	
+	Method Close:Void()
+		If buffer
+			buffer.Discard()
+			buffer = Null
+		EndIf
 	End
 End

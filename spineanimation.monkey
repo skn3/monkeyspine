@@ -49,7 +49,7 @@ Class SpineAnimation
 	End
 	
 	Method Mix:Void(skeleton:SpineSkeleton, time:Float, loop:Bool, alpha:Float)
-		Mix(skeleton, MAX_FLOAT, time, loop, Null, alpha)
+		Mix(skeleton, SPINE_MAX_FLOAT, time, loop, Null, alpha)
 	End
 	
 	'@param target After the first and before the last entry.
@@ -446,7 +446,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		If time < Frames[0]
 			'If (lastTime > time) Apply(skeleton, lastTime, Int.MaxValue, Null, 0)
 			'Return
-			time = MAX_FLOAT
+			time = SPINE_MAX_FLOAT
 			events = Null
 			alpha = 0.0
 		ElseIf lastTime > time
