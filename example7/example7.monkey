@@ -37,8 +37,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spinetest
 		Try
-			DebugStop()
-			spinetest = LoadMojoSpineEntity("monkey://data/test.json", "monkey://data/test.atlas")
+			spinetest = LoadMojoSpineEntity("monkey://data/skeleton1.json", "monkey://data/skeleton1.atlas")
 			spinetest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spinetest.SetAnimation("animation", True)
 			spinetest.SetCallback(Self)

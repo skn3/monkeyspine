@@ -30,7 +30,7 @@ Class SpineSkeletonData
 	
 	'Return May be Null. 
 	Method FindBone:SpineBoneData(boneName:String)
-		If boneName.Length() Throw New SpineArgumentNullException("boneName cannot be Null.")
+		If boneName.Length() = 0 Throw New SpineArgumentNullException("boneName cannot be Null.")
 		
 		Local bone:SpineBoneData
 		For Local i:= 0 Until bonesCount
@@ -42,7 +42,7 @@ Class SpineSkeletonData
 
 	'Return -1 if the was:bone not found. 
 	Method FindBoneIndex:Int(boneName:String)
-		If boneName.Length() Throw New SpineArgumentNullException("boneName cannot be Null.")
+		If boneName.Length() = 0 Throw New SpineArgumentNullException("boneName cannot be Null.")
 		
 		Local bone:SpineBoneData
 		For Local i:= 0 Until bonesCount
@@ -56,7 +56,7 @@ Class SpineSkeletonData
 
 	'Return May be Null. 
 	Method FindSlot:SpineSlotData(slotName:String)
-		If slotName.Length() Throw New SpineArgumentNullException("slotName cannot be Null.")
+		If slotName.Length() = 0 Throw New SpineArgumentNullException("slotName cannot be Null.")
 		
 		Local slot:SpineSlotData
 		For Local i:= 0 Until slotsCount
@@ -68,7 +68,7 @@ Class SpineSkeletonData
 
 	'Return -1 if the was:bone not found. 
 	Method FindSlotIndex:Int(slotName:String)
-		If slotName.Length() Throw New SpineArgumentNullException("slotName cannot be Null.")
+		If slotName.Length() = 0 Throw New SpineArgumentNullException("slotName cannot be Null.")
 		
 		Local slot:SpineSlotData
 		For Local i:= 0 Until slotsCount
@@ -82,7 +82,7 @@ Class SpineSkeletonData
 
 	'Return May be Null.
 	Method FindSkin:SpineSkin(skinName:String)
-		If skinName.Length() Throw New SpineArgumentNullException("skinName cannot be Null.")
+		If skinName.Length() = 0 Throw New SpineArgumentNullException("skinName cannot be Null.")
 		
 		Local skin:SpineSkin
 		For Local i:= 0 Until skinsCount
@@ -96,7 +96,7 @@ Class SpineSkeletonData
 
 	'Return May be Null. 
 	Method FindEvent:SpineEventData(eventDataName:String)
-		If eventDataName.Length() Throw New SpineArgumentNullException("eventDataName cannot be Null.")
+		If eventDataName.Length() = 0 Throw New SpineArgumentNullException("eventDataName cannot be Null.")
 		
 		Local event:SpineEventData
 		For Local i:= 0 Until eventsCount
@@ -110,7 +110,7 @@ Class SpineSkeletonData
 
 	'Return May be Null. 
 	Method FindAnimation:SpineAnimation(animationName:String)
-		If animationName.Length() Throw New SpineArgumentNullException("animationName cannot be Null.")
+		If animationName.Length() = 0 Throw New SpineArgumentNullException("animationName cannot be Null.")
 		
 		Local animation:SpineAnimation
 		For Local i:= 0 Until animationsCount

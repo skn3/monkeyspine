@@ -66,7 +66,6 @@ Class SpineEntity
 	'there are lots of variations here to make it easy to use
 	Method New(skeletonPath:String, atlasPath:String, atlasDir:String, fileLoader:SpineFileLoader, atlasLoader:SpineAtlasLoader, textureLoader:SpineTextureLoader)
 		'load the atlas
-		DebugStop()
 		Local atlasFile:= fileLoader.Load(atlasPath)
 		Local atlas:= atlasLoader.Load(atlasFile, atlasDir, textureLoader)
 		atlasFile.Close()

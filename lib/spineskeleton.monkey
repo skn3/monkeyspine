@@ -99,7 +99,7 @@ Class SpineSkeleton
 
 	'<summary>Caches information about bones and IK constraints. Must be called if bones or IK constraints are added or removed.</summary>
 	Method UpdateCache:Void()
-		Local boneIndex:Int
+	DebugStop()
 		Local ikContraintIndex:Int
 		Local bone:SpineBone
 		Local parent:SpineBone
@@ -107,19 +107,20 @@ Class SpineSkeleton
 		Local ikContraint:SpineIkConstraint
 		Local current:SpineBone
 		Local ikConstraintsCount:Int = IkConstraints.Length()
-		Local arrayCount:= ikConstraintsCount + 1
+		Local cacheTotal:= ikConstraintsCount + 1
 		Local break:Bool
+		Local index:Int
+		Local boneCount:= Bones.Length()
+		Local cacheIndex:Int[cacheTotal]
 		
-		If arrayCount <> boneCache.Length() boneCache = New SpineBone[arrayCount][]
+		If cacheTotal <> boneCache.Length() boneCache = New SpineBone[cacheTotal][]
 		
-		For boneIndex = 0 Until arrayCount
-			boneCache[boneIndex] = New SpineBone[IkConstraints.Length()]
+		For index = 0 Until cacheTotal
+			boneCache[index] = New SpineBone[boneCount]
 		Next
 		
-		Local nonIkBones:= boneCache[0]
-		
-		For boneIndex = 0 Until Bones.Length()
-			bone = Bones[boneIndex]
+		For index = 0 Until boneCount
+			bone = Bones[index]
 			current = bone
 			
 			break = False
@@ -130,8 +131,11 @@ Class SpineSkeleton
 					child = ikContraint.Bones[ikContraint.Bones.Length() -1]
 					Repeat
 						If current = child
-							boneCache[ikContraintIndex][boneIndex] = bone
-							boneCache[ikContraintIndex + 1][boneIndex] = bone
+							If cacheIndex[ikContraintIndex] = boneCache[ikContraintIndex].Length() boneCache[ikContraintIndex] = boneCache[ikContraintIndex].Resize(cacheIndex[ikContraintIndex] * 2 + 10)
+							boneCache[ikContraintIndex][cacheIndex[ikContraintIndex]] = bone
+							boneCache[ikContraintIndex + 1][cacheIndex[ikContraintIndex]] = bone
+							cacheIndex[ikContraintIndex] += 1
+							
 							break = True
 							Exit
 						EndIf
@@ -146,7 +150,17 @@ Class SpineSkeleton
 				current = current.Parent
 			Until current = Null
 			
-			nonIkBones[boneIndex] = bone
+			'add non ik bones
+			If break = False
+				If cacheIndex[0] = boneCache[0].Length() boneCache[0] = boneCache[0].Resize(cacheIndex[0] * 2 + 10)
+				boneCache[0][cacheIndex[0]] = bone
+				cacheIndex[0] += 1
+			EndIf
+		Next
+		
+		'trim arrays
+		For index = 0 Until cacheTotal
+			If boneCache[index].Length() > cacheIndex[index] boneCache[index] = boneCache[index].Resize(cacheIndex[index])
 		Next
 	End
 	

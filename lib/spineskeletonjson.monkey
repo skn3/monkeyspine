@@ -472,8 +472,6 @@ Class SpineSkeletonJson
 		'slots		
 		jsonGroupObject = JSONObject(jsonAnimation.GetItem("slots"))
 		If jsonGroupObject <> Null
-			Local slotName:String
-			Local slotIndex:Int
 			Local jsonSlot:JSONObject
 			Local c:String
 			
@@ -643,12 +641,11 @@ Class SpineSkeletonJson
 			Local skin:SpineSkin
 			Local jsonFfdGroup:JSONObject
 			Local jsonSlotGroup:JSONObject
-			Local jsonMeshGroup:JSONObject
+			Local jsonMeshArray:JSONArray
 			Local jsonMeshDataItem:JSONDataItem
 			Local jsonMesh:JSONObject
 			Local jsonMeshVertices:JSONArray
 			Local jsonMeshVerticesItem:JSONDataItem
-			Local ffdKey:String
 			Local slotKey:String
 			Local meshKey:String
 			Local timeline:SpineFFDTimeline
@@ -671,12 +668,12 @@ Class SpineSkeletonJson
 					slotIndex = skeletonData.FindSlotIndex(slotKey)
 					
 					For meshKey = EachIn jsonSlotGroup.Names()
-						jsonMeshGroup = JSONObject(jsonSlotGroup.GetItem(meshKey))
+						jsonMeshArray = JSONArray(jsonSlotGroup.GetItem(meshKey))
 						
 						attachment = skin.GetAttachment(slotIndex, meshKey)
 						If attachment = Null Throw New SpineException("FFD attachment not found: " + meshKey)
 						
-						timeline = New SpineFFDTimeline(jsonGroupArray.values.Count())
+						timeline = New SpineFFDTimeline(jsonMeshArray.values.Count())
 						timeline.SlotIndex = slotIndex
 						timeline.Attachment = attachment
 						
@@ -687,7 +684,7 @@ Class SpineSkeletonJson
 						EndIf
 						
 						frameIndex = 0
-						For jsonMeshDataItem = EachIn jsonMeshGroup
+						For jsonMeshDataItem = EachIn jsonMeshArray
 							jsonMesh = JSONObject(jsonMeshDataItem)
 							
 							jsonMeshVertices = JSONArray(jsonMesh.GetItem("vertices"))
@@ -701,13 +698,16 @@ Class SpineSkeletonJson
 								vertices = New Float[vertexCount]
 								start = jsonMesh.GetItem("offset", 0)
 								
+								i = 0
 								If Scale = 1.0
 									For jsonMeshVerticesItem = EachIn jsonMeshVertices
 										vertices[i + start] = jsonMeshVerticesItem.ToFloat()
+										i += 1
 									Next
 								Else
 									For jsonMeshVerticesItem = EachIn jsonMeshVertices
 										vertices[i + start] = jsonMeshVerticesItem.ToFloat() * Scale
+										i += 1
 									Next
 								EndIf
 							EndIf

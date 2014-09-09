@@ -7,6 +7,7 @@ Import spine
 Import mojo
 Import brl.filepath
 Import brl.databuffer
+Import monkey.map
 
 'globals
 Private
@@ -149,7 +150,7 @@ End
 Class SpineMojoAtlas Implements SpineAtlas
 	Private
 	Field pages:SpineMojoAtlasPage[]
-	Field regions:StringMap<SpineMojoAtlasRegion>
+	Field regions:= New StringMap<SpineMojoAtlasRegion>
 	Field textureLoader:SpineMojoTextureLoader
 	Public
 	
@@ -178,7 +179,7 @@ Class SpineMojoAtlas Implements SpineAtlas
 				ReadTuple(file, tuple)
 				page.width = Int(tuple[0])
 				page.height = Int(tuple[1])
-				DebugStop()
+				
 				'format
 				ReadTuple(file, tuple)
 				page.format = SpineFormat.FromString(tuple[0])
@@ -206,7 +207,6 @@ Class SpineMojoAtlas Implements SpineAtlas
 				End
 				
 				'load texture
-				DebugStop()
 				page.texture = textureLoader.Load(PathCombine(imagesDir, page.name))
 
 				'add to pages
@@ -244,8 +244,8 @@ Class SpineMojoAtlas Implements SpineAtlas
 				EndIf
 				
 				'fix size???
-				region.width = Abs(region.width)
-				region.height = Abs(region.height)
+				'region.width = Abs(region.width)
+				'region.height = Abs(region.height)
 
 				'splits/pads
 				If ReadTuple(file, tuple) = 4 'split is optional
@@ -316,7 +316,6 @@ Class SpineMojoAtlas Implements SpineAtlas
 		path1 = path1.Replace("\", "/")
 		path2 = path2.Replace("\", "/")
 		
-		DebugStop()
 		'strip slash from start of path 2
 		Local index:= 0
 		Local length:= path2.Length()
@@ -377,7 +376,7 @@ Class SpineMojoAtlasPage Implements SpineAtlasPage
 	End
 	
 	Method texture:Void(value:SpineTexture) Property
-		_texture = SpineMojoTexture(texture)
+		_texture = SpineMojoTexture(value)
 	End
 	
 	Method name:String() Property
