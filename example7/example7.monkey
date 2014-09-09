@@ -2,6 +2,7 @@
 'This example demonstrates how we can see when an animation has finished.
 Import mojo
 Import spine
+Import spine.spinemojo
 
 Function Main:Int()
 	New MyApp
@@ -36,7 +37,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spinetest
 		Try
-			spinetest = New SpineEntity("test.json", "test.atlas")
+			DebugStop()
+			spinetest = LoadMojoSpineEntity("monkey://data/test.json", "monkey://data/test.atlas")
 			spinetest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spinetest.SetAnimation("animation", True)
 			spinetest.SetCallback(Self)

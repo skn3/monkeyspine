@@ -54,7 +54,8 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field BoundingVertices:Float[8]
 
 	'constructor
-	Method New()
+	Method New(name:String)
+		Super.New(name)
 		Type = SpineAttachmentType.region
 	End
 

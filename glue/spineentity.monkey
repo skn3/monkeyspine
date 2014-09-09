@@ -64,62 +64,23 @@ Class SpineEntity
 	
 	'constructor/destructor
 	'there are lots of variations here to make it easy to use
-	Method New(skeletonPath:String = "", atlasPath:String = "")
-		' --- load a new spine entity ---
-		Load(skeletonPath, SpineDefaultAtlasLoader.instance.LoadAtlas(atlasPath, SpineDefaultFileLoader.instance), SpineDefaultFileLoader.instance)
-	End
-	
-	Method New(skeletonPath:String = "", atlasPath:String = "", atlasLoader:SpineAtlasLoader)
-		' --- load a new spine entity ---
-		'call the Load method with given details
-		Load(skeletonPath, atlasLoader.LoadAtlas(atlasPath, SpineDefaultFileLoader.instance), SpineDefaultFileLoader.instance)
-	End
-	
-	Method New(skeletonPath:String = "", atlasPath:String = "", fileLoader:SpineFileLoader)
-		' --- load a new spine entity ---
-		'call the Load method with given details
-		Load(skeletonPath, SpineDefaultAtlasLoader.instance.LoadAtlas(atlasPath, fileLoader), fileLoader)
-	End
-	
-	Method New(skeletonPath:String = "", atlasPath:String = "", atlasLoader:SpineAtlasLoader, fileLoader:SpineFileLoader)
-		' --- load a new spine entity ---
-		'call the Load method with given details
-		Load(skeletonPath, atlasLoader.LoadAtlas(atlasPath, fileLoader), fileLoader)
-	End
-
-	Method New(skeletonPath:String, atlas:SpineAtlas)
-		' --- load a new spine entity ---
-		'atlas has already been loaded
-		Load(skeletonPath, atlas, SpineDefaultFileLoader.instance)
-	End
+	Method New(skeletonPath:String, atlasPath:String, atlasDir:String, fileLoader:SpineFileLoader, atlasLoader:SpineAtlasLoader, textureLoader:SpineTextureLoader)
+		'load the atlas
+		DebugStop()
+		Local atlasFile:= fileLoader.Load(atlasPath)
+		Local atlas:= atlasLoader.Load(atlasFile, atlasDir, textureLoader)
+		atlasFile.Close()
 		
-	Method New(skeletonPath:String, atlas:SpineAtlas, fileLoader:SpineFileLoader)
-		' --- load a new spine entity ---
-		'atlas has already been loaded
-		Load(skeletonPath, atlas, fileLoader)
-	End
-	
-	Method Load:Bool(skeletonPath:String, atlas:SpineAtlas, fileLoader:SpineFileLoader)
-		' --- load a new spine entity ---
-		'load skeleton data
-		'we lock the atlas again
-		atlas.Lock()
-		Local skeletonJson:= New SpineSkeletonJson(atlas)
-		data = skeletonJson.ReadSkeletonData(skeletonPath)
-		atlas.UnLock()
+		'load the skelton data
+		Local skeletonFile:= fileLoader.Load(skeletonPath)
+		Local skeletonJson:= New SpineSkeletonJson(atlas, skeletonFile)
+		data = skeletonJson.ReadSkeletonData()
 		
-		'increase reference count on the atlas
-		'it is upto the speciffic atlas implementation to make sure it doesn't free an atlas if its currently being used
-		atlas.Use()
-		
-		'create skeleton
+		'create the skeleton
 		skeleton = New SpineSkeleton(data)
 		skeleton.SetToSetupPose()
-		
-		'Return success
-		Return True
 	End
-	
+		
 	Method Free:Void()
 		' --- free the spine entity ---
 		'decrease reference count for atlas
@@ -364,9 +325,9 @@ Class SpineEntity
 				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 				mojo.SetAlpha(attachment.WorldAlpha)
 				If snapToPixels
-					attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				Else
-					attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				EndIf
 			Next
 		EndIf

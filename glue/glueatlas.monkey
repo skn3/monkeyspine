@@ -16,7 +16,7 @@ Interface SpineAtlas
 	Method Lock:Void()
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
 	Method UnLock:Void()
-	Method GetRegion:SpineAtlasRegion(name:String)
+	Method FindRegion:SpineAtlasRegion(name:String)
 End
 
 Interface SpineAtlasPage
@@ -557,7 +557,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		If regionsCount < regions.Length() regions = regions.Resize(regionsCount)
 	End
 	
-	Method GetRegion:SpineAtlasRegion(name:String)
+	Method FindRegion:SpineAtlasRegion(name:String)
 		' --- lookup region by name ---
 		For Local index:= 0 Until regions.Length()
 			If regions[index].Name = name Return regions[index]
@@ -723,7 +723,7 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 		locked = False
 	End
 	
-	Method GetRegion:SpineAtlasRegion(name:String)
+	Method FindRegion:SpineAtlasRegion(name:String)
 		' --- lookup region by name ---
 		If locked
 			'adding region to atlas

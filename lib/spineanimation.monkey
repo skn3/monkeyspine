@@ -407,7 +407,7 @@ Class SpineColorTimeline Extends SpineCurveTimeline
 			a = lastFrameA + (Frames[frameIndex + FRAME_A] - lastFrameA) * percent
 		EndIf
 
-		Local slot:= skeleton.Slots[slotIndex]
+		Local slot:= skeleton.Slots[SlotIndex]
 		If alpha < 1
 			slot.R += (r - slot.R) * alpha
 			slot.G += (g - slot.G) * alpha
@@ -498,8 +498,8 @@ Class SpineEventTimeline Implements SpineTimeline
 		If firedEvents = Null Return
 		Local frameCount:Int = Frames.Length()
 
-		if astTime > time 'Fire events after last time for looped animations.
-			Apply(skeleton, lastTime, Int.MaxValue, firedEvents, alpha)
+		If lastTime > time 'Fire events after last time for looped animations.
+			Apply(skeleton, lastTime, SPINE_MAX_FLOAT, firedEvents, alpha)
 			lastTime = -1.0
 		ElseIf lastTime >= Frames[frameCount - 1] 'Last time is after last frame.
 			Return
@@ -511,7 +511,7 @@ Class SpineEventTimeline Implements SpineTimeline
 		if lastTime < Frames[0]
 			frameIndex = 0
 		Else
-			frameIndex = Animation.binarySearch(Frames, lastTime)
+			frameIndex = SpineAnimation.binarySearch(Frames, lastTime)
 			Local frame:Float = Frames[frameIndex]
 			while frameIndex > 0 'Fire multiple events with the same frame.
 				If Frames[frameIndex - 1] <> frame Exit
@@ -520,7 +520,7 @@ Class SpineEventTimeline Implements SpineTimeline
 		EndIf
 
 		While frameIndex < frameCount and time >= Frames[frameIndex]
-			firedEvents.Add(events[frameIndex])
+			firedEvents.AddLast(Events[frameIndex])
 			frameIndex += 1
 		Wend
 	End
@@ -558,7 +558,7 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 		Local drawOrder:= skeleton.DrawOrder
 		Local slots:= skeleton.Slots
 		
-		Local drawOrderToSetupIndex:= drawOrders[frameIndex]
+		Local drawOrderToSetupIndex:= DrawOrders[frameIndex]
 		If drawOrderToSetupIndex.Length() = 0
 			For Local i:= 0 Until drawOrder.Length()
 				drawOrder[i] = slots[i]
@@ -673,7 +673,7 @@ Class SpineIkConstraintTimeline Extends SpineCurveTimeline
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, firedEvents:List<SpineEvent>, alpha:Float)
 		if time < Frames[0] Return ' Time is before first frame.
 
-		Local ikConstraint:SpineIkConstraint = skeleton.IkConstraints[ikConstraintIndex]
+		Local ikConstraint:SpineIkConstraint = skeleton.IkConstraints[IkConstraintIndex]
 
 		if time >= Frames[Frames.Length() - 3]' Time is after last frame.
 			ikConstraint.Mix += (Frames[Frames.Length() -2] - ikConstraint.Mix) * alpha
@@ -682,7 +682,7 @@ Class SpineIkConstraintTimeline Extends SpineCurveTimeline
 		EndIf
 
 		' Interpolate between the previous frame and the current frame.
-		Local frameIndex:Int = Animation.binarySearch(Frames, time, 3)
+		Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 3)
 		Local prevFrameMix:Float = Frames[frameIndex - 2]
 		Local frameTime:Float = Frames[frameIndex]
 		Local percent:Float = 1 - (time - frameTime) / (Frames[frameIndex + PREV_FRAME_TIME] - frameTime)

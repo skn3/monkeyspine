@@ -38,7 +38,8 @@ Class SpineMeshAttachment Extends SpineAttachment
 	Field Width:Float
 	Field Height:Float
 
-	Method New()
+	Method New(name:String)
+		Super.New(name)
 		Type = SpineAttachmentType.mesh
 	End
 

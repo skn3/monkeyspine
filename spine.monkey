@@ -1,6 +1,8 @@
 'see license.txt for source licenses
 Strict
 
+'version 19
+' - ported to latest runtime
 'version 18
 ' - added RevertColor() and RevertAlpha() to spine entity (cheers rikman)
 'version 17
@@ -60,7 +62,7 @@ Strict
 ' - first public commit
 
 'spine requires these file types to operate normally
-#TEXT_FILES += "*.atlas*.json"
+#TEXT_FILES += "*.atlas|*.json"
 
 'core
 Import mojo
@@ -72,40 +74,47 @@ Import brl.databuffer
 Import json
 
 'glue code
+Import glue.spineatlas
+Import glue.spineatlasloader
+Import glue.spineatlaspage
+Import glue.spineatlasregion
 Import glue.spineconstants
 Import glue.spineentity
-Import glue.spinexceptions
+Import glue.spineexceptions
+Import glue.spinefile
 Import glue.spinefileloader
 Import glue.spinefunctions
 Import glue.spinerendererobject
 Import glue.spinetexture
 Import glue.spinetextureloader
+Import glue.spinetexturefilter
+Import glue.spinetexturewrap
+Import glue.spineformat
 
 'spine lib
-Import spineanimation
-Import spineanimationstate
-Import spineanimationstatedata
-Import spineatlas
-Import spinebone
-Import spinebonedata
-Import spineevent
-Import spineeventdata
-Import spineikconstraint
-Import spineikconstraintdata
-Import spineskeleton
-Import spineskeletondata
-Import spineskeletonjson
-Import spineskin
-Import spineslot
-Import spineslotdata
-Import attachments.spineatlasattachmentloader
-Import attachments.spineattachment
-Import attachments.spineattachmentloader
-Import attachments.spineattachmenttype
-Import attachments.spineboundingboxattachment
-Import attachments.spinemeshattachment
-Import attachments.spineregionattachment
-Import attachments.spineskinnedmeshattachment
+Import lib.spineanimation
+Import lib.spineanimationstate
+Import lib.spineanimationstatedata
+Import lib.spinebone
+Import lib.spinebonedata
+Import lib.spineevent
+Import lib.spineeventdata
+Import lib.spineikconstraint
+Import lib.spineikconstraintdata
+Import lib.spineskeleton
+Import lib.spineskeletondata
+Import lib.spineskeletonjson
+Import lib.spineskin
+Import lib.spineslot
+Import lib.spineslotdata
+Import lib.attachments.spineatlasattachmentloader
+Import lib.attachments.spineattachment
+Import lib.attachments.spineattachmentloader
+Import lib.attachments.spineattachmenttype
+Import lib.attachments.spineboundingboxattachment
+Import lib.attachments.spinemeshattachment
+Import lib.attachments.spineregionattachment
+Import lib.attachments.spineskinnedmeshattachment
 
 
 

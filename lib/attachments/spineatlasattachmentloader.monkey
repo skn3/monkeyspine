@@ -15,12 +15,12 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 	End
 
 	Method NewRegionAttachment:SpineRegionAttachment(skin:SpineSkin, name:String, path:String)
-		Local region:SpineAtlasRegion = atlas.GetRegion(path)
+		Local region:SpineAtlasRegion = atlas.FindRegion(path)
 		If region = Null Throw New SpineArgumentNullException("Region not found in atlas: " + path + " (region attachment: " + name + ")")
 		
 		Local attachment:= New SpineRegionAttachment()
 		attachment.RenderObject = region
-		attachment.SetUVs(region.U, region.v, region.u2, region.v2, region.rotate)
+		attachment.SetUVs(region.u, region.v, region.u2, region.v2, region.rotate)
 		attachment.RegionOffsetX = region.offsetX
 		attachment.RegionOffsetY = region.offsetY
 		attachment.RegionWidth = region.width
@@ -31,7 +31,7 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 	End
 
 	Method NewMeshAttachment:SpineMeshAttachment(skin:SpineSkin, name:String, path:String)
-		Local region:SpineAtlasRegion = atlas.GetRegion(path)
+		Local region:SpineAtlasRegion = atlas.FindRegion(path)
 		If region = Null Throw New SpineArgumentNullException("Region not found in atlas: " + path + " (region attachment: " + name + ")")
 		
 		Local attachment:= New SpineMeshAttachment()
@@ -50,8 +50,8 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 		Return attachment
 	End
 	
-	Method NewMeshAttachment:SkinnedMeshAttachment(skin:SpineSkin, name:String, path:String)
-		Local region:SpineAtlasRegion = atlas.GetRegion(path)
+	Method NewSkinnedMeshAttachment:SpineSkinnedMeshAttachment(skin:SpineSkin, name:String, path:String)
+		Local region:SpineAtlasRegion = atlas.FindRegion(path)
 		If region = Null Throw New SpineArgumentNullException("Region not found in atlas: " + path + " (region attachment: " + name + ")")
 		
 		Local attachment:= New SpineSkinnedMeshAttachment()

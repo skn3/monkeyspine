@@ -15,55 +15,35 @@ Class SpineSkeletonJson
 
 	Private
 	Field attachmentLoader:SpineAttachmentLoader
-	Field fileLoader:SpineFileLoader
+	Field file:SpineFile
 	Public
 	Field Scale:Float
 
-	Method New(atlas:SpineAtlas, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
-		If fileLoader = Null Throw New SpineArgumentNullException("file loader cannot be Null.")
+	Method New(atlas:SpineAtlas, file:SpineFile)
+		If file = Null Throw New SpineArgumentNullException("file loader cannot be Null.")
 		
 		'save the loader objects
 		Self.attachmentLoader = New SpineAtlasAttachmentLoader(atlas)
-		Self.fileLoader = fileLoader
+		Self.file = file
 		
 		'do some final setup
 		Scale = 1.0
-	End
-
-	Method New(attachmentLoader:SpineAttachmentLoader, fileLoader:SpineFileLoader = SpineDefaultFileLoader.instance)
-		If attachmentLoader = Null Throw New SpineArgumentNullException("attachment loader cannot be Null.")
-		If fileLoader = Null Throw New SpineArgumentNullException("file loader cannot be Null.")
-		
-		'save the loader objects
-		Self.attachmentLoader = attachmentLoader
-		Self.fileLoader = fileLoader
-		
-		'do some final setup
-		Scale = 1.0
-	End
-
-	Method ReadSkeletonData:SpineSkeletonData(path:String)
-		Return ReadSkeletonData(fileLoader.LoadFile(path))
 	End
 	
-	Method ReadSkeletonData:SpineSkeletonData(fileStream:SpineFileStream)
-		If fileStream = Null Throw New SpineArgumentNullException("fileStream cannot be Null.")
-		
+	Method ReadSkeletonData:SpineSkeletonData()
 		'read 
 		Local skeletonData:SpineSkeletonData = New SpineSkeletonData
-		skeletonData.Name = SpineExtractFilenameWithoutExtension(fileStream.GetPath())
+		skeletonData.Name = SpineExtractFilenameWithoutExtension(file.path)
 
-		Local jsonRoot:= JSONObject(JSONData.ReadJSON(fileStream.ReadAll()))
+		Local jsonRoot:= JSONObject(JSONData.ReadJSON(file.ReadAll()))
 		If jsonRoot = Null Throw New SpineException("Invalid JSON.")
 
 		Local jsonGroupArray:JSONArray
 		Local jsonGroupObject:JSONObject
 		Local jsonName:String
 		Local jsonObjectDataItem:JSONDataItem
-		Local jsonArray:JSONArray
 		Local jsonObject:JSONObject
 		Local jsonItem:JSONDataItem
-		Local jsonChildItem:JSONDataItem
 		Local jsonChildObject:JSONObject
 		
 		Local boneName:String
@@ -196,7 +176,6 @@ Class SpineSkeletonJson
 
 		'skins
 		Local skin:SpineSkin
-		Local skinName:String
 		Local slotIndex:Int
 		Local attachment:SpineAttachment
 		Local attachmentName:String

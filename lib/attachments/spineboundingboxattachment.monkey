@@ -7,7 +7,8 @@ Import spine
 class SpineBoundingBoxAttachment Extends SpineAttachment
 	Field Vertices:Float[]
 
-	Method New()
+	Method New(name:String)
+		Super.New(name)
 		Type = SpineAttachmentType.boundingbox
 	End
 	
