@@ -54,7 +54,7 @@ Class SpineAnimation
 	
 	'@param target After the first and before the last entry.
 	Private
-	Function binarySearch:Int(values:Float[], target:Float, theStep:Int)
+	Function BinarySearch:Int(values:Float[], target:Float, theStep:Int)
 		Local low:Int = 0
 		Local high:Int = values.Length() / theStep - 2
 		If high = 0 Return theStep
@@ -71,7 +71,7 @@ Class SpineAnimation
 		Wend
 	End
 	
-	Function binarySearch:Int(values:Float[], target:Float)
+	Function BinarySearch:Int(values:Float[], target:Float)
 		Local low:Int = 0
 		Local high:Int = values.Length() -2
 		If high = 0 Return 1
@@ -88,7 +88,7 @@ Class SpineAnimation
 		Wend
 	End
 
-	Function linearSearch:Int(values:Float[], target:Float, theStep:Int)
+	Function LinearSearch:Int(values:Float[], target:Float, theStep:Int)
 		Local i:= 0
 		Local last:= values.Length() - theStep
 		While i <= last
@@ -251,7 +251,7 @@ Class SpineRotateTimeline Extends SpineCurveTimeline
 		EndIf
 		
 		'interpolate between the last frame and the current frame.
-		Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 2)
+		Local frameIndex:Int = SpineAnimation.BinarySearch(Frames, time, 2)
 		Local lastFrameValue:Float = Frames[frameIndex - 1]
 		Local frameTime:Float = Frames[frameIndex]
 		Local percent:Float = 1 - (time - frameTime) / (Frames[frameIndex + LAST_FRAME_TIME] - frameTime)
@@ -310,7 +310,7 @@ Class SpineTranslateTimeline Extends SpineCurveTimeline
 		EndIf
 
 		' Interpolate between the last frame and the current frame.
-		Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 3)
+		Local frameIndex:Int = SpineAnimation.BinarySearch(Frames, time, 3)
 		Local lastFrameX:Float = Frames[frameIndex - 2]
 		Local lastFrameY:Float = Frames[frameIndex - 1]
 		Local frameTime:Float = Frames[frameIndex]
@@ -339,7 +339,7 @@ Class SpineScaleTimeline Extends SpineTranslateTimeline
 		EndIf
 
 		' Interpolate between the last frame and the current frame.
-		Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 3)
+		Local frameIndex:Int = SpineAnimation.BinarySearch(Frames, time, 3)
 		Local lastFrameX:Float = Frames[frameIndex - 2]
 		Local lastFrameY:Float = Frames[frameIndex - 1]
 		Local frameTime:Float = Frames[frameIndex]
@@ -392,7 +392,7 @@ Class SpineColorTimeline Extends SpineCurveTimeline
 			a = Frames[i]
 		Else
 			' Interpolate between the last frame and the current frame.
-			Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 5)
+			Local frameIndex:Int = SpineAnimation.BinarySearch(Frames, time, 5)
 			Local lastFrameR:Float = Frames[frameIndex - 4]
 			Local lastFrameG:Float = Frames[frameIndex - 3]
 			Local lastFrameB:Float = Frames[frameIndex - 2]
@@ -457,7 +457,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
 		Else
-			frameIndex = SpineAnimation.binarySearch(Frames, time) - 1
+			frameIndex = SpineAnimation.BinarySearch(Frames, time) - 1
 		EndIf
 		
 		If Frames[frameIndex] <= lastTime
@@ -511,7 +511,7 @@ Class SpineEventTimeline Implements SpineTimeline
 		if lastTime < Frames[0]
 			frameIndex = 0
 		Else
-			frameIndex = SpineAnimation.binarySearch(Frames, lastTime)
+			frameIndex = SpineAnimation.BinarySearch(Frames, lastTime)
 			Local frame:Float = Frames[frameIndex]
 			while frameIndex > 0 'Fire multiple events with the same frame.
 				If Frames[frameIndex - 1] <> frame Exit
@@ -552,7 +552,7 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
 		Else
-			frameIndex = SpineAnimation.binarySearch(Frames, time) - 1
+			frameIndex = SpineAnimation.BinarySearch(Frames, time) - 1
 		EndIf
 
 		Local drawOrder:= skeleton.DrawOrder
@@ -609,15 +609,16 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 		EndIf
 		slot.AttachmentVerticesCount = vertexCount
 
+		Local i:Int
 		if time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			Local lastVertices := FrameVertices[Frames.Length() - 1]
 			if alpha < 1.0
-				For Local i:= 0 Until vertexCount
+				For i = 0 Until vertexCount
 					vertices[i] += ( (lastVertices[i] - vertices[i]) * alpha)
 				Next
 			Else
 				'Array.Copy(lastVertices, 0, vertices, 0, vertexCount)
-				For Local i:= 0 Until vertexCount
+				For i = 0 Until vertexCount
 					vertices[i] = lastVertices[i]
 				Next
 			EndIf
@@ -625,7 +626,7 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 		EndIf
 
 		' Interpolate between the previous frame and the current frame.
-		Local frameIndex:= SpineAnimation.binarySearch(Frames, time)
+		Local frameIndex:= SpineAnimation.BinarySearch(Frames, time)
 		Local frameTime := Frames[frameIndex]
 		Local percent:Float = 1.0 - (time - frameTime) / (Frames[frameIndex - 1] - frameTime)
 		percent = GetCurvePercent(frameIndex - 1, Max(0.0, Min(1.0, percent)))
@@ -633,14 +634,15 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 		Local prevVertices := FrameVertices[frameIndex - 1]
 		Local nextVertices := FrameVertices[frameIndex]
 
+		Local prev:Float
 		If alpha < 1.0
-			for Local i := 0 until vertexCount
-				Local prev := prevVertices[i]
+			For i = 0 Until vertexCount
+				prev = prevVertices[i]
 				vertices[i] += (prev + (nextVertices[i] - prev) * percent - vertices[i]) * alpha
 			Next
 		Else
-			for Local i := 0 until vertexCount
-				Local prev := prevVertices[i]
+			For i = 0 Until vertexCount
+				prev = prevVertices[i]
 				vertices[i] = prev + (nextVertices[i] - prev) * percent
 			Next
 		EndIf
@@ -682,7 +684,7 @@ Class SpineIkConstraintTimeline Extends SpineCurveTimeline
 		EndIf
 
 		' Interpolate between the previous frame and the current frame.
-		Local frameIndex:Int = SpineAnimation.binarySearch(Frames, time, 3)
+		Local frameIndex:Int = SpineAnimation.BinarySearch(Frames, time, 3)
 		Local prevFrameMix:Float = Frames[frameIndex - 2]
 		Local frameTime:Float = Frames[frameIndex]
 		Local percent:Float = 1 - (time - frameTime) / (Frames[frameIndex + PREV_FRAME_TIME] - frameTime)

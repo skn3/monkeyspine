@@ -65,9 +65,8 @@ Class SpineMeshAttachment Extends SpineAttachment
 	End
 			
 	Method ComputeWorldVertices:Void(slot:SpineSlot, worldVertices:Float[])
-		'get locals for speed!
 		Local x:Float = slot.Bone.Skeleton.X + slot.Bone.WorldX
-		Local y:Float = slot.Bone.Skeleton.y + slot.Bone.WorldY
+		Local y:Float = slot.Bone.Skeleton.Y + slot.Bone.WorldY
 		Local m00:Float = slot.Bone.M00
 		Local m01:Float = slot.Bone.M01
 		Local m10:Float = slot.Bone.M10
@@ -87,6 +86,13 @@ Class SpineMeshAttachment Extends SpineAttachment
 			worldVertices[i] = vx * m00 + vy * m01 + x
 			worldVertices[i + 1] = vx * m10 + vy * m11 + y
 		Next
+	End
+	
+	' --- glue
+	
+	Method Update:Void(slot:SpineSlot)
+		'bounding
+		SpineGetPolyBounding(Vertices, BoundingVertices)
 	End
 End
 		

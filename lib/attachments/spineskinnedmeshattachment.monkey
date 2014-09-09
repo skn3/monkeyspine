@@ -148,5 +148,12 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 			Wend
 		EndIf
 	End
+	
+	' --- glue
+	
+	Method Update:Void(slot:SpineSlot)
+		'bounding
+		'SpineGetPolyBounding(Vertices, BoundingVertices)
+	End
 End
 		

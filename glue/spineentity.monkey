@@ -103,55 +103,20 @@ Class SpineEntity
 		'this will update the state of the skeleton so anything we access after it is correctly updated
 		dirty = False
 		
-		'update the skeleton flip
+		'update the skeleton properties
 		skeleton.FlipX = flipX
 		skeleton.FlipY = flipY
+		skeleton.X = x
+		skeleton.Y = y
 		
-		'root bone or child bone?
-		Local rootBone:= skeleton.RootBone()
-		If rootBone
-			'root bone
-			'save old root details
-			Local oldRootBoneX:= rootBone.X
-			Local oldRootBoneY:= rootBone.Y
-			Local oldRootBoneScaleX:= rootBone.ScaleX
-			Local oldRootBoneScaleY:= rootBone.ScaleY
-			Local oldRootBoneRotation:= rootBone.Rotation
-			
-			'apply root bone calculation
-			rootBone.X = x + oldRootBoneX
-			rootBone.Y = y + oldRootBoneY
-			rootBone.ScaleX = scaleX * oldRootBoneScaleX
-			rootBone.ScaleY = scaleY * oldRootBoneScaleY
-			rootBone.Rotation = rotation + oldRootBoneRotation
-						
-			'update world transform
-			skeleton.UpdateWorldTransform()
-			
-			'restore root details
-			rootBone.X = oldRootBoneX
-			rootBone.Y = oldRootBoneY
-			rootBone.ScaleX = oldRootBoneScaleX
-			rootBone.ScaleY = oldRootBoneScaleY
-			rootBone.Rotation = oldRootBoneRotation
-		Else
-			'child bone
-			'update world transform
-			skeleton.UpdateWorldTransform()
-		EndIf
+		'update skeleton
+		skeleton.UpdateWorldTransform()
 				
-		'update region vertices
+		'update attachments
 		Local slot:SpineSlot
-		Local attachment:SpineRegionAttachment
 		For Local index:= 0 Until skeleton.Slots.Length()
 			slot = skeleton.Slots[index]
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
-			
-			'get attachment in correct format
-			attachment = SpineRegionAttachment(slot.Attachment)
-			
-			'update the attachment using the current state of bone
-			attachment.Update(slot)
+			slot.Attachment.Update(slot)
 		Next
 		
 		'flag bounding as dirty
@@ -284,7 +249,6 @@ Class SpineEntity
 		' --- render the entity ---
 		Local index:Int
 		Local slot:SpineSlot
-		Local attachment:SpineRegionAttachment
 		
 		'calculate again just incase something has changed
 		'this wont do any calculation if the entity has not been flagged as dirty!
@@ -297,18 +261,34 @@ Class SpineEntity
 				slot = skeleton.Slots[index]
 				
 				'skip if not a region attachment
-				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
-				
-				'get attachment in correct format
-				attachment = SpineRegionAttachment(slot.Attachment)
+				If slot.Attachment = Null Continue
 
 				'draw lines rect around bounding of region
 				mojo.SetColor(0, 255, 0)
-				SpineDrawLinePoly(attachment.BoundingVertices)
+				SpineDrawLinePoly(slot.Attachment.BoundingVertices)
+				
+				If slot.Attachment.Type = SpineAttachmentType.mesh
+					Local mesh:= SpineMeshAttachment(slot.Attachment)
+					Local vertices:Float[mesh.Vertices.Length()]
+					mesh.ComputeWorldVertices(slot, vertices)
+					
+					Local edge1:Int
+					Local edge2:Int
+					For Local edgeIndex:= 0 Until mesh.Edges.Length() Step 2
+						edge1 = mesh.Edges[edgeIndex]
+						edge2 = mesh.Edges[edgeIndex + 1]
+						DrawLine(vertices[edge1], vertices[edge1 + 1], vertices[edge2], vertices[edge2 + 1])
+					Next
+					
+					For Local vertIndex:= 0 Until mesh.Vertices.Length() Step 2
+						DrawCircle(vertices[vertIndex], vertices[vertIndex + 1], 2)
+					Next
+				EndIf
 			Next
 		EndIf
 		
 		'render images
+		#rem
 		If debugHideImages = False
 			For index = 0 Until skeleton.DrawOrder.Length()
 				'get slot
@@ -390,6 +370,7 @@ Class SpineEntity
 			mojo.SetColor(255, 0, 0)
 			SpineDrawLinePoly(bounding)
 		EndIf
+		#End
 	End
 	Public
 	

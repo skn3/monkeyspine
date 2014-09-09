@@ -710,6 +710,13 @@ Class SpineSkeletonJson
 										i += 1
 									Next
 								EndIf
+								
+								If attachment.Type = SpineAttachmentType.mesh
+									Local meshVertices:= SpineMeshAttachment(attachment).Vertices
+									For i = 0 Until vertexCount
+										vertices[i] += meshVertices[i]
+									Next
+								EndIf
 							EndIf
 							
 							timeline.SetFrame(frameIndex, jsonMesh.GetItem("time", 0.0), vertices)

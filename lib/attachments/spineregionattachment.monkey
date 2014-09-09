@@ -51,7 +51,6 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field WorldG:Float
 	Field WorldB:Float
 	Field WorldAlpha:Float
-	Field BoundingVertices:Float[8]
 
 	'constructor
 	Method New(name:String)
@@ -136,24 +135,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	
 	Method Update:Void(slot:SpineSlot)
 		' --- this will perform updates on teh state of the attachment ---
-		UpdateVertices(slot)
-		UpdateWorldState(slot)
-		UpdateColor(slot)
-		UpdateBounding()
-	End
-	
-	Method UpdateColor:Void(slot:SpineSlot)
-		' --- updates color for this attachment based on current frame  ---
-		'this is just a handy way to store the color for external use
-		WorldR = (slot.Skeleton.R * slot.R)
-		WorldG = (slot.Skeleton.G * slot.G)
-		WorldB = (slot.Skeleton.B * slot.B)
-		WorldAlpha = slot.Skeleton.A * slot.A
-	End
-	
-	Method UpdateVertices:Void(slot:SpineSlot)
-		' --- updates vertices for this attachment based on current frame  ---
-		'this is just a handy way to store the vertices for external use
+		'vertices
 		Vertices[X1] = Offset[X1] * slot.Bone.M00 + Offset[Y1] * slot.Bone.M01 + slot.Bone.WorldX
 		Vertices[Y1] = Offset[X1] * slot.Bone.M10 + Offset[Y1] * slot.Bone.M11 + slot.Bone.WorldY
 		Vertices[X2] = Offset[X2] * slot.Bone.M00 + Offset[Y2] * slot.Bone.M01 + slot.Bone.WorldX
@@ -162,12 +144,8 @@ Class SpineRegionAttachment Extends SpineAttachment
 		Vertices[Y3] = Offset[X3] * slot.Bone.M10 + Offset[Y3] * slot.Bone.M11 + slot.Bone.WorldY
 		Vertices[X4] = Offset[X4] * slot.Bone.M00 + Offset[Y4] * slot.Bone.M01 + slot.Bone.WorldX
 		Vertices[Y4] = Offset[X4] * slot.Bone.M10 + Offset[Y4] * slot.Bone.M11 + slot.Bone.WorldY
-	End
-	
-	Method UpdateWorldState:Void(slot:SpineSlot)
-		' --- updates world state based on current frame ---
-		'this is just a handy way to store the world state for external use
-		'do basic state
+		
+		'world
 		WorldX = slot.Bone.WorldX + X * slot.Bone.M00 + Y * slot.Bone.M01
 		WorldY = slot.Bone.WorldY + X * slot.Bone.M10 + Y * slot.Bone.M11
 		WorldRotation = slot.Bone.WorldRotation + Rotation
@@ -183,10 +161,14 @@ Class SpineRegionAttachment Extends SpineAttachment
 			WorldScaleY = -WorldScaleY
 			WorldRotation = -WorldRotation
 		End
-	End
-	
-	Method UpdateBounding:Void()
-		' --- updates the bounding box ---
+		
+		'color
+		WorldR = (slot.Skeleton.R * slot.R)
+		WorldG = (slot.Skeleton.G * slot.G)
+		WorldB = (slot.Skeleton.B * slot.B)
+		WorldAlpha = slot.Skeleton.A * slot.A
+		
+		'bounding
 		SpineGetPolyBounding(Vertices, BoundingVertices)
 	End
 End

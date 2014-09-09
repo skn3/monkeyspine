@@ -99,7 +99,6 @@ Class SpineSkeleton
 
 	'<summary>Caches information about bones and IK constraints. Must be called if bones or IK constraints are added or removed.</summary>
 	Method UpdateCache:Void()
-	DebugStop()
 		Local ikContraintIndex:Int
 		Local bone:SpineBone
 		Local parent:SpineBone
@@ -173,11 +172,13 @@ Class SpineSkeleton
 		Local last:= boneCache.Length() -1
 		Local updateBones:SpineBone[]
 		
-		For Local i:= 0 Until Bones.Length()
+		Local total:= Bones.Length()
+		For i = 0 Until total
 			bone = Bones[i]
 			bone.RotationIK = bone.Rotation
 		Next
 		
+		i = 0
 		Repeat
 			updateBones = boneCache[i]
 			nn = updateBones.Length()

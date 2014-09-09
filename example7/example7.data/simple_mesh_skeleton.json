@@ -1,0 +1,43 @@
+{
+"skeleton": { "spine": "1.9.17", "hash": "195J8YWjSS7DRlexOEKovQYhlK8", "width": 152.8, "height": 155.19 },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "slot1", "bone": "root", "attachment": "smile" }
+],
+"skins": {
+	"default": {
+		"slot1": {
+			"smile": {
+				"type": "mesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 2, 3, 1, 3, 0 ],
+				"vertices": [ 64, -64, -64, -64, -64, 64, 64, 64 ],
+				"hull": 4,
+				"edges": [ 0, 2, 2, 4, 4, 6, 0, 6 ],
+				"width": 128,
+				"height": 128
+			}
+		}
+	}
+},
+"animations": {
+	"animation": {
+		"ffd": {
+			"default": {
+				"slot1": {
+					"smile": [
+						{ "time": 0 },
+						{
+							"time": 0.6666,
+							"offset": 6,
+							"vertices": [ 31, 33.99 ]
+						}
+					]
+				}
+			}
+		}
+	}
+}
+}

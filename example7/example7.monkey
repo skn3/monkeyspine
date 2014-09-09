@@ -11,21 +11,21 @@ End
 
 Class MyApp Extends App Implements SpineEntityCallback
 	Field timestamp:Int
-	Field spinetest:SpineEntity
+	Field spineTest:SpineEntity
 	Field showMessageText:String
 	Field showMessageAlpha:Float = 4.0
 	
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
 		' --- animation has finished ---
 		Select entity
-			Case spinetest
+			Case spineTest
 		End
 	End
 	
 	Method OnSpineEntityEvent:Void(entity:SpineEntity, event:String, intValue:Int, floatValue:Float, stringValue:String)
 		' --- event has triggered ---
 		Select entity
-			Case spinetest
+			Case spineTest
 		End
 	End
 	
@@ -35,14 +35,17 @@ Class MyApp Extends App Implements SpineEntityCallback
 		SetUpdateRate(60)
 		timestamp = Millisecs()
 		
-		'load spinetest
+		'load spineTest
 		Try
-			spinetest = LoadMojoSpineEntity("monkey://data/skeleton1.json", "monkey://data/skeleton1.atlas")
-			spinetest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
-			spinetest.SetAnimation("animation", True)
-			spinetest.SetCallback(Self)
-			spinetest.SetSpeed(0.8)
-			spinetest.SetSnapToPixels(True)
+			'spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json", "monkey://data/smile_skeleton.atlas")
+			spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json", "monkey://data/mesh_skeleton.atlas")
+			'spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json", "monkey://data/simple_mesh_skeleton.atlas")
+			spineTest.SetDebugDraw(True)
+			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
+			spineTest.SetAnimation("animation", True)
+			spineTest.SetCallback(Self)
+			spineTest.SetSpeed(0.8)
+			spineTest.SetSnapToPixels(True)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -57,7 +60,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		Cls(128, 128, 128)
 		
 		'simples! render current item
-		spinetest.Render()
+		spineTest.Render()
 		
 		'render message
 		If showMessageAlpha > 0.0
@@ -82,7 +85,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 		timestamp = newTimestamp
 		
 		'update item entity
-		spinetest.Update(deltaFloat)
+		spineTest.Update(deltaFloat)
+		
+		spineTest.SetPosition(MouseX(), MouseY())
 		
 		'update fading message
 		If showMessageAlpha > 0

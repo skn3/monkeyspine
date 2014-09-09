@@ -316,7 +316,8 @@ End Function
 
 Function SpineGetPolyBounding:Void(poly:Float[], out:Float[])
 	' --- calculate teh dimensions of the given polygon ---
-	If poly.Length() < 6
+	Local total:= poly.Length()
+	If total < 6
 		'no poly (well not one that has area)
 		out[0] = 0
 		out[1] = 0
@@ -333,7 +334,7 @@ Function SpineGetPolyBounding:Void(poly:Float[], out:Float[])
 		Local maxY:Float = poly[1]
 		
 		'skip the first point
-		For index = 2 Until poly.Length() Step 2
+		For index = 2 Until total Step 2
 			If poly[index] < minX minX = poly[index]
 			If poly[index] > maxX maxX = poly[index]
 			If poly[index+1] < minY minY = poly[index+1]
@@ -363,23 +364,25 @@ End
 
 Function SpineDrawLinePoly:Void(vertices:Float[])
 	' --- draw a lined poly ---
+	Local total:= vertices.Length()
+	
 	'draw none
-	If vertices.Length() < 2 Return
+	If total < 2 Return
 	
 	'draw point
-	If vertices.Length() < 4
+	If total < 4
 		DrawPoint(vertices[0], vertices[1])
 		Return
 	EndIf
 	
-	'draw line
-	If vertices.Length() < 6
+	'draw 1 line
+	If total < 6
 		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
 		Return
 	EndIf
 	
-	'draw lines
-	If vertices.Length() < 8
+	'draw 2 lines
+	If total < 8
 		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
 		DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
 		Return		
@@ -388,7 +391,7 @@ Function SpineDrawLinePoly:Void(vertices:Float[])
 	'draw poly
 	Local lastX:Float
 	Local lastY:Float
-	For Local index:= 2 Until vertices.Length() Step 2
+	For Local index:= 2 Until total Step 2
 		lastX = vertices[index]
 		lastY = vertices[index + 1]
 		DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)
