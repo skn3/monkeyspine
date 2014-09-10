@@ -10,4 +10,5 @@ Interface SpineTexture
 	
 	Method Load:Void(path:String)
 	Method Discard:Void()
+	Method Grab:SpineRendererObject(x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
 End

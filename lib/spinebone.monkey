@@ -62,13 +62,13 @@ Class SpineBone
 			If Skeleton.FlipX
 				WorldX = -X
 			Else
-				WorldX = -X
+				WorldX = X
 			EndIf
 			
-			If Skeleton.FlipY
+			If Skeleton.FlipY <> yDown
 				WorldY = -Y
 			Else
-				WorldY = -Y
+				WorldY = Y
 			EndIf
 			
 			WorldScaleX = ScaleX

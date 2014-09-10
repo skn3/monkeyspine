@@ -1,7 +1,5 @@
 'see license.txt for source licenses
 'This example demonstrates how we can see when an animation has finished.
-Import mojo
-Import spine
 Import spine.spinemojo
 
 Function Main:Int()
@@ -37,16 +35,16 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			'spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json", "monkey://data/smile_skeleton.atlas")
-			spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json", "monkey://data/mesh_skeleton.atlas")
+			spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json", "monkey://data/smile_skeleton.atlas")
+			'spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json", "monkey://data/mesh_skeleton.atlas")
 			'spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json", "monkey://data/simple_mesh_skeleton.atlas")
+			'spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json", "monkey://data/goblins-ffd.atlas")
 			spineTest.SetDebugDraw(True)
 			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spineTest.SetAnimation("animation", True)
 			spineTest.SetCallback(Self)
 			spineTest.SetSpeed(0.8)
 			spineTest.SetSnapToPixels(True)
-			spineTest.testingImage = LoadImage("monkey://data/mesh_skeleton.png")
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)

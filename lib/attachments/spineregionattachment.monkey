@@ -38,7 +38,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field A:Float
 	
 	Field Path:String
-	Field RendererObject:SpineAtlasRegion
+	Field RendererObject:SpineRendererObject
 	
 	'these are so we have a place to update state at runtime
 	Field Vertices:Float[8]

@@ -48,6 +48,15 @@ Class SpineEntity
 	Field dirtyBounding:Bool
 	
 	Field slotBoundingVertices:Float[][]
+	Field slotWorldX:Float[]
+	Field slotWorldY:Float[]
+	Field slotWorldRotation:Float[]
+	Field slotWorldScaleX:Float[]
+	Field slotWorldScaleY:Float[]
+	Field slotWorldR:Float[]
+	Field slotWorldG:Float[]
+	Field slotWorldB:Float[]
+	Field slotWorldAlpha:Float[]
 	
 	Field bounding:Float[8]
 	
@@ -68,8 +77,6 @@ Class SpineEntity
 	Field lastBoneLookup:SpineBone
 	Public
 	
-	Field testingImage:Image
-	
 	'constructor/destructor
 	'there are lots of variations here to make it easy to use
 	Method New(skeletonPath:String, atlasPath:String, atlasDir:String, fileLoader:SpineFileLoader, atlasLoader:SpineAtlasLoader, textureLoader:SpineTextureLoader)
@@ -87,10 +94,19 @@ Class SpineEntity
 		skeleton = New SpineSkeleton(data)
 		skeleton.SetToSetupPose()
 		
-		'update the slot arrays
+		'create slot arrays so we dont have to polute the spine lib files
 		Local index:Int
 		Local total:= data.Slots.Length()
 		slotBoundingVertices = New Float[total][]
+		slotWorldX = New Float[total]
+		slotWorldY = New Float[total]
+		slotWorldRotation = New Float[total]
+		slotWorldScaleX = New Float[total]
+		slotWorldScaleY = New Float[total]
+		slotWorldR = New Float[total]
+		slotWorldG = New Float[total]
+		slotWorldB = New Float[total]
+		slotWorldAlpha = New Float[total]
 		
 		'fill slot arrays
 		For index = 0 Until total
@@ -148,8 +164,17 @@ Class SpineEntity
 					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
 					
 				Case SpineAttachmentType.region
-					Local mesh:= SpineMeshAttachment(attachment)
-					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+					Local region:= SpineRegionAttachment(attachment)
+					Local bone:= slot.Bone
+
+					'get world properties
+					slotWorldX[index] = skeleton.X + bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
+					slotWorldY[index] = skeleton.Y + bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
+					slotWorldRotation[index] = bone.WorldRotation + region.Rotation
+					slotWorldScaleX[index] = bone.WorldScaleX + region.ScaleX - 1.0
+					slotWorldScaleY[index] = bone.WorldScaleY + region.ScaleY - 1.0
+					
+					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
 					
 				Case SpineAttachmentType.skinnedmesh
 					'Local mesh:= SpineSkinnedMeshAttachment(attachment)
@@ -308,6 +333,7 @@ Class SpineEntity
 					Local verts:Float[12]
 					Local mesh:= SpineMeshAttachment(attachment)
 					Local vertices:Float[mesh.Vertices.Length()]
+					Local rendererObject:SpineRendererObject = mesh.RendererObject
 					Local uvs:= mesh.UVs
 					Local vertIndex:Int
 					Local vertOffset:Int
@@ -329,16 +355,20 @@ Class SpineEntity
 								verts[triangleOFfset + 1] = vertices[vertOffset + 1]
 							EndIf
 							
-							'u,v
-							verts[triangleOFfset + 2] = 2.0 + (128.0 / 1.0) * uvs[vertOffset]
-							verts[triangleOFfset + 3] = 2.0 + (128.0 / 1.0) * uvs[vertOffset + 1]
+							'u,v (ugh have to convert "uvs" into image dimensions..????)
+							verts[triangleOFfset + 2] = (rendererObject.width / 1.0) * uvs[vertOffset]
+							verts[triangleOFfset + 3] = (rendererObject.height / 1.0) * uvs[vertOffset + 1]
 							
 							triangleOFfset += 4
 						Next
 						
 						'draw the poly
-						DrawPoly(verts, testingImage, 0)
+						rendererObject.Draw(verts)
 					Next
+					
+				Case SpineAttachmentType.region
+					Local region:= SpineRegionAttachment(attachment)
+					region.RendererObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index])
 			End
 			'mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 			'mojo.SetAlpha(attachment.WorldAlpha)
