@@ -20,5 +20,5 @@ Class SpineAttachment Abstract
 	
 	' --- glue
 	
-	Method Update:Void(slot:SpineSlot) Abstract
+	'Method Update:Void(slot:SpineSlot) Abstract
 End

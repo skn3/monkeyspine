@@ -292,7 +292,6 @@ Class SpineMojoAtlas Implements SpineAtlas
 	'<summary>Returns the number of tuple values read (1, 2 or 4).</summary>
 	Function ReadTuple:Int(file:SpineFile, tuple:String[])
 		Local line:String = file.ReadLine()
-		Print "line = " + line
 		Local colon:Int = line.Find(":")
 		If colon = -1
 			Throw New SpineException("Invalid line: " + line)

@@ -64,6 +64,9 @@ Strict
 'spine requires these file types to operate normally
 #TEXT_FILES += "*.atlas|*.json"
 
+'preprocessor vars
+#SPINE_DEBUG_RENDER = true
+
 'core
 Import mojo
 Import monkey.map

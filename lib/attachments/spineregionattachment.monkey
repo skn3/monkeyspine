@@ -38,7 +38,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field A:Float
 	
 	Field Path:String
-	Field RenderObject:SpineAtlasRegion
+	Field RendererObject:SpineAtlasRegion
 	
 	'these are so we have a place to update state at runtime
 	Field Vertices:Float[8]
@@ -135,6 +135,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	
 	Method Update:Void(slot:SpineSlot)
 		' --- this will perform updates on teh state of the attachment ---
+		#rem
 		'vertices
 		Vertices[X1] = Offset[X1] * slot.Bone.M00 + Offset[Y1] * slot.Bone.M01 + slot.Bone.WorldX
 		Vertices[Y1] = Offset[X1] * slot.Bone.M10 + Offset[Y1] * slot.Bone.M11 + slot.Bone.WorldY
@@ -167,5 +168,6 @@ Class SpineRegionAttachment Extends SpineAttachment
 		WorldG = (slot.Skeleton.G * slot.G)
 		WorldB = (slot.Skeleton.B * slot.B)
 		WorldAlpha = slot.Skeleton.A * slot.A
+		#end
 	End
 End

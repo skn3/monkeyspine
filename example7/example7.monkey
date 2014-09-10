@@ -46,6 +46,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetCallback(Self)
 			spineTest.SetSpeed(0.8)
 			spineTest.SetSnapToPixels(True)
+			spineTest.testingImage = LoadImage("monkey://data/mesh_skeleton.png")
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -57,7 +58,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnRender:Int()
 		' --- render the app ---
-		Cls(128, 128, 128)
+		Cls(0, 0, 0)
 		
 		'simples! render current item
 		spineTest.Render()

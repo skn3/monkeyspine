@@ -32,10 +32,14 @@ Class SpineEntity
 	
 	Field snapToPixels:Bool = False
 	
+	#If SPINE_DEBUG_RENDER = True
+	Field debugOutline:Bool = False
+	Field debugMesh:Bool = False
 	Field debugSlots:Bool = False
 	Field debugBones:Bool = False
 	Field debugBounding:Bool = False
 	Field debugHideImages:Bool = False
+	#EndIf
 	
 	Field updating:Bool = False
 	Field rendering:Bool = False
@@ -63,6 +67,8 @@ Class SpineEntity
 	Field lastBoneLookupName:String
 	Field lastBoneLookup:SpineBone
 	Public
+	
+	Field testingImage:Image
 	
 	'constructor/destructor
 	'there are lots of variations here to make it easy to use
@@ -138,16 +144,16 @@ Class SpineEntity
 			Select attachment.Type
 				Case SpineAttachmentType.boundingbox
 				Case SpineAttachmentType.mesh
-					Local mesh:= SpineMeshAttachment(attachment)
-					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+					'Local mesh:= SpineMeshAttachment(attachment)
+					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
 					
 				Case SpineAttachmentType.region
 					Local mesh:= SpineMeshAttachment(attachment)
 					SpineGetPolyBounding(mesh.Vertices, slotArray1)
 					
 				Case SpineAttachmentType.skinnedmesh
-					Local mesh:= SpineSkinnedMeshAttachment(attachment)
-					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+					'Local mesh:= SpineSkinnedMeshAttachment(attachment)
+					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
 			End
 		Next
 		
@@ -279,45 +285,124 @@ Class SpineEntity
 		' --- render the entity ---
 		Local index:Int
 		Local slot:SpineSlot
-		
+		Local attachment:SpineAttachment
+		Local total:Int
+				
 		'calculate again just incase something has changed
 		'this wont do any calculation if the entity has not been flagged as dirty!
 		Calculate()
 		
-		'render bounding for regions
-		If debugBounding
-			For index = 0 Until skeleton.Slots.Length()
-				'get slot
-				slot = skeleton.Slots[index]
+		'render images
+		total = skeleton.DrawOrder.Length()
+		For index = 0 Until total
+			'get slot
+			slot = skeleton.DrawOrder[index]
+			attachment = slot.Attachment
 				
-				'skip if not a region attachment
-				If slot.Attachment = Null Continue
-
-				'draw lines rect around bounding of region
-				mojo.SetColor(0, 255, 0)
-				SpineDrawLinePoly(slot.Attachment.BoundingVertices)
+			'skip if not a valid region
+			If attachment = Null Continue
 				
-				If slot.Attachment.Type = SpineAttachmentType.mesh
-					Local mesh:= SpineMeshAttachment(slot.Attachment)
+			'draw it
+			Select attachment.Type
+				Case SpineAttachmentType.mesh
+					Local verts:Float[12]
+					Local mesh:= SpineMeshAttachment(attachment)
+					Local vertices:Float[mesh.Vertices.Length()]
+					Local uvs:= mesh.UVs
+					Local vertIndex:Int
+					Local vertOffset:Int
+					Local triangleOFfset:Int
+					mesh.ComputeWorldVertices(slot, vertices)
+					
+					For Local triangleIndex:= 0 Until mesh.Triangles.Length() Step 3
+						'build triangle verts
+						triangleOFfset = 0
+						For vertIndex = 0 Until 3
+							vertOffset = mesh.Triangles[triangleIndex + vertIndex] * 2
+							
+							'x,y
+							If snapToPixels
+								verts[triangleOFfset] = Int(vertices[vertOffset])
+								verts[triangleOFfset + 1] = Int(vertices[vertOffset + 1])
+							Else
+								verts[triangleOFfset] = vertices[vertOffset]
+								verts[triangleOFfset + 1] = vertices[vertOffset + 1]
+							EndIf
+							
+							'u,v
+							verts[triangleOFfset + 2] = 2.0 + (128.0 / 1.0) * uvs[vertOffset]
+							verts[triangleOFfset + 3] = 2.0 + (128.0 / 1.0) * uvs[vertOffset + 1]
+							
+							triangleOFfset += 4
+						Next
+						
+						'draw the poly
+						DrawPoly(verts, testingImage, 0)
+					Next
+			End
+			'mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
+			'mojo.SetAlpha(attachment.WorldAlpha)
+			If snapToPixels
+				'attachment.RendererObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
+			Else
+				'attachment.RendererObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
+			EndIf
+		Next
+		
+		'do debug rendering
+		#If SPINE_DEBUG_RENDER = True
+		Local vert1:Int
+		Local vert2:Int
+		Local vert3:Int
+		total = skeleton.Slots.Length()
+		For index = 0 Until total
+			'get slot
+			slot = skeleton.Slots[index]
+			attachment = slot.Attachment
+			
+			'skip if not a valid region
+			If attachment = Null Continue
+						
+			Select attachment.Type
+				Case SpineAttachmentType.mesh
+					Local mesh:= SpineMeshAttachment(attachment)
 					Local vertices:Float[mesh.Vertices.Length()]
 					mesh.ComputeWorldVertices(slot, vertices)
 					
-					Local edge1:Int
-					Local edge2:Int
-					For Local edgeIndex:= 0 Until mesh.Edges.Length() Step 2
-						edge1 = mesh.Edges[edgeIndex]
-						edge2 = mesh.Edges[edgeIndex + 1]
-						DrawLine(vertices[edge1], vertices[edge1 + 1], vertices[edge2], vertices[edge2 + 1])
-					Next
+					'bounding
+					If debugBounding
+						'draw lines rect around bounding of region
+						'mojo.SetColor(0, 255, 0)
+						'SpineDrawLinePoly(slotBoundingVertices[index])
+					EndIf
 					
-					For Local vertIndex:= 0 Until mesh.Vertices.Length() Step 2
-						DrawCircle(vertices[vertIndex], vertices[vertIndex + 1], 2)
-					Next
-				EndIf
-			Next
-		EndIf
+					'mesh
+					If debugMesh
+						mojo.SetColor(40, 40, 40)
+						For Local triangleIndex:= 0 Until mesh.Triangles.Length() Step 3
+							vert1 = mesh.Triangles[triangleIndex] * 2
+							vert2 = mesh.Triangles[triangleIndex + 1] * 2
+							vert3 = mesh.Triangles[triangleIndex + 2] * 2
+
+							DrawLine(vertices[vert1], vertices[vert1 + 1], vertices[vert2], vertices[vert2 + 1])
+							DrawLine(vertices[vert2], vertices[vert2 + 1], vertices[vert3], vertices[vert3 + 1])
+							DrawLine(vertices[vert3], vertices[vert3 + 1], vertices[vert1], vertices[vert1 + 1])
+						Next
+					EndIf
+					
+					'outline
+					If debugOutline
+						mojo.SetColor(180, 180, 180)
+						For Local edgeIndex:= 0 Until mesh.Edges.Length() Step 2
+							vert1 = mesh.Edges[edgeIndex]
+							vert2 = mesh.Edges[edgeIndex + 1]
+							DrawLine(vertices[vert1], vertices[vert1 + 1], vertices[vert2], vertices[vert2 + 1])
+						Next
+					EndIf
+			End
+		Next
+		#EndIf
 		
-		'render images
 		#rem
 		If debugHideImages = False
 			For index = 0 Until skeleton.DrawOrder.Length()
@@ -334,9 +419,9 @@ Class SpineEntity
 				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 				mojo.SetAlpha(attachment.WorldAlpha)
 				If snapToPixels
-					'attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RendererObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
 				Else
-					'attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RendererObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
 				EndIf
 			Next
 		EndIf
@@ -440,28 +525,40 @@ Class SpineEntity
 	End
 	
 	'debug api
-	Method SetDebugDraw:Void(slotsBonesBounding:Bool)
+	#If SPINE_DEBUG_RENDER = True
+	Method SetDebugDraw:Void(all:Bool, hideImages:Bool = False)
 		' --- set debug draw options ---
-		debugSlots = slotsBonesBounding
-		debugBones = slotsBonesBounding
-		debugBounding = slotsBonesBounding
+		debugHideImages = hideImages
+		debugOutline = all
+		debugSlots = all
+		debugBones = all
+		debugBounding = all
+		debugMesh = all
 	End
 	
-	Method SetDebugDraw:Void(slots:Bool, bones:Bool, bounding:Bool)
+	Method SetDebugDraw:Void(hideImages:Bool, outline:Bool, slots:Bool, bones:Bool, bounding:Bool, mesh:Bool)
 		' --- set debug draw options ---
+		debugHideImages = hideImages
+		debugOutline = outline
 		debugSlots = slots
 		debugBones = bones
 		debugBounding = bounding
-	End
-	
-	Method SetDebugHideImages:Void(images:Bool)
-		' --- hide images ---
-		debugHideImages = images
+		debugMesh = mesh
 	End
 	
 	Method GetDebugDraw:Bool()
 		' --- get combined debug state ---
-		Return debugSlots or debugBones or debugBounding
+		Return debugHideImages or debugOutline or debugSlots or debugBones or debugBounding or debugMesh
+	End
+	
+	Method GetDebugDrawHideImages:Bool()
+		' --- Return state of debug draw ---
+		Return debugHideImages
+	End
+	
+	Method GetDebugDrawOutline:Bool()
+		' --- Return state of debug draw ---
+		Return debugOutline
 	End
 	
 	Method GetDebugDrawSlots:Bool()
@@ -478,6 +575,12 @@ Class SpineEntity
 		' --- Return state of debug draw ---
 		Return debugBounding
 	End
+	
+	Method GetDebugDrawMesh:Bool()
+		' --- Return state of debug draw ---
+		Return debugMesh
+	End
+	#EndIf
 	
 	'collision api
 	Method PointInside:Bool(x:Float, y:Float, precision:Int = 0)
