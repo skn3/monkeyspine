@@ -1,9 +1,9 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
 
 Class SpinePolygon
-	Field Vertices:float[16]
+	Field Vertices:Float[16]
 	Field Count:Int
 End

@@ -1,11 +1,11 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine.spinemojo
 
 Class SpineMojoTexture Implements SpineTexture
 	Private
-	Field _path:string
+	Field _path:String
 	Field _width:Int
 	Field _height:Int
 	Field image:Image

@@ -1,15 +1,15 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
 
-'Attachment that has a polygon for bounds checking
-class SpineBoundingBoxAttachment Extends SpineAttachment
+'Attachment that has a polygon For bounds checking
+Class SpineBoundingBoxAttachment Extends SpineAttachment
 	Field Vertices:Float[]
 
 	Method New(name:String)
 		Super.New(name)
-		Type = SpineAttachmentType.boundingbox
+		Type = SpineAttachmentType.BoundingBox
 	End
 	
 	'Must have at least the same length as this attachment's vertices.

@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -30,7 +30,7 @@ Class SpineSkeletonBounds
 	Method Update:Void(skeleton:SpineSkeleton, updateAabb:Bool)
 		Local i:Int
 		Local slots:= skeleton.slots
-		Local slotCount:= slots.Length();
+		Local slotCount:= slots.Length()
 		Local slot:SpineSlot
 		Local boundingBox:SpineBoundingBoxAttachment
 		Local polygon:SpinePolygon
@@ -68,8 +68,8 @@ Class SpineSkeletonBounds
 			Polygons[polygonsTotal] = polygon
 			polygonsTotal += 1
 	
-			polygon.Count = boundingBox.Vertices.Length();
-			if polygon.Vertices.Length() < polygon.Count polygon.Vertices = new Float[polygon.Count]
+			polygon.Count = boundingBox.Vertices.Length()
+			if polygon.Vertices.Length() < polygon.Count polygon.Vertices = New Float[polygon.Count]
 			boundingBox.ComputeWorldVertices(slot.Bone, polygon.Vertices)
 		Next
 
@@ -77,8 +77,8 @@ Class SpineSkeletonBounds
 	End
 
 	Method AabbCompute:Void()
-		Local minX:float = SPINE_MAX_FLOAT
-		Local minY:float = SPINE_MAX_FLOAT
+		Local minX:Float = SPINE_MAX_FLOAT
+		Local minY:Float = SPINE_MAX_FLOAT
 		Local maxX:Float = SPINE_MIN_FLOAT
 		Local maxY:Float = SPINE_MIN_FLOAT
 		
@@ -87,7 +87,7 @@ Class SpineSkeletonBounds
 		Local ii:Int
 		Local nn:Int
 		Local x:Float
-		Local y:float
+		Local y:Float
 		For Local i:= 0 Until polygonsTotal
 			polygon = Polygons[i]
 			vertices = polygon.Vertices
@@ -109,12 +109,12 @@ Class SpineSkeletonBounds
 	End
 
 	
-	'<summary>Returns true if the axis aligned bounding box contains the point.</summary>
+	'<summary>Returns True if the axis aligned bounding box contains the point.</summary>
 	Method AabbContainsPoint:Bool(x:Float, y:Float)
 		Return x >= MinX And x <= MaxX And y >= MinY And y <= MaxY
 	End
 
-	'<summary>Returns true if the axis aligned bounding box intersects the line segment.</summary>
+	'<summary>Returns True if the axis aligned bounding box intersects the line segment.</summary>
 	Method AabbIntersectsSegment:Bool(x1:Float, y1:Float, x2:Float, y2:Float)
 		Local minX:Float = Self.minX
 		Local minY:Float = Self.minY
@@ -136,12 +136,12 @@ Class SpineSkeletonBounds
 		Return False
 	End
 
-	'<summary>Returns true if the axis aligned bounding box intersects the axis aligned bounding box of the specified bounds.</summary>
+	'<summary>Returns True if the axis aligned bounding box intersects the axis aligned bounding box of the specified bounds.</summary>
 	Method AabbIntersectsSkeleton:Bool(bounds:SpineSkeletonBounds)
 		Return minX < bounds.MaxX And maxX > bounds.MinX And minY < bounds.MaxY And maxY > bounds.MinY
 	End
 	
-	'<summary>Returns true if the polygon contains the point.</summary>
+	'<summary>Returns True if the polygon contains the point.</summary>
 	Method ContainsPoint:Bool(polygon:SpinePolygon, x:Float, y:Float)
 		Local vertices:= polygon.Vertices
 		Local nn:Int = polygon.Count
@@ -155,7 +155,7 @@ Class SpineSkeletonBounds
 			vertexY = vertices[ii + 1]
 			prevY = vertices[prevIndex + 1]
 			If (vertexY < y And prevY >= y) Or (prevY < y And vertexY >= y)
-				vertexX = vertices[ii];
+				vertexX = vertices[ii]
 				If vertexX + (y - vertexY) / (prevY - vertexY) * (vertices[prevIndex] - vertexX) < x inside = Not inside
 			EndIf
 			prevIndex = ii
@@ -164,8 +164,8 @@ Class SpineSkeletonBounds
 		Return inside
 	End
 	
-	'<summary>Returns the first bounding box attachment that contains the point, or null. When doing many checks, it is usually more
-	'efficient to only call this method if @link #aabbContainsPoint(float, float)} returns true.</summary>
+	'<summary>Returns the first bounding box attachment that contains the point, or Null. When doing many checks, it is usually more
+	'efficient to only call this method if @link #aabbContainsPoint(Float, Float)} returns True.</summary>
 	Method ContainsPoint:SpineBoundingBoxAttachment(x:Float, y:Float)
 		For Local i:= 0 Until polygonsTotal
 			If ContainsPoint(polygons[i], x, y) Return BoundingBoxes[i]
@@ -173,17 +173,17 @@ Class SpineSkeletonBounds
 		Return Null
 	End
 	
-	'<summary>Returns the first bounding box attachment that contains the line segment, or null. When doing many checks, it is usually
-	'more efficient to only call this method if @link #aabbIntersectsSegment(float, float, float, float)} returns true.</summary>
+	'<summary>Returns the first bounding box attachment that contains the line segment, or Null. When doing many checks, it is usually
+	'more efficient to only call this method if @link #aabbIntersectsSegment(Float, Float, Float, Float)} returns True.</summary>
 	Method IntersectsSegment:SpineBoundingBoxAttachment(x1:Float, y1:Float, x2:Float, y2:Float)
 		For Local i:= 0 Until polygonsTotal
 			If IntersectsSegment(polygons[i], x1, y1, x2, y2) Return BoundingBoxes[i]
 		Next
 			
-		return null;
+		Return Null
 	End
 	
-	'<summary>Returns true if the polygon contains the line segment.</summary>
+	'<summary>Returns True if the polygon contains the line segment.</summary>
 	Method IntersectsSegment:Bool(polygon:SpinePolygon, x1:Float, y1:Float, x2:Float, y2:Float)
 		Local vertices:= polygon.Vertices
 		Local width12:Float = x1 - x2
@@ -198,7 +198,7 @@ Class SpineSkeletonBounds
 		Local height34:Float
 		Local det3:Float
 		Local x:Float
-		Local y:float
+		Local y:Float
 		
 		For Local ii:= 0 Until polygonsTotal Step 2
 			x4 = vertices[ii]

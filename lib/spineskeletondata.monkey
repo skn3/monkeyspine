@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -123,14 +123,14 @@ Class SpineSkeletonData
 	' --- IK
 	
 	Method FindIkConstraint:IkConstraintData(ikConstraintName:String)
-		If ikConstraintName.Length() = 0 Throw New SpineArgumentNullException("ikConstraintName cannot be null.")
+		If ikConstraintName.Length() = 0 Throw New SpineArgumentNullException("ikConstraintName cannot be Null.")
 		
 		Local ikConstraint:SpineIkConstraintData
 		For Local i:= 0 Until ikConstraintsCount
 			ikConstraint = ikConstraints[i]
 			If ikConstraint.Name = ikConstraintName Return ikConstraint
 		Next
-		return null
+		Return Null
 	End
 	
 	' --- 

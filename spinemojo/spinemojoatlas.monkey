@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine.spinemojo
@@ -12,7 +12,7 @@ Class SpineMojoAtlas Implements SpineAtlas
 	
 	Method Load:Void(file:SpineFile, imagesDir:String, textureLoader:SpineTextureLoader)
 		'load routine taken from official csharp api
-		If textureLoader = Null Throw New SpineArgumentNullException("textureLoader cannot be null.")
+		If textureLoader = Null Throw New SpineArgumentNullException("textureLoader cannot be Null.")
 
 		Local pages:SpineMojoAtlasPage[1]
 		Local pagesCount:Int
@@ -45,7 +45,7 @@ Class SpineMojoAtlas Implements SpineAtlas
 				page.minFilter = SpineTextureFilter.FromString(tuple[0])
 				page.magFilter = SpineTextureFilter.FromString(tuple[1])
 				
-				'repeat
+				'Repeat
 				ReadTuple(file, tuple)
 				Select tuple[0]
 					Case "none"
@@ -187,7 +187,7 @@ Class SpineMojoAtlas Implements SpineAtlas
 			path2 = path2[index ..]
 		EndIf
 		
-		'strip slash from end of path 1
+		'strip slash from End of path 1
 		index = path1.Length() -1
 		While index > - 1 and path1[index] = "/"
 			index -= 1

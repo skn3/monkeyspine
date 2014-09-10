@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine.spinemojo
@@ -46,7 +46,7 @@ Class SpineMojoAtlasRegion Implements SpineAtlasRegion
 		Return _name
 	End
 	
-	Method name:Void(value:string) Property
+	Method name:Void(value:String) Property
 		_name = value
 	End
 	
@@ -162,19 +162,19 @@ Class SpineMojoAtlasRegion Implements SpineAtlasRegion
 		_rotate = value
 	End
 	
-	Method splits:int[] () Property
+	Method splits:Int[] () Property
 		Return _splits
 	End
 	
-	Method splits:Void(value:int[]) Property
+	Method splits:Void(value:Int[]) Property
 		_splits = value
 	End
 	
-	Method pads:int[] () Property
+	Method pads:Int[] () Property
 		Return _pads
 	End
 	
-	Method pads:Void(value:int[]) Property
+	Method pads:Void(value:Int[]) Property
 		_pads = value
 	End
 End

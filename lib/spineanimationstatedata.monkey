@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -48,7 +48,7 @@ Class SpineAnimationStateData
 			'reuse old Float object
 			floatObject.value = duration
 		Else
-			'create new Float object
+			'create New Float object
 			fromMap.Insert(toAnimation, New FloatObject(duration))
 		EndIf
 	End

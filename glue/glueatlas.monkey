@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -86,14 +86,14 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 		'create the atlas
 		Local atlas:= New SpineDefaultAtlas
 		
-		'prepare atlas for loading
+		'prepare atlas For loading
 		atlas.Lock()
 		
 		'read in the file
 		While fileStream.Eof() = False
 			'get line from stream
 			line = fileStream.ReadLine()
-			'are we starting a new page ?
+			'are we starting a New page ?
 			If pageNew = True
 				'ignore blank lines
 				If line.Length() > 0
@@ -102,7 +102,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 						'get image path
 						pageFilePath = SpineCombinePaths(imagesDir, line)
 						
-						'create new page
+						'create New page
 						page = SpineDefaultAtlasPage(atlas.AddPage(pageFilePath))
 						
 						'check that page was loaded
@@ -131,7 +131,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 										pageFilterMin = line[pos1 + 2 .. pos2]
 										pageFilterMag = line[pos2 + 2 ..]
 									EndIf
-								Case "repeat"
+								Case "Repeat"
 									'ignored
 									pageRepeat = line[pos1 + 2 ..]
 							End
@@ -140,14 +140,14 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 							pageHasHeader = True
 							pageNew = False
 							
-							'new region
+							'New region
 							regionNew = True
 							regionNextName = line
 						EndIf
 					EndIf
 				EndIf
 			Else
-				'need to check for End of page
+				'need to check For End of page
 				If line.Length() = 0
 					'page is finished
 					pageNew = True
@@ -172,7 +172,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 					
 					pos1 = line.Find(":")
 					If pos1 = -1
-						'this is a new region
+						'this is a New region
 						
 						'setup control flags
 						regionSave = True
@@ -281,7 +281,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		'create the atlas
 		Local atlas:= New SpineDefaultAtlas
 		
-		'prepare atlas for loading
+		'prepare atlas For loading
 		atlas.Lock()
 		
 		'iterate over the pages
@@ -327,7 +327,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 			
 			'add the page if correct details are there
 			If pageFileName.Length() > 0
-				'build valid path for image
+				'build valid path For image
 				pageFilePath = SpineCombinePaths(imagesDir, pageFileName)
 				
 				'attempt to load the page
@@ -501,7 +501,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 	
 	Method AddPage:SpineAtlasPage(path:String)
 		' --- add page to atlas ---
-		'create new page
+		'create New page
 		Local page:= New SpineDefaultAtlasPage
 		page.index = pagesCount
 		
@@ -519,11 +519,11 @@ Class SpineDefaultAtlas Implements SpineAtlas
 	End
 	
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
-		' --- add a new region to atlas ---
-		'create new region
+		' --- add a New region to atlas ---
+		'create New region
 		Local region:= New SpineDefaultAtlasRegion
 		
-		'setup the details for the region
+		'setup the details For the region
 		region.name = name
 		region.page = SpineDefaultAtlasPage(page)
 		region.x = x
@@ -690,11 +690,11 @@ Class SpineSeperateImageAtlas Implements SpineAtlas
 	End
 	
 	Method AddRegion:SpineAtlasRegion(page:SpineAtlasPage, name:String, x:Int, y:Int, width:Int, height:Int, offsetX:Int, offsetY:Int, originalWidth:Int, originalHeight:Int)
-		' --- add a new region to atlas ---
-		'create new region
+		' --- add a New region to atlas ---
+		'create New region
 		Local region:= New SpineSeperateImageAtlasRegion
 		
-		'setup the details for the region
+		'setup the details For the region
 		region.Name = name
 		
 		'load the image

@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 'This is an example to test iregular atlas padding and stuff
 
 Import mojo
@@ -145,7 +145,7 @@ Class MyApp Extends App
 	
 	Method OnUpdate:Int()
 		' --- update the app ---
-		'check for quit
+		'check For quit
 		If KeyHit(KEY_ESCAPE) OnClose()
 		
 		'update time/delta
@@ -257,7 +257,7 @@ Class MyApp Extends App
 			Return
 		EndIf
 		
-		'next ot wrap
+		'Next ot wrap
 		If currentItem.skinIndex = currentItem.skins.Length() - 1
 			currentItem.skinIndex = 0
 		Else
@@ -269,8 +269,8 @@ Class MyApp Extends App
 	End
 	
 	Method NextAnimation:Void()
-		' --- change to next animation in current entity ---
-		'next ot wrap
+		' --- change to Next animation in current entity ---
+		'Next ot wrap
 		If currentItem.animationIndex = currentItem.animations.Length() - 1
 			currentItem.animationIndex = 0
 		Else
@@ -282,8 +282,8 @@ Class MyApp Extends App
 	End
 	
 	Method NextEntity:Void()
-		' --- hange to new item ---
-		'next or wrap
+		' --- hange to New item ---
+		'Next or wrap
 		If itemIndex = items.Length() - 1
 			itemIndex = 0
 		Else

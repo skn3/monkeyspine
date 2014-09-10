@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -125,7 +125,7 @@ Class SpineSkeletonJson
 				ikConstraintData.Target = skeletonData.FindBone(targetName)
 				If ikConstraintData.Target = Null Throw New SpineException("Target bone not found: " + targetName)
 				
-				'ikConstraintData.bendDirection = GetBoolean(ikMap, "bendPositive", true) ? 1 : -1
+				'ikConstraintData.bendDirection = GetBoolean(ikMap, "bendPositive", True) ? 1 : -1
 				If jsonObject.GetItem("bendPositive", True)
 					ikConstraintData.BendDirection = 1
 				Else
@@ -217,9 +217,9 @@ Class SpineSkeletonJson
 				'get event from name
 				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
 				eventData = New SpineEventData(jsonName)
-				eventData.IntValue = jsonObject.GetItem("int", 0)
-				eventData.FloatValue = jsonObject.GetItem("int", 0.0)
-				eventData.StringValue = jsonObject.GetItem("int", "")
+				eventData.IntValue = jsonObject.GetItem("Int", 0)
+				eventData.FloatValue = jsonObject.GetItem("Int", 0.0)
+				eventData.StringValue = jsonObject.GetItem("Int", "")
 				
 				'add it
 				skeletonData.AddEvent(eventData)
@@ -248,7 +248,7 @@ Class SpineSkeletonJson
 		jsonItem = jsonAttachment.GetItem("name")
 		If jsonItem <> Null name = jsonItem.ToString()
 
-		Local type:Int = SpineAttachmentType.region
+		Local type:Int = SpineAttachmentType.Region'defaults to region aiiighhht
 		jsonItem = jsonAttachment.GetItem("type")
 		If jsonItem <> Null type = SpineAttachmentType.FromString(jsonItem.ToString())
 
@@ -257,7 +257,7 @@ Class SpineSkeletonJson
 		If jsonItem <> Null path = jsonItem.ToString()
 
 		Select type
-			Case SpineAttachmentType.region
+			Case SpineAttachmentType.Region
 				Local region:SpineRegionAttachment = attachmentLoader.NewRegionAttachment(skin, name, path)
 				If region = Null
 					Return Null
@@ -284,7 +284,7 @@ Class SpineSkeletonJson
 				
 				Return region
 				
-			Case SpineAttachmentType.mesh
+			Case SpineAttachmentType.Mesh
 				Local mesh:SpineMeshAttachment = attachmentLoader.NewMeshAttachment(skin, name, path)
 				If mesh = Null
 					Return Null
@@ -315,7 +315,7 @@ Class SpineSkeletonJson
 				
 				Return mesh
 				
-			Case SpineAttachmentType.skinnedmesh
+			Case SpineAttachmentType.SkinnedMesh
 				Local mesh:SpineSkinnedMeshAttachment = attachmentLoader.NewSkinnedMeshAttachment(skin, name, path)
 				If mesh = Null
 					Return Null
@@ -377,7 +377,7 @@ Class SpineSkeletonJson
 				
 				Return mesh
 				
-			Case SpineAttachmentType.boundingbox
+			Case SpineAttachmentType.BoundingBox
 				Local box:SpineBoundingBoxAttachment = attachmentLoader.NewBoundingBoxAttachment(skin, name)
 				If box = Null
 					Return Null
@@ -527,7 +527,7 @@ Class SpineSkeletonJson
 							
 							duration = Max(duration, timeline.Frames[timeline.FrameCount() -1])
 						Default
-							Throw New SpineException("Invalid type:timeline for a slot: " + timelineName + " (" + slotName + ")")
+							Throw New SpineException("Invalid type:timeline For a slot: " + timelineName + " (" + slotName + ")")
 					End
 					
 				Next
@@ -600,7 +600,7 @@ Class SpineSkeletonJson
 							
 							duration = Max(duration, timeline.Frames[timeline.FrameCount() * 3 - 3])
 						Default
-							Throw New SpineException("Invalid type:timeline for a bone: " + timelineName + " (" + boneName + ")")
+							Throw New SpineException("Invalid type:timeline For a bone: " + timelineName + " (" + boneName + ")")
 					End
 				Next
 			Next
@@ -677,7 +677,7 @@ Class SpineSkeletonJson
 						timeline.SlotIndex = slotIndex
 						timeline.Attachment = attachment
 						
-						If attachment.Type = SpineAttachmentType.mesh
+						If attachment.Type = SpineAttachmentType.Mesh
 							vertexCount = SpineMeshAttachment(attachment).Vertices.Length()
 						Else
 							vertexCount = SpineSkinnedMeshAttachment(attachment).Weights.Length() / 3 * 2
@@ -689,7 +689,7 @@ Class SpineSkeletonJson
 							
 							jsonMeshVertices = JSONArray(jsonMesh.GetItem("vertices"))
 							If jsonMeshVertices = Null
-								If attachment.Type = SpineAttachmentType.mesh
+								If attachment.Type = SpineAttachmentType.Mesh
 									vertices = SpineMeshAttachment(attachment).Vertices
 								Else
 									vertices = New Float[vertexCount]
@@ -711,7 +711,7 @@ Class SpineSkeletonJson
 									Next
 								EndIf
 								
-								If attachment.Type = SpineAttachmentType.mesh
+								If attachment.Type = SpineAttachmentType.Mesh
 									Local meshVertices:= SpineMeshAttachment(attachment).Vertices
 									For i = 0 Until vertexCount
 										vertices[i] += meshVertices[i]
@@ -751,7 +751,7 @@ Class SpineSkeletonJson
 			'if we use teh array size then the code below will use teh size of the unfilled array elements
 			Local slotsCount:= skeletonData.slotsCount
 			
-			'create this new timeline
+			'create this New timeline
 			Local timeline:SpineDrawOrderTimeline = New SpineDrawOrderTimeline(jsonGroupArray.values.Count())
 			frameIndex = 0
 			
@@ -759,67 +759,71 @@ Class SpineSkeletonJson
 			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
 				jsonOrder = JSONObject(jsonTimelineFrameDataItem)
 				
+				Local drawOrder:Int[]
+				
 				'get the offset array
 				jsonOffsetArray = JSONArray(jsonOrder.GetItem("offsets"))
-				jsonOffsetTotal = jsonOffsetArray.values.Count()
-				
-				'create draw order array and reset it
-				Local drawOrder:= New Int[slotsCount]
-				For slotIndex = slotsCount - 1 To 0 Step - 1
-					drawOrder[slotIndex] = -1
-				Next
-				
-				'create unchanged array
-				Local unchanged:= New Int[slotsCount - jsonOffsetTotal]
-				
-				originalIndex = 0
-				unchangedIndex = 0
-				
-				'iterate over offsets
-				For jsonOffsetDataItem = EachIn jsonOffsetArray
-					jsonOffset = JSONObject(jsonOffsetDataItem)
-				
-					'get slot index
-					slotName = jsonOffset.GetItem("slot")
-					slotIndex = skeletonData.FindSlotIndex(slotName)
+				If jsonOffsetArray <> Null
+					jsonOffsetTotal = jsonOffsetArray.values.Count()
 					
-					'check slot is valid
-					If slotIndex = -1 Throw New SpineException("Slot not found: " + slotName)
-										
-					'collect unchanges items
-					While originalIndex <> slotIndex
+					'create draw order array and reset it
+					drawOrder = New Int[slotsCount]
+					For slotIndex = slotsCount - 1 To 0 Step - 1
+						drawOrder[slotIndex] = -1
+					Next
+					
+					'create unchanged array
+					Local unchanged:= New Int[slotsCount - jsonOffsetTotal]
+					
+					originalIndex = 0
+					unchangedIndex = 0
+					
+					'iterate over offsets
+					For jsonOffsetDataItem = EachIn jsonOffsetArray
+						jsonOffset = JSONObject(jsonOffsetDataItem)
+					
+						'get slot index
+						slotName = jsonOffset.GetItem("slot")
+						slotIndex = skeletonData.FindSlotIndex(slotName)
+						
+						'check slot is valid
+						If slotIndex = -1 Throw New SpineException("Slot not found: " + slotName)
+											
+						'collect unchanges items
+						While originalIndex <> slotIndex
+							unchanged[unchangedIndex] = originalIndex
+							unchangedIndex += 1
+							originalIndex += 1
+						Wend
+						
+						'get offset
+						offset = jsonOffset.GetItem("offset", 0)
+						
+						'set changed items
+						drawOrder[originalIndex + offset] = originalIndex
+						originalIndex += 1
+					Next
+					
+					'collect remaining unchanged items
+					While originalIndex < slotsCount
 						unchanged[unchangedIndex] = originalIndex
 						unchangedIndex += 1
 						originalIndex += 1
 					Wend
 					
-					'get offset
-					offset = jsonOffset.GetItem("offset", 0)
-					
-					'set changed items
-					drawOrder[originalIndex + offset] = originalIndex
-					originalIndex += 1
-				Next
-				
-				'collect remaining unchanged items
-				While originalIndex < slotsCount
-					unchanged[unchangedIndex] = originalIndex
-					unchangedIndex += 1
-					originalIndex += 1
-				Wend
-				
-				'fill unchanged items
-				For index = slotsCount - 1 To 0 Step - 1
-					If drawOrder[index] = -1
-						unchangedIndex -= 1
-						drawOrder[index] = unchanged[unchangedIndex]
-					EndIf
-				Next
+					'fill unchanged items
+					For index = slotsCount - 1 To 0 Step - 1
+						If drawOrder[index] = -1
+							unchangedIndex -= 1
+							drawOrder[index] = unchanged[unchangedIndex]
+						EndIf
+					Next
+				EndIf
 				
 				'process frame in timeline
 				timeline.SetFrame(frameIndex, jsonOrder.GetItem("time", 0.0), drawOrder)
 				
-				'next frame index
+				'Next frame index
 				frameIndex += 1
 			Next
 			
@@ -851,7 +855,7 @@ Class SpineSkeletonJson
 				eventData = skeletonData.FindEvent(eventName)
 				If eventData = Null Throw New SpineException("Event not found: " + eventName)
 				
-				'create new event
+				'create New event
 				event = New SpineEvent(eventData)
 				event.IntValue = jsonEvent.GetItem("Int", eventData.IntValue)
 				event.FloatValue = jsonEvent.GetItem("Float", eventData.FloatValue)
@@ -860,7 +864,7 @@ Class SpineSkeletonJson
 				'process frame in timeline
 				timeline.SetFrame(frameIndex, jsonEvent.GetItem("time", 0.0), event)
 				
-				'next frame index
+				'Next frame index
 				frameIndex += 1
 			Next
 			
@@ -876,7 +880,7 @@ Class SpineSkeletonJson
 		'trim timeline
 		If timelineCount < timelines.Length() timelines = timelines.Resize(timelineCount)
 		
-		skeletonData.AddAnimation(new SpineAnimation(name, timelines, duration))
+		skeletonData.AddAnimation(New SpineAnimation(name, timelines, duration))
 	End
 
 	Method ReadCurve:Void(timeline:SpineCurveTimeline, frameIndex:Int, jsonTimelineFrame:JSONObject)

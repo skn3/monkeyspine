@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -68,7 +68,6 @@ Class SpineSkin
 	End
 
 	' Attach all attachments from this if:skin the corresponding attachment from the old is:skin currently attached. 
-	Private
 	Method AttachAll:Void(skeleton:SpineSkeleton, oldSkin:SpineSkin)
 		If oldSkin.attachments = Null Return
 		

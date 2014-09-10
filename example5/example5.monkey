@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 'This example demonstrates how we can see when an animation has finished.
 Import mojo
 Import spine
@@ -73,7 +73,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnUpdate:Int()
 		' --- update the app ---
-		'check for quit
+		'check For quit
 		If KeyHit(KEY_ESCAPE) OnClose()
 		
 		'update time/delta

@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -34,7 +34,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 	Local start2:Int = 0
 	Local slash:Bool
 	
-	'look for End of slash in path 1
+	'look For End of slash in path 1
 	For index = path1.Length() - 1 To 0 Step - 1
 		If slash = False
 			'havn't found first slash
@@ -50,7 +50,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 				Exit
 			EndIf
 		Else
-			'look for no more slashes
+			'look For no more slashes
 			If path1[index] = 47 or path1[index] = 92
 				'slash
 				length1 -= 1
@@ -61,7 +61,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 		EndIf
 	Next
 	
-	'look for start of slash in part 2
+	'look For start of slash in part 2
 	slash = False
 	For index = 0 Until path2.Length()
 		If slash = False
@@ -78,7 +78,7 @@ Function SpineCombinePaths:String(path1:String, path2:String)
 				Exit
 			EndIf
 		Else
-			'look for no more slashes
+			'look For no more slashes
 			If path2[index] = 47 or path2[index] = 92
 				'slash
 				start2 += 1
@@ -217,25 +217,25 @@ Function SpineLinesCross:Bool(x0:Float, y0:Float, x1:Float, y1:Float, x2:Float, 
 End Function
 
 Function SpinePointInRect:Bool(pointX:Float, pointY:Float, rectX:Float, rectY:Float, rectWidth:Float, rectHeight:Float)
-	' --- returns true if point is inside rect ---
+	' --- returns True if point is inside rect ---
 	Return pointX >= rectX And pointX < rectX + rectWidth And pointY >= rectY And pointY < rectY + rectHeight
 End Function
 
 Function SpinePointInRect:Bool(pointX:Float, pointY:Float, vertices:Float[])
-	' --- returns true if point is inside rect (made of vertices) ---
+	' --- returns True if point is inside rect (made of vertices) ---
 	'this assumes that the vertices are in order top left, top right, bottom right, bottom left
 	Return pointX >= vertices[0] And pointX <= vertices[4] And pointY >= vertices[1] And pointY <= vertices[5]
 End Function
 
 Function SpineRectsOverlap:Bool(x1:Float, y1:Float, width1:Float, height1:Float, x2:Float, y2:Float, width2:Float, height2:Float)
-	' --- Return true if rects overlap ---
+	' --- Return True if rects overlap ---
 	If x1 > (x2 + width2) Or (x1 + width1) < x2 Then Return False
 	If y1 > (y2 + height2) Or (y1 + height1) < y2 Then Return False
 	Return True
 End Function
 
 Function SpineRectsOverlap:Bool(x:Float, y:Float, width:Float, height:Float, vertices:Float[])
-	' --- Return true if rects overlap ---
+	' --- Return True if rects overlap ---
 	'this assumes that the vertices are in order top left, top right, bottom right, bottom left
 	If x > vertices[2] Or (x + width) < vertices[0] Then Return False
 	If y > vertices[5] Or (y + height) < vertices[1] Then Return False

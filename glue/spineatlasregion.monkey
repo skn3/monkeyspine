@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -9,7 +9,7 @@ Interface SpineAtlasRegion
 	Method page:String() Property
 	Method page:Void(value:SpineAtlasPage) Property
 	Method name:String() Property
-	Method name:Void(value:string) Property
+	Method name:Void(value:String) Property
 	Method x:Int() Property
 	Method x:Void(value:Int) Property
 	Method y:Int() Property
@@ -38,8 +38,8 @@ Interface SpineAtlasRegion
 	Method index:Void(value:Int) Property
 	Method rotate:Bool() Property
 	Method rotate:Void(value:Bool) Property
-	Method splits:int[] () Property
-	Method splits:Void(value:int[]) Property
-	Method pads:int[] () Property
-	Method pads:Void(value:int[]) Property
+	Method splits:Int[] () Property
+	Method splits:Void(value:Int[]) Property
+	Method pads:Int[] () Property
+	Method pads:Void(value:Int[]) Property
 End

@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 'This example demonstrates how we can see when an animation has finished.
 Import spine.spinemojo
 
@@ -35,15 +35,19 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json", "monkey://data/smile_skeleton.atlas")
-			'spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json", "monkey://data/mesh_skeleton.atlas")
-			'spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json", "monkey://data/simple_mesh_skeleton.atlas")
-			'spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json", "monkey://data/goblins-ffd.atlas")
+			'spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json")
+			'spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json")
+			'spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json")
+			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
+			'spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
+			'spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
 			spineTest.SetDebugDraw(True)
 			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
-			spineTest.SetAnimation("animation", True)
+			spineTest.SetAnimation("walk", True)
+			spineTest.SetSkin("goblin")
 			spineTest.SetCallback(Self)
 			spineTest.SetSpeed(0.8)
+			'spineTest.SetScale(0.4)
 			spineTest.SetSnapToPixels(True)
 			
 		Catch exception:SpineException
@@ -74,7 +78,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnUpdate:Int()
 		' --- update the app ---
-		'check for quit
+		'check For quit
 		If KeyHit(KEY_ESCAPE) OnClose()
 		
 		'update time/delta

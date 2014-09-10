@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -56,7 +56,7 @@ Class SpineSkeleton
 				Next
 			EndIf
 			
-			'create new bone
+			'create New bone
 			Bones[addIndex] = New SpineBone(boneData, Self, parent)
 			Bones[addIndex].parentIndex = addIndex
 			
@@ -75,7 +75,7 @@ Class SpineSkeleton
 				EndIf
 			Next
 			
-			'create new slot
+			'create New slot
 			slot = New SpineSlot(Data.Slots[index], bone)
 			slot.parentIndex = addIndex
 			
@@ -163,7 +163,7 @@ Class SpineSkeleton
 		Next
 	End
 	
-	'<summary>Updates the world transform for each bone and applies IK constraints.</summary>
+	'<summary>Updates the world transform For each bone and applies IK constraints.</summary>
 	Method UpdateWorldTransform:Void()
 		Local i:Int
 		Local ii:Int
@@ -317,7 +317,7 @@ Class SpineSkeleton
 				Local attachment:SpineAttachment
 				If attachmentName <> ""
 					attachment = GetAttachment(i, attachmentName)
-					If attachment = Null Throw New SpineArgumentNullException("attachment not found: " + attachmentName + ", for slot: " + slotName)
+					If attachment = Null Throw New SpineArgumentNullException("attachment not found: " + attachmentName + ", For slot: " + slotName)
 				EndIf
 				slot.Attachment = attachment
 				Return
@@ -328,7 +328,7 @@ Class SpineSkeleton
 	
 	' @Return May be Null.
 	Method FindIkConstraint:SpineIkConstraint(ikConstraintName:String)
-		if ikConstraintName.Length() = 0 Throw new SpineArgumentNullException("ikConstraintName cannot be Null.")
+		if ikConstraintName.Length() = 0 Throw New SpineArgumentNullException("ikConstraintName cannot be Null.")
 
 		Local n:= IkConstraints.Length()
 		Local ikConstraint:SpineIkConstraint

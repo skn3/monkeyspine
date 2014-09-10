@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -40,7 +40,7 @@ Class SpineMeshAttachment Extends SpineAttachment
 
 	Method New(name:String)
 		Super.New(name)
-		Type = SpineAttachmentType.mesh
+		Type = SpineAttachmentType.Mesh
 	End
 
 	Method UpdateUVs:Void()

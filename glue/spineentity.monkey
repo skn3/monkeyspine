@@ -1,15 +1,15 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
 
-'interface to handle spine entity notifications
+'Interface to handle spine entity notifications
 Interface SpineEntityCallback
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
 	Method OnSpineEntityEvent:Void(entity:SpineEntity, event:String, intValue:Int, floatValue:Float, stringValue:String)
 End
 
-'class to wrap spine
+'Class to wrap spine
 Class SpineEntity
 	Global tempVertices:Float[8]
 	
@@ -116,7 +116,7 @@ Class SpineEntity
 		
 	Method Free:Void()
 		' --- free the spine entity ---
-		'decrease reference count for atlas
+		'decrease reference count For atlas
 		'it is upto the atlas implementation if it should also free any images resources
 		If atlas atlas.Free()
 		
@@ -137,54 +137,69 @@ Class SpineEntity
 		'this will update the state of the skeleton so anything we access after it is correctly updated
 		dirty = False
 		
-		'update the skeleton properties
-		skeleton.FlipX = flipX
-		skeleton.FlipY = flipY
-		skeleton.X = x
-		skeleton.Y = y
-		
-		'update skeleton
-		skeleton.UpdateWorldTransform()
-				
-		'update attachments
-		Local slot:SpineSlot
-		Local attachment:SpineAttachment
-		Local total:= skeleton.Slots.Length()
-		Local slotArray1:Float[]
-		For Local index:= 0 Until total
-			slot = skeleton.Slots[index]
-			attachment = slot.Attachment
+		'store values
+		Local rootBone:= skeleton.RootBone()
+		If rootBone
+			Local oldRootScaleX:= rootBone.ScaleX
+			Local oldRootScaleY:= rootBone.ScaleY
 			
-			'update bounding
-			slotArray1 = slotBoundingVertices[index]
-			Select attachment.Type
-				Case SpineAttachmentType.boundingbox
-				Case SpineAttachmentType.mesh
-					'Local mesh:= SpineMeshAttachment(attachment)
-					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
+			'update the skeleton/root bone properties
+			skeleton.FlipX = flipX
+			skeleton.FlipY = flipY
+			skeleton.X = x
+			skeleton.Y = y
+			skeleton.RootBone().ScaleX = oldRootScaleX * scaleX
+			skeleton.RootBone().ScaleY = oldRootScaleX * scaleY
+			
+			'update skeleton
+			skeleton.UpdateWorldTransform()
 					
-				Case SpineAttachmentType.region
-					Local region:= SpineRegionAttachment(attachment)
-					Local bone:= slot.Bone
-
-					'get world properties
-					slotWorldX[index] = skeleton.X + bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
-					slotWorldY[index] = skeleton.Y + bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
-					slotWorldRotation[index] = bone.WorldRotation + region.Rotation
-					slotWorldScaleX[index] = bone.WorldScaleX + region.ScaleX - 1.0
-					slotWorldScaleY[index] = bone.WorldScaleY + region.ScaleY - 1.0
-					
-					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
-					
-				Case SpineAttachmentType.skinnedmesh
-					'Local mesh:= SpineSkinnedMeshAttachment(attachment)
-					'SpineGetPolyBounding(mesh.Vertices, slotArray1)
-			End
-		Next
-		
-		'flag bounding as dirty
-		'this will mean next time we retrieve bounding info it will recalculate
-		dirtyBounding = True
+			'update attachments
+			Local slot:SpineSlot
+			Local attachment:SpineAttachment
+			Local total:= skeleton.Slots.Length()
+			Local slotArray1:Float[]
+			For Local index:= 0 Until total
+				slot = skeleton.Slots[index]
+				attachment = slot.Attachment
+				
+				If attachment = Null Continue
+				
+				'update bounding
+				slotArray1 = slotBoundingVertices[index]
+				Select attachment.Type
+					Case SpineAttachmentType.BoundingBox
+					Case SpineAttachmentType.Mesh
+						'Local mesh:= SpineMeshAttachment(attachment)
+						'SpineGetPolyBounding(mesh.Vertices, slotArray1)
+						
+					Case SpineAttachmentType.Region
+						Local region:= SpineRegionAttachment(attachment)
+						Local bone:= slot.Bone
+	
+						'get world properties
+						slotWorldX[index] = skeleton.X + bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
+						slotWorldY[index] = skeleton.Y + bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
+						slotWorldRotation[index] = bone.WorldRotation + region.Rotation
+						slotWorldScaleX[index] = bone.WorldScaleX + region.ScaleX - 1.0
+						slotWorldScaleY[index] = bone.WorldScaleY + region.ScaleY - 1.0
+						
+						'SpineGetPolyBounding(mesh.Vertices, slotArray1)
+						
+					Case SpineAttachmentType.SkinnedMesh
+						'Local mesh:= SpineSkinnedMeshAttachment(attachment)
+						'SpineGetPolyBounding(mesh.Vertices, slotArray1)
+				End
+			Next
+			
+			'restore
+			rootBone.ScaleX = oldRootScaleX
+			rootBone.ScaleY = oldRootScaleY
+			
+			'flag bounding as dirty
+			'this will mean Next time we retrieve bounding info it will recalculate
+			dirtyBounding = True
+		EndIf
 	End
 	
 	Method OnCalculateBounding:Void()
@@ -251,7 +266,7 @@ Class SpineEntity
 			
 			'reset the draw order
 			'skeleton.ResetSlotOrder()
-						
+			
 			'we now pass in an events list
 			animation.Apply(skeleton, lastTime, skeleton.Time, events, looping)
 			
@@ -264,7 +279,7 @@ Class SpineEntity
 			'need to process events
 			OnProcessEvents()
 						
-			'check for completion of animation
+			'check For completion of animation
 			If skeleton.Time >= animation.Duration
 				If looping = False
 					StopAnimation()
@@ -285,7 +300,7 @@ Class SpineEntity
 	
 	Method OnProcessEvents:Void()
 		' --- process the internal events list ---
-		'check for firing of events
+		'check For firing of events
 		If events.IsEmpty() = False
 			'iterate over all events that were fired
 			Local node:= events.FirstNode()
@@ -297,7 +312,7 @@ Class SpineEntity
 				'fire it to callback
 				If callback callback.OnSpineEntityEvent(Self, event.Data.Name, event.IntValue, event.FloatValue, event.StringValue)
 				
-				'next event
+				'Next event
 				node = node.NextNode()
 			Wend
 			
@@ -329,7 +344,7 @@ Class SpineEntity
 				
 			'draw it
 			Select attachment.Type
-				Case SpineAttachmentType.mesh
+				Case SpineAttachmentType.Mesh
 					Local verts:Float[12]
 					Local mesh:= SpineMeshAttachment(attachment)
 					Local vertices:Float[mesh.Vertices.Length()]
@@ -366,7 +381,7 @@ Class SpineEntity
 						rendererObject.Draw(verts)
 					Next
 					
-				Case SpineAttachmentType.region
+				Case SpineAttachmentType.Region
 					Local region:= SpineRegionAttachment(attachment)
 					region.RendererObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index])
 			End
@@ -394,7 +409,7 @@ Class SpineEntity
 			If attachment = Null Continue
 						
 			Select attachment.Type
-				Case SpineAttachmentType.mesh
+				Case SpineAttachmentType.Mesh
 					Local mesh:= SpineMeshAttachment(attachment)
 					Local vertices:Float[mesh.Vertices.Length()]
 					mesh.ComputeWorldVertices(slot, vertices)
@@ -440,7 +455,7 @@ Class SpineEntity
 				slot = skeleton.DrawOrder[index]
 				
 				'skip if not a region attachment
-				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 				
 				'get attachment in correct format
 				attachment = SpineRegionAttachment(slot.Attachment)
@@ -463,7 +478,7 @@ Class SpineEntity
 				slot = skeleton.Slots[index]
 				
 				'skip if not a region attachment
-				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+				If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 				
 				'get attachment in correct format
 				attachment = SpineRegionAttachment(slot.Attachment)
@@ -509,7 +524,7 @@ Class SpineEntity
 			Next
 		EndIf
 		
-		'render bounding for entire skeleton
+		'render bounding For entire skeleton
 		If debugBounding
 			CalculateBounding()
 			mojo.SetColor(255, 0, 0)
@@ -635,7 +650,7 @@ Class SpineEntity
 			slot = skeleton.DrawOrder[index]
 			
 			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 			
 			'get attachment in correct format
 			attachment = SpineRegionAttachment(slot.Attachment)
@@ -673,7 +688,7 @@ Class SpineEntity
 		Local slot:SpineSlot
 		Local attachment:SpineRegionAttachment
 		
-		'setup temp vertices for poly check
+		'setup temp vertices For poly check
 		If precision > 1
 			tempVertices[0] = x
 			tempVertices[1] = y
@@ -691,7 +706,7 @@ Class SpineEntity
 			slot = skeleton.DrawOrder[index]
 			
 			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 			
 			'get attachment in correct format
 			attachment = SpineRegionAttachment(slot.Attachment)
@@ -714,7 +729,7 @@ Class SpineEntity
 	End
 	
 	Method PointInsideSlot:Bool(x:Float, y:Float, name:String, precise:Bool = True)
-		' --- shortcut for name lookup ---
+		' --- shortcut For name lookup ---
 		Return PointInsideSlot(x, y, GetSlot(name), precise)
 	End
 	
@@ -722,7 +737,7 @@ Class SpineEntity
 		' --- check if a point is inside using varying levels of precision ---
 
 		'skip if not a region attachment
-		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
+		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Return False
 		
 		'calculate first
 		CalculateBounding()
@@ -747,14 +762,14 @@ Class SpineEntity
 	End
 	
 	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, name:String, precise:Bool = True)
-		' --- shortcut for slot lookup ---
+		' --- shortcut For slot lookup ---
 		Return RectOverlapsSlot(x, y, width, height, GetSlot(name), precise)
 	End
 	
 	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, slot:SpineSlot, precise:Bool = True)
 		' --- check if a rect overlaps using varying levels of precision ---
 		'skip if not a region attachment
-		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Return False
+		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Return False
 		
 		'calculate first
 		CalculateBounding()
@@ -762,7 +777,7 @@ Class SpineEntity
 		'check compelte bounding
 		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
 				
-		'setup temp vertices for poly check
+		'setup temp vertices For poly check
 		If precise
 			tempVertices[0] = x
 			tempVertices[1] = y
@@ -908,12 +923,14 @@ Class SpineEntity
 		playing = True
 		
 		'apply the animation to the skeleton
-		animation.Apply(skeleton, skeleton.Time, skeleton.Time, events, looping)
-		skeleton.SetToSetupPose()
+		If animation
+			animation.Apply(skeleton, skeleton.Time, skeleton.Time, events, looping)
+			skeleton.SetToSetupPose()
 		
-		'need to process events
-		'this will probably never do anything...
-		OnProcessEvents()
+			'need to process events
+			'this will probably never do anything...
+			OnProcessEvents()
+		EndIf
 		
 		'flag that the entity is dirty again
 		dirty = True
@@ -1001,23 +1018,23 @@ Class SpineEntity
 	End
 	
 	Method GetPosition:Float[] ()
-		' --- Return local position ---
+		' --- Return Local position ---
 		Return[x, y]
 	End
 	
 	Method GetPosition:Void(xy:Float[])
-		' --- Return local position ---
+		' --- Return Local position ---
 		xy[0] = x
 		xy[1] = y
 	End
 	
 	Method GetX:Float()
-		' --- Return local position ---
+		' --- Return Local position ---
 		Return x
 	End
 	
 	Method GetY:Float()
-		' --- Return local position ---
+		' --- Return Local position ---
 		Return y
 	End
 	
@@ -1039,23 +1056,23 @@ Class SpineEntity
 	End
 	
 	Method GetScale:Float[] ()
-		' --- Return local scale ---
+		' --- Return Local scale ---
 		Return[scaleX, scaleY]
 	End
 	
 	Method GetScale:Void(scaleXY:Float[])
-		' --- Return local scale ---
+		' --- Return Local scale ---
 		scaleXY[0] = scaleX
 		scaleXY[1] = scaleY
 	End
 	
 	Method GetScaleX:Float()
-		' --- Return local scale ---
+		' --- Return Local scale ---
 		Return scaleX
 	End
 	
 	Method GetScaleY:Float()
-		' --- Return local scale ---
+		' --- Return Local scale ---
 		Return scaleY
 	End	
 	
@@ -1068,7 +1085,7 @@ Class SpineEntity
 	End
 	
 	Method GetRotation:Float()
-		' --- Return local angle ---
+		' --- Return Local angle ---
 		Return rotation
 	End
 	
@@ -1082,23 +1099,23 @@ Class SpineEntity
 	End
 	
 	Method GetFlip:Bool[] ()
-		' --- get local flip ---
+		' --- get Local flip ---
 		Return[flipX, flipY]
 	End
 	
 	Method GetFlip:Void(flipXY:Bool[])
-		' --- get local flip ---
+		' --- get Local flip ---
 		flipXY[0] = flipX
 		flipXY[1] = flipY
 	End
 	
 	Method GetFlipX:Bool()
-		' --- get local flip ---
+		' --- get Local flip ---
 		Return flipX
 	End
 	
 	Method GetFlipY:Bool()
-		' --- get local flip ---
+		' --- get Local flip ---
 		Return flipY
 	End
 	
@@ -1141,7 +1158,7 @@ Class SpineEntity
 	End
 	
 	Method GetNextSlot:SpineSlot(slot:SpineSlot)
-		' --- get next slot ---
+		' --- get Next slot ---
 		If slot = Null Return Null
 		Local index:= slot.parentIndex + 1
 		If index >= skeleton.Slots.Length() Return Null
@@ -1158,7 +1175,7 @@ Class SpineEntity
 		
 	Method GetSlot:SpineSlot(name:String)
 		' --- find a slot by name ---
-		'check for quick lookup
+		'check For quick lookup
 		If name = lastSlotLookupName Return lastSlotLookup
 		
 		'lookup
@@ -1194,7 +1211,7 @@ Class SpineEntity
 	End
 	
 	Method FindNextSlotWithAttachment:SpineSlot(slot:SpineSlot)
-		' --- Return next slot with attachment ---
+		' --- Return Next slot with attachment ---
 		If slot = Null or skeleton.Slots.Length() = 0 or slot.parentIndex + 1 >= skeleton.Slots.Length() Return Null
 		
 		Local attachment:SpineRegionAttachment
@@ -1232,7 +1249,7 @@ Class SpineEntity
 			slot = skeleton.DrawOrder[index]
 			
 			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 			
 			'get attachment in correct format
 			attachment = SpineRegionAttachment(slot.Attachment)
@@ -1266,7 +1283,7 @@ Class SpineEntity
 			slot = skeleton.DrawOrder[index]
 			
 			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
 			
 			'get attachment in correct format
 			attachment = SpineRegionAttachment(slot.Attachment)
@@ -1315,7 +1332,7 @@ Class SpineEntity
 		Local slot:= GetSlot(name)
 		If slot = Null Return[0, 0, 0]
 		
-		'local
+		'Local
 		Return[Int(slot.R * 255), Int(slot.G * 255), Int(slot.B * 255)]
 	End
 	
@@ -1330,7 +1347,7 @@ Class SpineEntity
 			Return
 		EndIf
 		
-		'local
+		'Local
 		rgb[0] = slot.R * 255
 		rgb[1] = slot.G * 255
 		rgb[2] = slot.B * 255
@@ -1391,8 +1408,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return[slot.Bone.WorldX, slot.Bone.WorldY]
 			Return[0.0, 0.0]
 		EndIf
@@ -1400,7 +1417,7 @@ Class SpineEntity
 		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return[attachment.WorldX, attachment.WorldY]
 		Return[attachment.X, attachment.Y]
 	End
@@ -1419,8 +1436,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world
 				xy[0] = slot.Bone.WorldX
 				xy[1] = slot.Bone.WorldX
@@ -1434,7 +1451,7 @@ Class SpineEntity
 		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world
 			xy[0] = attachment.WorldX
 			xy[1] = attachment.WorldY
@@ -1455,8 +1472,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return slot.Bone.WorldX
 			Return 0.0
 		EndIf
@@ -1464,7 +1481,7 @@ Class SpineEntity
 		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return attachment.WorldX
 		Return attachment.X
 	End
@@ -1479,8 +1496,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return slot.Bone.WorldY
 			Return 0.0
 		EndIf
@@ -1488,14 +1505,14 @@ Class SpineEntity
 		'Return attachment psotion
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return attachment.WorldY
 		Return attachment.Y
 	End
 	
 	'slot rotation api
 	Method GetSlotRotation:Float(name:String, world:Bool = False)
-		' --- Return bone rotation for a given slot ---
+		' --- Return bone rotation For a given slot ---
 		'must be applied after calling Update() on entity
 		'lookup slot
 		Local slot:= GetSlot(name)
@@ -1505,8 +1522,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return slot.Bone.WorldRotation
 			Return 0.0
 		EndIf
@@ -1514,7 +1531,7 @@ Class SpineEntity
 		'Return attachment rotation
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return attachment.WorldRotation
 		Return attachment.Rotation
 	End
@@ -1530,8 +1547,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return[slot.Bone.WorldScaleX, slot.Bone.WorldScaleY]
 			Return[0.0, 0.0]
 		EndIf
@@ -1539,7 +1556,7 @@ Class SpineEntity
 		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return[attachment.WorldScaleX, attachment.WorldScaleY]
 		Return[attachment.ScaleX, attachment.ScaleY]
 	End
@@ -1558,8 +1575,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world
 				scaleXY[0] = slot.Bone.WorldScaleX
 				scaleXY[1] = slot.Bone.WorldScaleY
@@ -1572,13 +1589,13 @@ Class SpineEntity
 			'Return attachment scale
 			Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-			'world or local?
+			'world or Local?
 			If world
 				'world
 				scaleXY[0] = attachment.WorldScaleX
 				scaleXY[1] = attachment.WorldScaleY
 			Else
-				'local
+				'Local
 				scaleXY[0] = attachment.ScaleX
 				scaleXY[1] = attachment.ScaleY
 			EndIf
@@ -1595,8 +1612,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return slot.Bone.WorldScaleX
 			Return 0.0
 		EndIf
@@ -1604,7 +1621,7 @@ Class SpineEntity
 		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return attachment.WorldScaleX
 		Return attachment.ScaleX
 	End
@@ -1619,8 +1636,8 @@ Class SpineEntity
 		Calculate()
 		
 		'Return bone if slot doesn't have a psotional attachment
-		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region
-			'world or local?
+		If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region
+			'world or Local?
 			If world Return slot.Bone.WorldScaleY
 			Return 0.0
 		EndIf
@@ -1628,7 +1645,7 @@ Class SpineEntity
 		'Return attachment scale
 		Local attachment:= SpineRegionAttachment(slot.Attachment)
 		
-		'world or local?
+		'world or Local?
 		If world Return attachment.WorldScaleY
 		Return attachment.ScaleY
 	End
@@ -1641,14 +1658,14 @@ Class SpineEntity
 	End
 	
 	Method HasBone:Bool(name:String)
-		' --- Return true if bone exists ---
+		' --- Return True if bone exists ---
 		'this is a lazy way of doing it
 		Return GetBone(name) <> Null
 	End
 	
 	Method GetBone:SpineBone(name:String)
 		' --- find bone by name ---
-		'check for quick lookup
+		'check For quick lookup
 		If name = lastBoneLookupName Return lastBoneLookup
 		
 		'lookup bone
@@ -1661,15 +1678,15 @@ Class SpineEntity
 	Method SetBonePosition:Void(name:String, x:Float, y:Float, world:Bool = False)
 		' --- set bone position ---
 		'must be applied after calling Update() on entity
-		'if the world flag is specified it will calculate the bones local rotation based on parent rotation to achieve the angle specified
+		'if the world flag is specified it will calculate the bones Local rotation based on parent rotation to achieve the angle specified
 		
 		'lookup bone
 		Local bone:= GetBone(name)
 		If bone = Null Return
 		
-		'world or local?
+		'world or Local?
 		If world = False or bone.Parent = Null
-			'local
+			'Local
 			'offset from base position
 			bone.X = bone.Data.X + x
 			bone.Y = bone.Data.Y + y
@@ -1765,13 +1782,13 @@ Class SpineEntity
 	Method SetBoneRotation:Void(name:String, angle:Float, world:Bool = False)
 		' --- rotate a given bone ---
 		'must be applied after calling Update() on entity
-		'if the world flag is specified it will calculate the bones local rotation based on parent rotation to achieve the angle specified
+		'if the world flag is specified it will calculate the bones Local rotation based on parent rotation to achieve the angle specified
 		
 		'lookup bone
 		Local bone:= GetBone(name)
 		If bone = Null Return
 		
-		'world or local
+		'world or Local
 		If world = False or bone.Parent = Null
 			'apply to the bone
 			bone.Rotation = angle
@@ -1788,7 +1805,7 @@ Class SpineEntity
 	End
 	
 	Method GetBoneRotation:Float(name:String, world:Bool = False)
-		' --- Return bone rotation for a given bone ---
+		' --- Return bone rotation For a given bone ---
 		'must be applied after calling Update() on entity
 		'lookup bone
 		Local bone:= GetBone(name)
@@ -1797,7 +1814,7 @@ Class SpineEntity
 		'must calculate first
 		Calculate()
 		
-		'Return it world or local?
+		'Return it world or Local?
 		If world Return bone.WorldRotation
 		Return bone.Rotation
 	End
@@ -1811,9 +1828,9 @@ Class SpineEntity
 		Local bone:= GetBone(name)
 		If bone = Null Return
 		
-		'world or local
+		'world or Local
 		If world = False or bone.Parent = Null
-			'local 
+			'Local 
 			bone.ScaleX = scaleX
 			bone.ScaleY = scaleY
 		Else

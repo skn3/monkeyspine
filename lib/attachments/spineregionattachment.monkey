@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -55,7 +55,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	'constructor
 	Method New(name:String)
 		Super.New(name)
-		Type = SpineAttachmentType.region
+		Type = SpineAttachmentType.Region
 	End
 
 	'api
@@ -168,6 +168,6 @@ Class SpineRegionAttachment Extends SpineAttachment
 		WorldG = (slot.Skeleton.G * slot.G)
 		WorldB = (slot.Skeleton.B * slot.B)
 		WorldAlpha = slot.Skeleton.A * slot.A
-		#end
+		#End
 	End
 End

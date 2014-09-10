@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -9,7 +9,7 @@ Class SpineAtlasAttachmentLoader Implements SpineAttachmentLoader
 	Public
 
 	Method New(atlas:SpineAtlas)
-		' --- create new attachment loader using atlas ---
+		' --- create New attachment loader using atlas ---
 		If atlas = Null Throw New SpineArgumentNullException("atlas cannot be Null.")
 		Self.atlas = atlas
 	End

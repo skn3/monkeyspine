@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -41,7 +41,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 
 	Method New(name:String)
 		Super.New(name)
-		Type = SpineAttachmentType.skinnedmesh
+		Type = SpineAttachmentType.SkinnedMesh
 	End
 
 	Method UpdateUVs:Void()
@@ -84,7 +84,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 		Local n:= Bones.Length()
 		
 		If slot.attachmentVerticesCount = 0
-			'for (Int w = 0, v = 0, b = 0, n = bones.Length() v < n w += 2) {
+			'For (Int w = 0, v = 0, b = 0, n = bones.Length() v < n w += 2) {
 			While v < n
 				wx = 0
 				wy = 0
@@ -101,7 +101,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 					wx += (vx * bone.M00 + vy * bone.M01 + bone.WorldX) * weight
 					wy += (vx * bone.M10 + vy * bone.M11 + bone.WorldY) * weight
 					
-					'next increment
+					'Next increment
 					v += 1
 					b += 3
 				Wend
@@ -109,14 +109,14 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				worldVertices[w] = wx + x
 				worldVertices[w + 1] = wy + y
 				
-				'next increment
+				'Next increment
 				w += 2
 			Wend
 		Else
 			Local ffd:= slot.AttachmentVertices
 			Local f:= 0
 			
-			'for (Int w = 0, v = 0, b = 0, f = 0, n = bones.Length() v < n w += 2) {
+			'For (Int w = 0, v = 0, b = 0, f = 0, n = bones.Length() v < n w += 2) {
 			While v < n
 				wx = 0
 				wy = 0
@@ -125,7 +125,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				v += 1
 				nn += v
 				
-				'for ( v < nn v++, b += 3, f += 2) {
+				'For ( v < nn v++, b += 3, f += 2) {
 				While v < nn
 					bone = skeletonBones[Bones[v]]
 					vx = Weights[b] + ffd[f]
@@ -134,7 +134,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 					wx += (vx * bone.M00 + vy * bone.M01 + bone.WorldX) * weight
 					wy += (vx * bone.M10 + vy * bone.M11 + bone.WorldY) * weight
 					
-					'next increment
+					'Next increment
 					v += 1
 					b += 3
 					f += 2
@@ -143,7 +143,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				worldVertices[w] = wx + x
 				worldVertices[w + 1] = wy + y
 					
-				'next increment
+				'Next increment
 				w += 2
 			Wend
 		EndIf

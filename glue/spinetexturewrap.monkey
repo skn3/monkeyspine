@@ -13,7 +13,7 @@ Class SpineTextureWrap
 				Return MirroredRepeat
 			Case "clamptoedge"
 				Return ClampToEdge
-			Case "repeat"
+			Case "Repeat"
 				Return RepeatTexture
 		End
 		Return -1

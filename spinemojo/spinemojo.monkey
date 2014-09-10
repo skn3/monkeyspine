@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -28,10 +28,20 @@ Global spineMojoAtlasLoader:SpineAtlasLoader = New SpineMojoAtlasLoader
 Public
 
 'functions
+Function LoadMojoSpineEntity:SpineEntity(skeletonPath:String)
+	'assumes the atlas has the same name!
+	Local atlasDir:= ExtractDir(skeletonPath)
+	Local atlasPath:= atlasDir + "/" + StripAll(skeletonPath) + ".atlas"
+	Return New SpineEntity(skeletonPath, atlasPath, atlasDir, spineMojoFileLoader, spineMojoAtlasLoader, spineMojoTextureLoader)
+End
+
 Function LoadMojoSpineEntity:SpineEntity(skeletonPath:String, atlasPath:String)
-	Return New SpineEntity(skeletonPath, atlasPath, ExtractDir(atlasPath), spineMojoFileLoader, spineMojoAtlasLoader, spineMojoTextureLoader)
+	'assumes the atlas images are in same dir as atlas
+	Local atlasDir:= ExtractDir(skeletonPath)
+	Return New SpineEntity(skeletonPath, atlasPath, atlasDir, spineMojoFileLoader, spineMojoAtlasLoader, spineMojoTextureLoader)
 End
 
 Function LoadMojoSpineEntity:SpineEntity(skeletonPath:String, atlasPath:String, atlasDir:String)
+	'allows to specify atlas images dir
 	Return New SpineEntity(skeletonPath, atlasPath, atlasDir, spineMojoFileLoader, spineMojoAtlasLoader, spineMojoTextureLoader)
 End

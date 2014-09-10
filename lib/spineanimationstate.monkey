@@ -125,7 +125,7 @@ Class SpineAnimationState
 				current.animation.Mix(skeleton, current.lastTime, time, loop, events, alpha)
 			EndIf
 	
-			'for (Int ii = 0, nn = events.Count ii < nn ii++) {
+			'For (Int ii = 0, nn = events.Count ii < nn ii++) {
 			'	Event e = events[ii]
 			'	current.OnEvent(this, i, e)
 			'	if (Event != Null) Event(this, i, e)
@@ -250,7 +250,7 @@ Class SpineAnimationState
 		Return entry
 	End
 
-	' Returns true if no is:animation set or if the current time is greater than the duration:animation, regardless of looping. 
+	' Returns True if no is:animation set or if the current time is greater than the duration:animation, regardless of looping. 
 	Method ToString:String()
 		Local buffer:String
 		Local entry:SpineTrackEntry

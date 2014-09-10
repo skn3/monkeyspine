@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine.spinemojo
@@ -16,7 +16,7 @@ Class SpineMojoFile Implements SpineFile
 		Return _path
 	End
 	
-	Method path:Void(value:string)
+	Method path:Void(value:String)
 		_path = value
 	End
 	
@@ -35,7 +35,7 @@ Class SpineMojoFile Implements SpineFile
 		If buffer = Null or index >= total Return ""
 		
 		For index = index Until total
-			'check for End of line
+			'check For End of line
 			If buffer.PeekByte(index) = 10
 				Local result:String = buffer.PeekString(start, (index - start))
 				index = index + 1

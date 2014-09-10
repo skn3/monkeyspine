@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 'This is a complex example that demonstrated multiple entities, animations, skins, collisions, speed and more!
 
 Import mojo
@@ -158,12 +158,12 @@ Class MyApp Extends App
 			End
 			
 			If collisionSlotOn = False
-				DrawText("Checking for collision with entire entity", 5, 125)
+				DrawText("Checking For collision with entire entity", 5, 125)
 			Else
 				If collisionSlot = Null
-					DrawText("Checking for collision with slot <Null> (press left or right to change)", 5, 125)
+					DrawText("Checking For collision with slot <Null> (press left or right to change)", 5, 125)
 				Else
-					DrawText("Checking for collision with slot '" + collisionSlot.Data.Name + "' (press left or right to change)", 5, 125)
+					DrawText("Checking For collision with slot '" + collisionSlot.Data.Name + "' (press left or right to change)", 5, 125)
 				EndIf
 			EndIf
 			
@@ -204,7 +204,7 @@ Class MyApp Extends App
 	
 	Method OnUpdate:Int()
 		' --- update the app ---
-		'check for quit
+		'check For quit
 		If KeyHit(KEY_ESCAPE) OnClose()
 		
 		'update time/delta
@@ -355,7 +355,7 @@ Class MyApp Extends App
 			Return
 		EndIf
 		
-		'next ot wrap
+		'Next ot wrap
 		If currentItem.skinIndex = currentItem.skins.Length() - 1
 			currentItem.skinIndex = 0
 		Else
@@ -367,8 +367,8 @@ Class MyApp Extends App
 	End
 	
 	Method NextAnimation:Void()
-		' --- change to next animation in current entity ---
-		'next ot wrap
+		' --- change to Next animation in current entity ---
+		'Next ot wrap
 		If currentItem.animationIndex = currentItem.animations.Length() - 1
 			currentItem.animationIndex = 0
 		Else
@@ -380,8 +380,8 @@ Class MyApp Extends App
 	End
 	
 	Method NextEntity:Void()
-		' --- hange to new item ---
-		'next or wrap
+		' --- hange to New item ---
+		'Next or wrap
 		If itemIndex = items.Length() - 1
 			itemIndex = 0
 		Else
@@ -401,7 +401,7 @@ Class MyApp Extends App
 			currentEntity.SetDebugDraw(debug)
 		EndIf
 		
-		'remove collision slot so we get a new one next update
+		'remove collision slot so we get a New one Next update
 		collisionSlot = Null
 	End
 	

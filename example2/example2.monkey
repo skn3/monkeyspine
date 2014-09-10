@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 'This example demonstrates how we can use a different atlas loader. The atlas loade we are using will load seperate images instead of loading packed images.
 Import mojo
 Import spine
@@ -56,7 +56,7 @@ Class MyApp Extends App
 	
 	Method OnUpdate:Int()
 		' --- update the app ---
-		'check for quit
+		'check For quit
 		If KeyHit(KEY_ESCAPE) OnClose()
 		
 		'update time/delta

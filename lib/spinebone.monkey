@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -39,7 +39,7 @@ Class SpineBone
 		SetToSetupPose()
 	End
 
-	'<summary>Computes the world SRT using the parent bone and the local SRT.</summary>
+	'<summary>Computes the world SRT using the parent bone and the Local SRT.</summary>
 	Method UpdateWorldTransform:Void()
 		' --- compute world SRT based on bone and parent ---
 		If Parent <> Null

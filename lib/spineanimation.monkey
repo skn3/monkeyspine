@@ -1,4 +1,4 @@
-'see license.txt for source licenses
+'see license.txt For source licenses
 Strict
 
 Import spine
@@ -16,7 +16,7 @@ Class SpineAnimation
 		Duration = duration
 	End
 
-	'Poses the skeleton at the specified time for this animation.
+	'Poses the skeleton at the specified time For this animation.
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, loop:Bool)
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
 
@@ -33,7 +33,7 @@ Class SpineAnimation
 		Next
 	End
 
-	'Poses the skeleton at the specified time for this animation mixed with the current pose.
+	'Poses the skeleton at the specified time For this animation mixed with the current pose.
 	'@param alpha The amount of this animation that affects the current pose.
 	Method Mix:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, loop:Bool, events:List<SpineEvent>, alpha:Float)
 		If skeleton = Null Throw New SpineArgumentNullException("skeleton cannot be Null.")
@@ -100,12 +100,12 @@ Class SpineAnimation
 End
 
 Interface SpineTimeline
-	'Sets the value(s) for the specified time.
+	'Sets the value(s) For the specified time.
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, alpha:Float)
 	Method FrameCount:Int()
 End
 
-'Base class for frames that use an interpolation bezier curve.
+'Base Class For frames that use an interpolation bezier curve.
 Class SpineCurveTimeline Implements SpineTimeline Abstract
 	Const LINEAR:= 0.0
 	Const STEPPED:= 1.0
@@ -136,7 +136,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		curves[frameIndex * BEZIER_SIZE] = STEPPED
 	End
 
-	'Sets the control handle positions for an interpolation bezier curve used to transition from this keyframe to the next.
+	'Sets the control handle positions For an interpolation bezier curve used to transition from this keyframe to the Next.
  	'cx1 and cx2 are from 0 to 1, representing the percent of time between the two keyframes. cy1 and cy2 are the percent of
  	'the difference between the keyframe's values.
 	Method SetCurve:Void(frameIndex:Int, cx1:Float, cy1:Float, cx2:Float, cy2:Float)
@@ -166,7 +166,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		Local y:= dfy
 		
 		Local n:= i + BEZIER_SIZE - 1
-		For i = i - 1 Until n Step 2
+		For i = i Until n Step 2
 			curves[i] = x
 			curves[i + 1] = y
 			dfx += ddfx
@@ -363,7 +363,7 @@ Class SpineColorTimeline Extends SpineCurveTimeline
 
 	Method New(frameCount:Int)
 		Super.New(frameCount)
-		Frames = new Float[frameCount * 5]
+		Frames = New Float[frameCount * 5]
 	End
 
 	'Sets the time and value of the specified keyframe.
@@ -429,7 +429,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 
 	Method New(frameCount:Int)
 		Frames = New Float[frameCount]
-		AttachmentNames = new String[frameCount]
+		AttachmentNames = New String[frameCount]
 	End
 		
 	Method FrameCount:Int()
@@ -479,8 +479,8 @@ Class SpineEventTimeline Implements SpineTimeline
 	Field Events:SpineEvent[]
 
 	Method New(frameCount:Int)
-		Frames = new Float[frameCount]
-		Events = new SpineEvent[frameCount]
+		Frames = New Float[frameCount]
+		Events = New SpineEvent[frameCount]
 	End
 
 	Method FrameCount:Int()
@@ -498,7 +498,7 @@ Class SpineEventTimeline Implements SpineTimeline
 		If firedEvents = Null Return
 		Local frameCount:Int = Frames.Length()
 
-		If lastTime > time 'Fire events after last time for looped animations.
+		If lastTime > time 'Fire events after last time For looped animations.
 			Apply(skeleton, lastTime, SPINE_MAX_FLOAT, firedEvents, alpha)
 			lastTime = -1.0
 		ElseIf lastTime >= Frames[frameCount - 1] 'Last time is after last frame.
@@ -513,7 +513,7 @@ Class SpineEventTimeline Implements SpineTimeline
 		Else
 			frameIndex = SpineAnimation.BinarySearch(Frames, lastTime)
 			Local frame:Float = Frames[frameIndex]
-			while frameIndex > 0 'Fire multiple events with the same frame.
+			While frameIndex > 0 'Fire multiple events with the same frame.
 				If Frames[frameIndex - 1] <> frame Exit
 				frameIndex -= 1
 			Wend
@@ -531,8 +531,8 @@ Class SpineDrawOrderTimeline Implements SpineTimeline
 	Field DrawOrders:Int[][]
 
 	Method New(frameCount:Int)
-		Frames = new Float[frameCount]
-		DrawOrders = new Int[frameCount][]
+		Frames = New Float[frameCount]
+		DrawOrders = New Int[frameCount][]
 	End
 
 	Method FrameCount:Int()
@@ -580,8 +580,8 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 
 	Method New(frameCount:Int)
 		Super.New(frameCount)
-		Frames = new Float[frameCount]
-		FrameVertices = new Float[frameCount][]
+		Frames = New Float[frameCount]
+		FrameVertices = New Float[frameCount][]
 	End
 
 	'Sets the time and value of the specified keyframe
@@ -604,7 +604,7 @@ Class SpineFFDTimeline Extends SpineCurveTimeline
 		Local vertices := slot.AttachmentVertices
 		if vertices.Length() <> vertexCount alpha = 1.0
 		if vertices.Length() < vertexCount
-			vertices = new Float[vertexCount]
+			vertices = New Float[vertexCount]
 			slot.AttachmentVertices = vertices
 		EndIf
 		slot.AttachmentVerticesCount = vertexCount
@@ -661,7 +661,7 @@ Class SpineIkConstraintTimeline Extends SpineCurveTimeline
 
 	Method New(frameCount:Int)
 		Super.New(frameCount)
-		Frames = new Float[frameCount * 3]
+		Frames = New Float[frameCount * 3]
 	End
 
 	'Sets the time, mix and bend direction of the specified keyframe.
