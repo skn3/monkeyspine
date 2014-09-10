@@ -92,6 +92,7 @@ Import glue.spinetexturewrap
 Import glue.spineformat
 
 'spine lib
+Import lib.spinepolygon
 Import lib.spineanimation
 Import lib.spineanimationstate
 Import lib.spineanimationstatedata
@@ -102,6 +103,7 @@ Import lib.spineeventdata
 Import lib.spineikconstraint
 Import lib.spineikconstraintdata
 Import lib.spineskeleton
+Import lib.spineskeletonbounds
 Import lib.spineskeletondata
 Import lib.spineskeletonjson
 Import lib.spineskin

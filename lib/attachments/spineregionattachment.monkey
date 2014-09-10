@@ -167,8 +167,5 @@ Class SpineRegionAttachment Extends SpineAttachment
 		WorldG = (slot.Skeleton.G * slot.G)
 		WorldB = (slot.Skeleton.B * slot.B)
 		WorldAlpha = slot.Skeleton.A * slot.A
-		
-		'bounding
-		SpineGetPolyBounding(Vertices, BoundingVertices)
 	End
 End

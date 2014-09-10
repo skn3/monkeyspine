@@ -6,7 +6,6 @@ Import spine
 Class SpineAttachment Abstract
 	Field Name:String
 	Field Type:Int
-	Field BoundingVertices:Float[8]
 
 	Method New(name:String)
 		If name.Length() = 0 Throw New SpineArgumentNullException("name cannot be empty.")

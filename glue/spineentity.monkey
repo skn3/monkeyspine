@@ -43,6 +43,8 @@ Class SpineEntity
 	Field dirty:Bool
 	Field dirtyBounding:Bool
 	
+	Field slotBoundingVertices:Float[][]
+	
 	Field bounding:Float[8]
 	
 	Field events:= New List<SpineEvent>
@@ -78,6 +80,16 @@ Class SpineEntity
 		'create the skeleton
 		skeleton = New SpineSkeleton(data)
 		skeleton.SetToSetupPose()
+		
+		'update the slot arrays
+		Local index:Int
+		Local total:= data.Slots.Length()
+		slotBoundingVertices = New Float[total][]
+		
+		'fill slot arrays
+		For index = 0 Until total
+			slotBoundingVertices[index] = New Float[8]
+		Next
 	End
 		
 	Method Free:Void()
@@ -114,9 +126,29 @@ Class SpineEntity
 				
 		'update attachments
 		Local slot:SpineSlot
-		For Local index:= 0 Until skeleton.Slots.Length()
+		Local attachment:SpineAttachment
+		Local total:= skeleton.Slots.Length()
+		Local slotArray1:Float[]
+		For Local index:= 0 Until total
 			slot = skeleton.Slots[index]
-			slot.Attachment.Update(slot)
+			attachment = slot.Attachment
+			
+			'update bounding
+			slotArray1 = slotBoundingVertices[index]
+			Select attachment.Type
+				Case SpineAttachmentType.boundingbox
+				Case SpineAttachmentType.mesh
+					Local mesh:= SpineMeshAttachment(attachment)
+					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+					
+				Case SpineAttachmentType.region
+					Local mesh:= SpineMeshAttachment(attachment)
+					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+					
+				Case SpineAttachmentType.skinnedmesh
+					Local mesh:= SpineSkinnedMeshAttachment(attachment)
+					SpineGetPolyBounding(mesh.Vertices, slotArray1)
+			End
 		Next
 		
 		'flag bounding as dirty
@@ -134,22 +166,20 @@ Class SpineEntity
 		Local maxX:Float
 		Local maxY:Float
 		Local first:Bool = True
-		Local boundingIndex:Int
 		Local slot:SpineSlot
-		Local attachment:SpineRegionAttachment
+		Local attachment:SpineAttachment
 		
 		'iterate over visible elements
 		For Local index:= 0 Until skeleton.Slots.Length()
 			'get slot
 			slot = skeleton.Slots[index]
 			
-			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.region Continue
-			
-			'get attachment in correct format
-			attachment = SpineRegionAttachment(slot.Attachment)
+			'skip if not attachment
+			attachment = slot.Attachment
+			If attachment = Null Continue
 
 			'we can use bounds of each item
+			attachment.GetBounding()
 			If first
 				minX = attachment.BoundingVertices[0]
 				minY = attachment.BoundingVertices[1]
@@ -373,6 +403,41 @@ Class SpineEntity
 		#End
 	End
 	Public
+	
+	'main api
+	Method Calculate:Void(force:Bool = False)
+		' --- this will calculate the entity ---
+		If force or dirty OnCalculate()
+	End
+	
+	Method CalculateBounding:Void(force:Bool = False)
+		' --- call this to calculate bounding ---
+		If force or dirtyBounding
+			'first we calculate (if there are calculations to be made)
+			Calculate()
+			
+			'now we calculate bounding
+			OnCalculateBounding()
+		EndIf
+	End
+	
+	Method Update:Void(delta:Float)
+		' --- update this entity ---
+		'only update if not updating or rendering
+		If updating or rendering Return
+		updating = True
+		OnUpdate(delta)
+		updating = False
+	End
+	
+	Method Render:Void()
+		' --- render the entity --
+		'only render if not rendering or updating
+		If rendering or updating Return
+		rendering = True
+		OnRender()
+		rendering = False
+	End
 	
 	'debug api
 	Method SetDebugDraw:Void(slotsBonesBounding:Bool)
@@ -1705,42 +1770,7 @@ Class SpineEntity
 		If world Return bone.WorldScaleY
 		Return bone.ScaleY
 	End
-	
-	'state api
-	Method Calculate:Void(force:Bool = False)
-		' --- this will calculate the entity ---
-		If force or dirty OnCalculate()
-	End
-	
-	Method CalculateBounding:Void(force:Bool = False)
-		' --- call this to calculate bounding ---
-		If force or dirtyBounding
-			'first we calculate (if there are calculations to be made)
-			Calculate()
-			
-			'now we calculate bounding
-			OnCalculateBounding()
-		EndIf
-	End
-	
-	Method Update:Void(delta:Float)
-		' --- update this entity ---
-		'only update if not updating or rendering
-		If updating or rendering Return
-		updating = True
-		OnUpdate(delta)
-		updating = False
-	End
-	
-	Method Render:Void()
-		' --- render the entity --
-		'only render if not rendering or updating
-		If rendering or updating Return
-		rendering = True
-		OnRender()
-		rendering = False
-	End
-	
+		
 	'api
 	Method GetName:String()
 		' --- Return name of skeleton ---
