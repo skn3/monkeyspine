@@ -85,8 +85,8 @@ Class SpineSkeletonJson
 				boneData.Rotation = jsonObject.GetItem("rotation", 0.0)
 				boneData.ScaleX = jsonObject.GetItem("scaleX", 1.0)
 				boneData.ScaleY = jsonObject.GetItem("scaleY", 1.0)
-				boneData.InheritScale = jsonObject.GetItem("inheritScale", True)
-				boneData.InheritRotation = jsonObject.GetItem("inheirtRotation", True)
+				boneData.InheritScale = GetBool(jsonObject, "inheritScale", True)
+				boneData.InheritRotation = GetBool(jsonObject, "inheirtRotation", True)
 				skeletonData.AddBone(boneData)
 			Next
 		EndIf
@@ -126,7 +126,7 @@ Class SpineSkeletonJson
 				If ikConstraintData.Target = Null Throw New SpineException("Target bone not found: " + targetName)
 				
 				'ikConstraintData.bendDirection = GetBoolean(ikMap, "bendPositive", True) ? 1 : -1
-				If jsonObject.GetItem("bendPositive", True)
+				If GetBool(jsonObject, "bendPositive", True)
 					ikConstraintData.BendDirection = 1
 				Else
 					ikConstraintData.BendDirection = -1
@@ -323,7 +323,7 @@ Class SpineSkeletonJson
 				
 				mesh.Path = path
 				Local uvs:= GetFloatArray(jsonAttachment, "uvs", 1.0)
-				Local vertices:= GetFloatArray(jsonAttachment, "vertices", Scale)
+				Local vertices:= GetFloatArray(jsonAttachment, "vertices", 1.0)'1.0...Should this be Scale ???
 				Local weights:Float[uvs.Length() * 3 * 3]
 				Local weightsIndex:Int
 				Local bones:Int[uvs.Length() * 3]
@@ -337,17 +337,24 @@ Class SpineSkeletonJson
 				While i < n
 					boneCount = vertices[i]
 					i += 1
+					
 					bones[bonesIndex] = boneCount
 					bonesIndex += 1
+					
 					nn = i + boneCount * 4
 					While i < nn
 						bones[bonesIndex] = vertices[i]
+						bonesIndex += 1
+						
 						weights[weightsIndex] = vertices[i + 1] * Scale
 						weightsIndex += 1
+						
 						weights[weightsIndex] = vertices[i + 2] * Scale
 						weightsIndex += 1
-						weights[weightsIndex] = vertices[i + 3] * Scale
+						
+						weights[weightsIndex] = vertices[i + 3]
 						weightsIndex += 1
+						
 						i += 4
 					Wend
 				Wend
@@ -429,6 +436,12 @@ Class SpineSkeletonJson
 		Return values
 	End
 
+	Method GetBool:Bool(jsonObject:JSONObject, name:String, defaultValue:Bool)
+		Local result:String = jsonObject.GetItem(name, "")
+		If result = "" Return defaultValue
+		Return result = "true"
+	End
+	
 	Function ToColor:Float(hex:String, colorIndex:Int)
 		If hex.Length() <> 8 Throw New SpineArgumentNullException("Color hexidecimal length must be 8, recieved: " + hex)
 		
@@ -618,7 +631,7 @@ Class SpineSkeletonJson
 			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
 				jsonIkConstraint = JSONObject(jsonTimelineFrameDataItem)
 				
-				If jsonTimelineFrame.GetItem("bendPositive", True)
+				If GetBool(jsonTimelineFrame, "bendPositive", True) 
 					bendPositive = 1
 				Else
 					bendPositive = -1

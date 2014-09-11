@@ -314,9 +314,9 @@ Function SpinePolyToPoly:Bool(p1Xy:Float[], p2Xy:Float[])
 	Return False
 End Function
 
-Function SpineGetPolyBounding:Void(poly:Float[], out:Float[])
+Function SpineGetPolyBounding:Void(poly:Float[], out:Float[], total:Int = -1)
 	' --- calculate teh dimensions of the given polygon ---
-	Local total:= poly.Length()
+	If total = -1 total = poly.Length()
 	If total < 6
 		'no poly (well not one that has area)
 		out[0] = 0

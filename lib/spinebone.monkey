@@ -4,7 +4,7 @@ Strict
 Import spine
 
 Class SpineBone
-	Const yDown:Bool = True
+	Const yDown:Bool = True'is the y 0,0 top-left? (e.g does Y go down the screen as it increases)
 
 	Field Data:SpineBoneData
 	Field Skeleton:SpineSkeleton
@@ -46,8 +46,9 @@ Class SpineBone
 			WorldX = X * Parent.M00 + Y * Parent.M01 + Parent.WorldX
 			WorldY = X * Parent.M10 + Y * Parent.M11 + Parent.WorldY
 			If Data.InheritScale
-				WorldScaleX = Parent.WorldScaleX * ScaleX
-				WorldScaleY = Parent.WorldScaleY * ScaleY
+				'If Data.Name = "front_thigh" DebugStop()
+				WorldScaleX = ScaleX * Parent.WorldScaleX
+				WorldScaleY = ScaleY * Parent.WorldScaleY
 			Else
 				WorldScaleX = ScaleX
 				WorldScaleY = ScaleY
@@ -59,27 +60,25 @@ Class SpineBone
 				WorldRotation = RotationIK
 			EndIf
 		Else
-			If Skeleton.FlipX
-				WorldX = -X
-			Else
+			'removed this code...
+			'If Skeleton.FlipX
+			'	WorldX = -X
+			'Else
 				WorldX = X
-			EndIf
+			'EndIf
 			
-			If Skeleton.FlipY <> yDown
-				WorldY = -Y
-			Else
+			'If yDown
 				WorldY = Y
-			EndIf
-			
+			'Else
+			'	WorldY = -Y
+			'EndIf
+
 			WorldScaleX = ScaleX
 			WorldScaleY = ScaleY
 			
 			WorldRotation = RotationIK
 		EndIf
 		
-		'Float radians = worldRotation * (Float) Math.PI / 180
-		'Float cos = (Float)Math.Cos(radians)
-		'Float sin = (Float)Math.Sin(radians)
 		Local cos:Float = Cos(WorldRotation)
 		Local sin:Float = Sin(WorldRotation)
 		

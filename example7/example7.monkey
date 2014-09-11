@@ -35,20 +35,47 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			'spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json")
-			'spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json")
-			'spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json")
+			#TEST = "goblin"
+			
+			'which mode ?
+			#If TEST = "spineboy"
+			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
+			spineTest.SetAnimation("run", True)
+			spineTest.SetScale(0.4)
+			spineTest.SetSpeed(0.5)
+			
+			#ElseIf TEST = "goblin"
 			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
-			'spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
-			'spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
-			spineTest.SetDebugDraw(True)
-			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight() -100)
 			spineTest.SetAnimation("walk", True)
-			spineTest.SetSkin("goblin")
+			spineTest.SetSkin("goblingirl")
+			spineTest.SetScale(1.2)
+			spineTest.SetSpeed(0.5)
+			
+			#ElseIf TEST = "powerup"
+			spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
+			spineTest.SetAnimation("animation", True)
+			
+			#ElseIf TEST = "regions"
+			spineTest = LoadMojoSpineEntity("monkey://data/smile_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			
+			#ElseIf TEST = "ffd"
+			spineTest = LoadMojoSpineEntity("monkey://data/mesh_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			
+			#ElseIf TEST = "ffd_simple"
+			spineTest = LoadMojoSpineEntity("monkey://data/simple_mesh_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			
+			#ElseIf TEST = "skinned_mesh"
+			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			#EndIf
+			
+			spineTest.SetDebug(True, False)
 			spineTest.SetCallback(Self)
-			spineTest.SetSpeed(0.8)
-			'spineTest.SetScale(0.4)
 			spineTest.SetSnapToPixels(True)
+			'spineTest.SetFlip(True, True)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -60,8 +87,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnRender:Int()
 		' --- render the app ---
-		Cls(0, 0, 0)
-		
+		Cls(255, 255, 255)
+
 		'simples! render current item
 		spineTest.Render()
 		
@@ -88,9 +115,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 		timestamp = newTimestamp
 		
 		'update item entity
-		spineTest.Update(deltaFloat)
-		
 		spineTest.SetPosition(MouseX(), MouseY())
+		'spineTest.SetRotation(spineTest.GetRotation() +1.0)
+		spineTest.Update(deltaFloat)
 		
 		'update fading message
 		If showMessageAlpha > 0

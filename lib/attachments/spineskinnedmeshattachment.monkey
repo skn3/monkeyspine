@@ -68,8 +68,8 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	Method ComputeWorldVertices:Void(slot:SpineSlot, worldVertices:Float[])
 		Local skeleton := slot.Bone.Skeleton
 		Local skeletonBones:= skeleton.Bones
-		Local x:= skeleton.x
-		Local y:= skeleton.y
+		Local x:= skeleton.X
+		Local y:= skeleton.Y
 		
 		Local bone:SpineBone
 		Local vx:Float
@@ -83,7 +83,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 		Local b:= 0
 		Local n:= Bones.Length()
 		
-		If slot.attachmentVerticesCount = 0
+		If slot.AttachmentVerticesCount = 0
 			'For (Int w = 0, v = 0, b = 0, n = bones.Length() v < n w += 2) {
 			While v < n
 				wx = 0
@@ -92,7 +92,6 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				nn = Bones[v]
 				v += 1
 				nn += v
-				
 				While v < nn
 					bone = skeletonBones[Bones[v]]
 					vx = Weights[b]

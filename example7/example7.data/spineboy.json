@@ -1,20 +1,11 @@
 {
-"skeleton": { "spine": "1.9.17", "hash": "Z2vHTr9b+9aucnyKpxGllo6AalA", "width": 470.64, "height": 731.52 },
+"skeleton": { "spine": "1.9.17", "hash": "mEcsg4+p9o3iwD8uTzfsAOWr8EM", "width": 470.64, "height": 731.52 },
 "bones": [
 	{ "name": "hip", "y": 247.47 },
 	{ "name": "front_thigh", "parent": "hip", "length": 74.8, "x": -17.45, "y": -11.64, "rotation": -95.51, "color": "00ff04ff" },
 	{ "name": "rear_thigh", "parent": "hip", "length": 85.71, "x": 8.91, "y": -5.62, "rotation": -72.54, "color": "ff000dff" },
 	{ "name": "torso", "parent": "hip", "length": 127.55, "x": -1.61, "y": 4.9, "rotation": 103.82, "color": "e0da19ff" },
-	{
-		"name": "front_shin",
-		"parent": "front_thigh",
-		"length": 128.76,
-		"x": 78.69,
-		"y": 1.6,
-		"rotation": -2.21,
-		"inheritScale": false,
-		"color": "00ff04ff"
-	},
+	{ "name": "front_shin", "parent": "front_thigh", "length": 128.76, "x": 78.69, "y": 1.6, "rotation": -2.21, "color": "00ff04ff" },
 	{ "name": "front_upper_arm", "parent": "torso", "length": 69.45, "x": 103.75, "y": 19.32, "rotation": 168.37, "color": "00ff04ff" },
 	{ "name": "neck", "parent": "torso", "length": 25.45, "x": 127.49, "y": -0.3, "rotation": -31.53, "color": "e0da19ff" },
 	{ "name": "rear_shin", "parent": "rear_thigh", "length": 121.87, "x": 86.1, "y": -1.32, "rotation": -19.83, "color": "ff000dff" },

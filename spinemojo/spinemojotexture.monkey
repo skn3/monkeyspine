@@ -43,15 +43,6 @@ Class SpineMojoTexture Implements SpineTexture
 	End
 	
 	Method Grab:SpineRendererObject(x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
-		Local subImage:Image
-		If rotate
-			subImage = image.GrabImage(x, y, height, width)
-			subImage.SetHandle(handleY, handleX)
-		Else
-			subImage = image.GrabImage(x, y, width, height)
-			subImage.SetHandle(handleX, handleY)
-		EndIf
-		
-		Return New SpineMojoRendererObject(subImage, rotate)
+		Return New SpineMojoRendererObject(image, x, y, width, height, handleX, handleY, rotate)
 	End
 End

@@ -41,6 +41,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field RendererObject:SpineRendererObject
 	
 	'these are so we have a place to update state at runtime
+	#rem
 	Field Vertices:Float[8]
 	Field WorldX:Float
 	Field WorldY:Float
@@ -51,6 +52,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field WorldG:Float
 	Field WorldB:Float
 	Field WorldAlpha:Float
+	#end
 
 	'constructor
 	Method New(name:String)
@@ -114,8 +116,8 @@ Class SpineRegionAttachment Extends SpineAttachment
 	End
 	
 	Method ComputeWorldVertices:Void(bone:SpineBone, worldVertices:Float[])
-		Local x:Float = bone.Skeleton.x + bone.WorldX
-		Local y:Float = bone.Skeleton.y + bone.WorldY
+		Local x:Float = bone.Skeleton.X + bone.WorldX
+		Local y:Float = bone.Skeleton.Y + bone.WorldY
 		Local m00:Float = bone.M00
 		Local m01:Float = bone.M01
 		Local m10:Float = bone.M10
