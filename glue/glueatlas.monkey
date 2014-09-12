@@ -274,9 +274,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		'attempt to load atlas json
 		Local jsonPages:JSONArray
 		Local fileStream:= fileLoader.LoadFile(path)
-		Local fileString := fileStream.ReadAll()
-		Print fileString
-		If fileStream jsonPages = JSONArray(JSONData.ReadJSON(fileString))
+		If fileStream jsonPages = JSONArray(JSONData.ReadJSON(fileStream.ReadAll()))
 		If jsonPages = Null Error SpineException("Invalid Atlas '" + path + "'")
 		
 		'get images directory
