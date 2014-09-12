@@ -430,8 +430,8 @@ Class SpineEntity
 			lastTime = skeleton.Time
 			skeleton.Update(delta * speed)
 			
-			'reset the draw order
-			'skeleton.ResetSlotOrder()
+			'reset the skeleton
+			skeleton.SetBonesToSetupPose()
 			
 			'we now pass in an events list
 			animation.Apply(skeleton, lastTime, skeleton.Time, events, looping)

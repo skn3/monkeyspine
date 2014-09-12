@@ -1,6 +1,6 @@
 
 goblins-ffd.png
-size: 240,501
+size: 236,501
 format: RGBA8888
 filter: Linear,Linear
 repeat: xy
@@ -55,7 +55,7 @@ goblin/left-lower-leg
   index: -1
 goblin/left-shoulder
   rotate: false
-  xy: 170, 114
+  xy: 166, 156
   size: 29, 44
   orig: 29, 44
   offset: 0, 0
@@ -93,13 +93,6 @@ goblin/right-foot
   xy: 98, 230
   size: 63, 33
   orig: 63, 33
-  offset: 0, 0
-  index: -1
-goblin/right-hand
-  rotate: false
-  xy: 137, 18
-  size: 36, 37
-  orig: 36, 37
   offset: 0, 0
   index: -1
 goblin/right-lower-leg
@@ -160,7 +153,7 @@ goblingirl/head
   index: -1
 goblingirl/left-arm
   rotate: false
-  xy: 203, 126
+  xy: 171, 67
   size: 37, 35
   orig: 37, 35
   offset: 0, 0
@@ -174,7 +167,7 @@ goblingirl/left-foot
   index: -1
 goblingirl/left-hand
   rotate: false
-  xy: 166, 160
+  xy: 137, 15
   size: 35, 40
   orig: 35, 40
   offset: 0, 0
@@ -188,7 +181,7 @@ goblingirl/left-lower-leg
   index: -1
 goblingirl/left-shoulder
   rotate: false
-  xy: 171, 67
+  xy: 197, 155
   size: 28, 45
   orig: 28, 46
   offset: 0, 1
@@ -216,7 +209,7 @@ goblingirl/pelvis
   index: -1
 goblingirl/right-arm
   rotate: false
-  xy: 175, 15
+  xy: 170, 104
   size: 22, 50
   orig: 28, 50
   offset: 3, 0
@@ -230,7 +223,7 @@ goblingirl/right-foot
   index: -1
 goblingirl/right-hand
   rotate: false
-  xy: 203, 163
+  xy: 194, 116
   size: 35, 37
   orig: 36, 37
   offset: 1, 0
