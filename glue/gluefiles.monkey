@@ -30,8 +30,8 @@ Class SpineDefaultFileLoader Implements SpineFileLoader
 End
 
 Class SpineDefaultFileStream Implements SpineFileStream
+	Field originalString:String
 	Field path:String
-	Field buffer:DataBuffer
 	Field index:Int
 	Field total:Int
 	Field start:Int
@@ -39,14 +39,13 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	Method Load:Bool(path:String)
 		'convert string into buffer
 		Self.path = path
-		index = 0
-		start = 0
+		index = 1
+		start = 1
 		
 		'create buffer
-		Local data:String = LoadString(path)
-		total = data.Length
-		buffer = New DataBuffer(total)
-		buffer.PokeString(0, data)
+		originalString = LoadString(path)
+
+		total = originalString.Length
 		
 		'return success
 		Return True
@@ -57,16 +56,16 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	End
 	
 	Method ReadLine:String()
-		If buffer = Null or index >= total Return ""
+		If originalString = "" or index >= total Return ""
 		
-		For index = index Until total
+		For index = index Until total			
 			'check for end of line
-			If buffer.PeekByte(index) = 10
-				Local result:String = buffer.PeekString(start, (index - start))
-				index = index + 1
+			If originalString[index] = 10
+				Local result:String = originalString[start..index]
+				index += 1
 				start = index
 				Return result
-			EndIf
+			End
 		Next
 		
 		Return ""
@@ -74,9 +73,8 @@ Class SpineDefaultFileStream Implements SpineFileStream
 	
 	Method ReadAll:String()
 		'just return the entire contents in a string
-		Local result:= buffer.PeekString(start)
 		start = total
-		Return result
+		Return originalString
 	End
 	
 	Method Eof:Bool()
