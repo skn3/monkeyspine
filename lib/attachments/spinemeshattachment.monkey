@@ -87,12 +87,5 @@ Class SpineMeshAttachment Extends SpineAttachment
 			worldVertices[i + 1] = vx * m10 + vy * m11 + y
 		Next
 	End
-	
-	' --- glue
-	
-	Method Update:Void(slot:SpineSlot)
-		'bounding
-		SpineGetPolyBounding(Vertices, BoundingVertices)
-	End
 End
 		

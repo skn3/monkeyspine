@@ -325,16 +325,14 @@ Function SpineGetPolyBounding:Void(poly:Float[], out:Float[], total:Int = -1)
 		out[3] = 0
 	Else
 		'calculate min/max
-		Local index:Int
-		
 		'get starting min max from first vector
-		Local minX:Float = poly[0]
-		Local minY:Float = poly[1]
-		Local maxX:Float = poly[0]
-		Local maxY:Float = poly[1]
+		Local minX:Float = SPINE_MAX_FLOAT
+		Local minY:Float = SPINE_MAX_FLOAT
+		Local maxX:Float = SPINE_MIN_FLOAT
+		Local maxY:Float = SPINE_MIN_FLOAT
 		
 		'skip the first point
-		For index = 2 Until total Step 2
+		For Local index:= 0 Until total Step 2
 			If poly[index] < minX minX = poly[index]
 			If poly[index] > maxX maxX = poly[index]
 			If poly[index+1] < minY minY = poly[index+1]

@@ -17,8 +17,4 @@ Class SpineAttachment Abstract
 	Method ToString:String()
 		Return Name
 	End
-	
-	' --- glue
-	
-	'Method Update:Void(slot:SpineSlot) Abstract
 End

@@ -89,10 +89,9 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				wx = 0
 				wy = 0
 
-				nn = Bones[v]
+				nn = Bones[v] + v
 				v += 1
-				nn += v
-				While v < nn
+				While v <= nn
 					bone = skeletonBones[Bones[v]]
 					vx = Weights[b]
 					vy = Weights[b + 1]
@@ -120,12 +119,11 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				wx = 0
 				wy = 0
 				
-				nn = Bones[v]
+				nn = Bones[v] + v
 				v += 1
-				nn += v
 				
 				'For ( v < nn v++, b += 3, f += 2) {
-				While v < nn
+				While v <= nn
 					bone = skeletonBones[Bones[v]]
 					vx = Weights[b] + ffd[f]
 					vy = Weights[b + 1] + ffd[f + 1]
@@ -146,13 +144,6 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 				w += 2
 			Wend
 		EndIf
-	End
-	
-	' --- glue
-	
-	Method Update:Void(slot:SpineSlot)
-		'bounding
-		'SpineGetPolyBounding(Vertices, BoundingVertices)
 	End
 End
 		

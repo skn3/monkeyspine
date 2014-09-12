@@ -323,39 +323,47 @@ Class SpineSkeletonJson
 				
 				mesh.Path = path
 				Local uvs:= GetFloatArray(jsonAttachment, "uvs", 1.0)
-				Local vertices:= GetFloatArray(jsonAttachment, "vertices", 1.0)'1.0...Should this be Scale ???
-				Local weights:Float[uvs.Length() * 3 * 3]
-				Local weightsIndex:Int
-				Local bones:Int[uvs.Length() * 3]
-				Local bonesIndex:Int
 				
-				Local boneCount:Int
+				Local vertices:= GetFloatArray(jsonAttachment, "vertices", 1.0)'1.0...Should this be Scale ???
+				Local verticesCount:= vertices.Length()
+				Local bonesCount:Int
+				Local meshBonesCount:Int
+				Local meshWeightsCount:Int
 				Local i:Int
 				Local nn:Int
-				Local n:= vertices.Length()
 				
-				While i < n
-					boneCount = vertices[i]
+				i = 0
+				While i < verticesCount
+					bonesCount = vertices[i]
+					meshBonesCount += bonesCount + 1
+					meshWeightsCount += bonesCount * 3
+					i += 1 + bonesCount * 4
+				Wend
+				
+				Local bones:Int[meshBonesCount]
+				Local weights:Float[meshWeightsCount]
+				Local b:Int
+				Local w:Int
+				
+				i = 0
+				While i < verticesCount
+					bonesCount = vertices[i]
 					i += 1
 					
-					bones[bonesIndex] = boneCount
-					bonesIndex += 1
+					bones[b] = bonesCount
+					b += 1
 					
-					nn = i + boneCount * 4
+					nn = i + bonesCount * 4
 					While i < nn
-						bones[bonesIndex] = vertices[i]
-						bonesIndex += 1
+						bones[b] = vertices[i]
 						
-						weights[weightsIndex] = vertices[i + 1] * Scale
-						weightsIndex += 1
-						
-						weights[weightsIndex] = vertices[i + 2] * Scale
-						weightsIndex += 1
-						
-						weights[weightsIndex] = vertices[i + 3]
-						weightsIndex += 1
+						weights[w] = vertices[i + 1] * Scale
+						weights[w + 1] = vertices[i + 2] * Scale
+						weights[w + 2] = vertices[i + 3]
 						
 						i += 4
+						b += 1
+						w += 3
 					Wend
 				Wend
 				

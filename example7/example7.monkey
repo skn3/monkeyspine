@@ -49,9 +49,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetAnimation("walk", True)
 			spineTest.SetSkin("goblin")
 			'spineTest.SetSkin("goblingirl")
-			spineTest.SetScale(1.2)
+			spineTest.SetScale(1.0)
 			spineTest.SetSpeed(0.5)
-			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight - 60)
 			
 			#ElseIf TEST = "powerup"
 			spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
@@ -74,10 +73,11 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetAnimation("animation", True)
 			#EndIf
 			
-			spineTest.SetDebug(False, False)
+			spineTest.SetDebug(True, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetFlip(False, False)
+			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight - 60)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)

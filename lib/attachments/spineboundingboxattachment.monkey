@@ -30,9 +30,4 @@ Class SpineBoundingBoxAttachment Extends SpineAttachment
 			worldVertices[i + 1] = px * m10 + py * m11 + y
 		Next
 	End
-	
-	Method Update:Void(slot:SpineSlot)
-		'bounding
-		SpineGetPolyBounding(Vertices, BoundingVertices)
-	End
 End

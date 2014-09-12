@@ -147,11 +147,10 @@ Class SpineEntity
 		'this will update the state of the skeleton so anything we access after it is correctly updated
 		dirty = False
 		
-		Local length:Int
-		
 		'store values
 		Local rootBone:= skeleton.RootBone()
 		If rootBone
+			Local length:Int
 			Local oldRootX:= rootBone.X
 			Local oldRootY:= rootBone.Y
 			Local oldRootScaleX:= rootBone.ScaleX
@@ -237,9 +236,6 @@ Class SpineEntity
 						slotWorldHull[index][13] = slotWorldVertices[index][7]
 						slotWorldHull[index][14] = slotWorldVertices[index][0]
 						slotWorldHull[index][15] = slotWorldVertices[index][1]
-												
-						'bounding
-						'SpineGetPolyBounding(slowWorldVertices[index], slotWorldBounding[index])
 						
 					Case SpineAttachmentType.Mesh
 						Local mesh:= SpineMeshAttachment(attachment)
@@ -262,9 +258,6 @@ Class SpineEntity
 						
 						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
 						
-						'bounding
-						SpineGetPolyBounding(slotWorldVertices[index], slotWorldBounding[index], slotWorldVerticesLength[index])
-						
 						'color
 						OnCalculateWorldColor(slot, index)
 						
@@ -281,13 +274,11 @@ Class SpineEntity
 						Local n:= mesh.Bones.Length()
 						Local nn:Int
 						While v < n
-							nn = mesh.Bones[v]
-							v += 1
-							nn += v
-							v += (nn - v)
+							nn = mesh.Bones[v] + v
+							v += (nn - (v + 1)) + 2
 							length += 2
 						Wend
-						
+
 						slotWorldVerticesLength[index] = length
 						If length = 0
 							slotWorldTrianglesLength[index] = 0
@@ -302,9 +293,6 @@ Class SpineEntity
 						slotWorldTrianglesLength[index] = length
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
 						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
-						
-						'bounding
-						SpineGetPolyBounding(slotWorldVertices[index], slotWorldBounding[index], slotWorldVerticesLength[index])
 						
 						'color
 						OnCalculateWorldColor(slot, index)
@@ -322,7 +310,6 @@ Class SpineEntity
 			rootBone.Rotation = oldRootRotation
 			
 			'flag bounding as dirty
-			'this will mean Next time we retrieve bounding info it will recalculate
 			dirtyBounding = True
 		EndIf
 	End
@@ -378,49 +365,48 @@ Class SpineEntity
 	
 	Method OnCalculateBounding:Void()
 		' --- calculate bounding ---
-		'unflag dirty
 		dirtyBounding = False
-		
-		Local minX:Float
-		Local minY:Float
-		Local maxX:Float
-		Local maxY:Float
-		Local first:Bool = True
+				
+		Local minX:Float = SPINE_MAX_FLOAT
+		Local minY:Float = SPINE_MAX_FLOAT
+		Local maxX:Float = SPINE_MIN_FLOAT
+		Local maxY:Float = SPINE_MIN_FLOAT
 		Local slot:SpineSlot
 		Local attachment:SpineAttachment
+		Local vertices:Float[]
+		Local total:Int
 		
 		'iterate over visible elements
 		For Local index:= 0 Until skeleton.Slots.Length()
 			'get slot
 			slot = skeleton.Slots[index]
 			
-			'skip if not attachment
+			'skip empty slots
 			attachment = slot.Attachment
 			If attachment = Null Continue
-
-			'we can use bounds of each item
-			attachment.GetBounding()
-			If first
-				minX = attachment.BoundingVertices[0]
-				minY = attachment.BoundingVertices[1]
-				maxX = attachment.BoundingVertices[4]
-				maxY = attachment.BoundingVertices[5]
-			Else
-				If attachment.BoundingVertices[0] < minX minX = attachment.BoundingVertices[0]
-				If attachment.BoundingVertices[0] > maxX maxX = attachment.BoundingVertices[0]
-				If attachment.BoundingVertices[1] < minY minY = attachment.BoundingVertices[1]
-				If attachment.BoundingVertices[1] > maxY maxY = attachment.BoundingVertices[1]
-				If attachment.BoundingVertices[4] < minX minX = attachment.BoundingVertices[4]
-				If attachment.BoundingVertices[4] > maxX maxX = attachment.BoundingVertices[4]
-				If attachment.BoundingVertices[5] < minY minY = attachment.BoundingVertices[5]
-				If attachment.BoundingVertices[5] > maxY maxY = attachment.BoundingVertices[5]
-			EndIf
 			
-			'unflag first
-			first = False
+			total = slotWorldVerticesLength[index]
+			If total < 6 Continue
+			vertices = slotWorldBounding[index]
+			
+			'apply slot bounding to overal min/max values
+			SpineGetPolyBounding(slotWorldVertices[index], vertices, total)
+			
+			'Print "slot " + slot.Data.Name + " = " + slotWorldVertices[index][0]
+			
+			'compute min/max
+			If vertices[0] < minX minX = vertices[0]
+			If vertices[0] > maxX maxX = vertices[0]
+			If vertices[1] < minY minY = vertices[1]
+			If vertices[1] > maxY maxY = vertices[1]
+			If vertices[4] < minX minX = vertices[4]
+			If vertices[4] > maxX maxX = vertices[4]
+			If vertices[5] < minY minY = vertices[5]
+			If vertices[5] > maxY maxY = vertices[5]
 		Next
+		'DebugStop()
 		
-		'dump into bounding
+		'set entity bounding
 		bounding[0] = minX
 		bounding[1] = minY
 		bounding[2] = maxX
@@ -428,7 +414,7 @@ Class SpineEntity
 		bounding[4] = maxX
 		bounding[5] = maxY
 		bounding[6] = minX
-		bounding[7] = maxY		
+		bounding[7] = maxY
 	End
 	
 	Method OnUpdate:Void(delta:Float)
@@ -615,6 +601,12 @@ Class SpineEntity
 		'do debug rendering
 		#If SPINE_DEBUG_RENDER = True
 		total = skeleton.Slots.Length()
+		
+		'prpeare some stuff
+		If total
+			If debugBounding CalculateBounding()
+		EndIf
+		
 		For index = 0 Until total
 			'get slot
 			slot = skeleton.Slots[index]
@@ -625,14 +617,6 @@ Class SpineEntity
 						
 			Select attachment.Type
 				Case SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh, SpineAttachmentType.Region
-					
-					'bounding
-					If debugBounding
-						'draw lines rect around bounding of region
-						'mojo.SetColor(0, 255, 0)
-						'SpineDrawLinePoly(slotWorldBounding[index])
-					EndIf
-					
 					'mesh
 					If debugMesh
 						length = slotWorldTrianglesLength[index]
@@ -670,8 +654,20 @@ Class SpineEntity
 							EndIf
 						EndIf
 					EndIf
+					
+					'bounding
+					If debugBounding
+						mojo.SetColor(128, 0, 255)
+						SpineDrawLinePoly(slotWorldBounding[index])
+					EndIf
 			End
 		Next
+		
+		'entity bounding
+		If debugBounding
+			mojo.SetColor(128, 0, 255)
+			SpineDrawLinePoly(bounding)
+		EndIf
 		#EndIf
 		
 		#rem
@@ -769,10 +765,7 @@ Class SpineEntity
 	Method CalculateBounding:Void(force:Bool = False)
 		' --- call this to calculate bounding ---
 		If force or dirtyBounding
-			'first we calculate (if there are calculations to be made)
 			Calculate()
-			
-			'now we calculate bounding
 			OnCalculateBounding()
 		EndIf
 	End
@@ -796,62 +789,92 @@ Class SpineEntity
 	End
 	
 	'debug api
-	#If SPINE_DEBUG_RENDER = True
 	Method SetDebug:Void(all:Bool, hideImages:Bool = False)
 		' --- set debug draw options ---
+		#If SPINE_DEBUG_RENDER = True
 		debugHideImages = hideImages
 		debugHull = all
 		debugSlots = all
 		debugBones = all
 		debugBounding = all
 		debugMesh = all
+		#EndIf
 	End
 	
 	Method SetDebug:Void(hideImages:Bool, hull:Bool, slots:Bool, bones:Bool, bounding:Bool, mesh:Bool)
 		' --- set debug draw options ---
+		#If SPINE_DEBUG_RENDER = True
 		debugHideImages = hideImages
 		debugHull = hull
 		debugSlots = slots
 		debugBones = bones
 		debugBounding = bounding
 		debugMesh = mesh
+		#EndIF
 	End
 	
 	Method GetDebug:Bool()
 		' --- get combined debug state ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugHideImages or debugHull or debugSlots or debugBones or debugBounding or debugMesh
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugHideImages:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugHideImages
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugHull:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugHull
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugSlots:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugSlots
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugBones:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugBones
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugBounding:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugBounding
+		#Else
+		Return False
+		#EndIF
 	End
 	
 	Method GetDebugMesh:Bool()
 		' --- Return state of debug draw ---
+		#If SPINE_DEBUG_RENDER = True
 		Return debugMesh
+		#Else
+		Return False
+		#EndIF
 	End
-	#EndIf
 	
 	'collision api
 	Method PointInside:Bool(x:Float, y:Float, precision:Int = 0)
