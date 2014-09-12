@@ -39,20 +39,6 @@ Class SpineRegionAttachment Extends SpineAttachment
 	
 	Field Path:String
 	Field RendererObject:SpineRendererObject
-	
-	'these are so we have a place to update state at runtime
-	#rem
-	Field Vertices:Float[8]
-	Field WorldX:Float
-	Field WorldY:Float
-	Field WorldRotation:Float
-	Field WorldScaleX:Float
-	Field WorldScaleY:Float
-	Field WorldR:Float
-	Field WorldG:Float
-	Field WorldB:Float
-	Field WorldAlpha:Float
-	#end
 
 	'constructor
 	Method New(name:String)
@@ -131,45 +117,5 @@ Class SpineRegionAttachment Extends SpineAttachment
 		worldVertices[Y3] = Offset[X3] * m10 + Offset[Y3] * m11 + y
 		worldVertices[X4] = Offset[X4] * m00 + Offset[Y4] * m01 + x
 		worldVertices[Y4] = Offset[X4] * m10 + Offset[Y4] * m11 + y
-	End
-	
-	' --- glue
-	
-	Method Update:Void(slot:SpineSlot)
-		' --- this will perform updates on teh state of the attachment ---
-		#rem
-		'vertices
-		Vertices[X1] = Offset[X1] * slot.Bone.M00 + Offset[Y1] * slot.Bone.M01 + slot.Bone.WorldX
-		Vertices[Y1] = Offset[X1] * slot.Bone.M10 + Offset[Y1] * slot.Bone.M11 + slot.Bone.WorldY
-		Vertices[X2] = Offset[X2] * slot.Bone.M00 + Offset[Y2] * slot.Bone.M01 + slot.Bone.WorldX
-		Vertices[Y2] = Offset[X2] * slot.Bone.M10 + Offset[Y2] * slot.Bone.M11 + slot.Bone.WorldY
-		Vertices[X3] = Offset[X3] * slot.Bone.M00 + Offset[Y3] * slot.Bone.M01 + slot.Bone.WorldX
-		Vertices[Y3] = Offset[X3] * slot.Bone.M10 + Offset[Y3] * slot.Bone.M11 + slot.Bone.WorldY
-		Vertices[X4] = Offset[X4] * slot.Bone.M00 + Offset[Y4] * slot.Bone.M01 + slot.Bone.WorldX
-		Vertices[Y4] = Offset[X4] * slot.Bone.M10 + Offset[Y4] * slot.Bone.M11 + slot.Bone.WorldY
-		
-		'world
-		WorldX = slot.Bone.WorldX + X * slot.Bone.M00 + Y * slot.Bone.M01
-		WorldY = slot.Bone.WorldY + X * slot.Bone.M10 + Y * slot.Bone.M11
-		WorldRotation = slot.Bone.WorldRotation + Rotation
-		WorldScaleX = slot.Bone.WorldScaleX + ScaleX - 1.0
-		WorldScaleY = slot.Bone.WorldScaleY + ScaleY - 1.0
-		
-		'do we need to flip it?
-		If slot.Skeleton.FlipX Then
-			WorldScaleX = -WorldScaleX
-			WorldRotation = -WorldRotation
-		End
-		If slot.Skeleton.FlipY Then
-			WorldScaleY = -WorldScaleY
-			WorldRotation = -WorldRotation
-		End
-		
-		'color
-		WorldR = (slot.Skeleton.R * slot.R)
-		WorldG = (slot.Skeleton.G * slot.G)
-		WorldB = (slot.Skeleton.B * slot.B)
-		WorldAlpha = slot.Skeleton.A * slot.A
-		#End
 	End
 End

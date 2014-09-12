@@ -51,6 +51,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			'spineTest.SetSkin("goblingirl")
 			spineTest.SetScale(1.2)
 			spineTest.SetSpeed(0.5)
+			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight - 60)
 			
 			#ElseIf TEST = "powerup"
 			spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
@@ -76,7 +77,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetDebug(False, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
-			'spineTest.SetFlip(True, True)
+			spineTest.SetFlip(False, False)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -115,10 +116,15 @@ Class MyApp Extends App Implements SpineEntityCallback
 		Local deltaFloat:Float = deltaInt / 1000.0
 		timestamp = newTimestamp
 		
-		'update item entity
-		spineTest.SetPosition(MouseX(), MouseY())
+		'make changes to the entity before updating
+		'spineTest.SetPosition(MouseX(), MouseY())
 		'spineTest.SetRotation(spineTest.GetRotation() +1.0)
+		'spineTest.SetRotation(MouseY())
 		spineTest.Update(deltaFloat)
+		
+		'make changes to certain bones after it has been updated
+		spineTest.SetBonePosition("head", MouseX(), MouseY(), True)
+		'spineTest.SetBoneRotation("head", MouseX(), True)
 		
 		'update fading message
 		If showMessageAlpha > 0

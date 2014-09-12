@@ -20,8 +20,8 @@ Class SpineSkeleton
 	Field Time:Float
 	Field FlipX:Bool
 	Field FlipY:Bool
-	Field X:Float
-	Field Y:Float
+	Field X:Float'pointless
+	Field Y:Float'pointless
 	
 	Method RootBone:SpineBone()
 		If Bones.Length() = 0 Return Null
