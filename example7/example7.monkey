@@ -47,7 +47,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 			#ElseIf TEST = "goblin"
 			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
 			spineTest.SetAnimation("walk", True)
-			spineTest.SetSkin("goblingirl")
+			spineTest.SetSkin("goblin")
+			'spineTest.SetSkin("goblingirl")
 			spineTest.SetScale(1.2)
 			spineTest.SetSpeed(0.5)
 			
@@ -72,9 +73,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetAnimation("animation", True)
 			#EndIf
 			
-			spineTest.SetDebug(True, False)
+			spineTest.SetDebug(False, False)
 			spineTest.SetCallback(Self)
-			spineTest.SetSnapToPixels(True)
+			spineTest.SetSnapToPixels(False)
 			'spineTest.SetFlip(True, True)
 			
 		Catch exception:SpineException

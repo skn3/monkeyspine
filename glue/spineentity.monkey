@@ -189,32 +189,6 @@ Class SpineEntity
 				'update bounding
 				Select attachment.Type
 					Case SpineAttachmentType.BoundingBox
-					Case SpineAttachmentType.Mesh
-						Local mesh:= SpineMeshAttachment(attachment)
-						
-						'vertices
-						length = slot.AttachmentVertices.Length()
-						slotWorldVerticesLength[index] = length
-						If length = 0
-							slotWorldTrianglesLength[index] = 0
-							Continue
-						EndIf
-						
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
-						
-						'triangles
-						length = (mesh.Triangles.Length() / 3) * 12
-						slotWorldTrianglesLength[index] = length
-						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
-						
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
-						
-						'bounding
-						SpineGetPolyBounding(slotWorldVertices[index], slotWorldBounding[index], slotWorldVerticesLength[index])
-						
-						'hull
-						OnCalculateWorldHull(index, mesh.Edges)
 						
 					Case SpineAttachmentType.Region
 						Local region:= SpineRegionAttachment(attachment)
@@ -270,6 +244,33 @@ Class SpineEntity
 						'bounding
 						'SpineGetPolyBounding(slowWorldVertices[index], slotWorldBounding[index])
 						
+					Case SpineAttachmentType.Mesh
+						Local mesh:= SpineMeshAttachment(attachment)
+						
+						'vertices
+						length = mesh.Vertices.Length()
+						slotWorldVerticesLength[index] = length
+						If length = 0
+							slotWorldTrianglesLength[index] = 0
+							Continue
+						EndIf
+						
+						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
+						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
+						
+						'triangles
+						length = (mesh.Triangles.Length() / 3) * 12
+						slotWorldTrianglesLength[index] = length
+						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
+						
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
+						
+						'bounding
+						SpineGetPolyBounding(slotWorldVertices[index], slotWorldBounding[index], slotWorldVerticesLength[index])
+						
+						'hull
+						OnCalculateWorldHull(index, mesh.Edges)
+						
 					Case SpineAttachmentType.SkinnedMesh
 						Local mesh:= SpineSkinnedMeshAttachment(attachment)
 						
@@ -300,7 +301,7 @@ Class SpineEntity
 						length = (mesh.Triangles.Length() / 3) * 12
 						slotWorldTrianglesLength[index] = length
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
 						
 						'bounding
 						SpineGetPolyBounding(slotWorldVertices[index], slotWorldBounding[index], slotWorldVerticesLength[index])
