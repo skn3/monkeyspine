@@ -35,7 +35,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "bounding_boxes"
+			#TEST = "ik"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -74,6 +74,11 @@ Class MyApp Extends App Implements SpineEntityCallback
 			
 			#ElseIf TEST = "bounding_boxes"
 			spineTest = LoadMojoSpineEntity("monkey://data/bounding_boxes_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			spineTest.SetSpeed(0.3)
+			
+			#ElseIf TEST = "ik"
+			spineTest = LoadMojoSpineEntity("monkey://data/ik_skeleton.json")
 			spineTest.SetAnimation("animation", True)
 			spineTest.SetSpeed(0.3)
 			
