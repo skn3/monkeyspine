@@ -14,8 +14,8 @@ Class SpineBoundingBoxAttachment Extends SpineAttachment
 	
 	'Must have at least the same length as this attachment's vertices.
 	Method ComputeWorldVertices:Void(bone:SpineBone, worldVertices:Float[])
-		Local x:Float = bone.skeleton.x + bone.worldX
-		Local y:Float = bone.skeleton.y + bone.worldY
+		Local x:Float = bone.Skeleton.X + bone.WorldX
+		Local y:Float = bone.Skeleton.Y + bone.WorldY
 		Local m00:Float = bone.M00
 		Local m01:Float = bone.M01
 		Local m10:Float = bone.M10

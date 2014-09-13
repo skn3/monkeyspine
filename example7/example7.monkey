@@ -35,7 +35,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "goblin"
+			#TEST = "bounding_boxes"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -71,6 +71,15 @@ Class MyApp Extends App Implements SpineEntityCallback
 			#ElseIf TEST = "skinned_mesh"
 			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_skeleton.json")
 			spineTest.SetAnimation("animation", True)
+			
+			#ElseIf TEST = "bounding_boxes"
+			spineTest = LoadMojoSpineEntity("monkey://data/bounding_boxes_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			spineTest.SetSpeed(0.3)
+			
+			#Else
+			Error("no test specified")
+				
 			#EndIf
 			
 			spineTest.SetDebug(True, False)
@@ -101,8 +110,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 			DrawText(showMessageText, 5, 5)
 		EndIf
 		
-		SetColor(0, 0, 0)
-		DrawRect(MouseX(), MouseY(), 32, 32)
+		'SetColor(0, 0, 0)
+		'DrawRect(MouseX(), MouseY(), 32, 32)
 		
 		'must alwasy Return
 		Return 0
@@ -129,8 +138,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'spineTest.SetBonePosition("head", MouseX(), MouseY(), True)
 		'spineTest.SetBoneRotation("head", MouseX(), True)
 		
-		If spineTest.RectOverlapsSlot(MouseX(), MouseY(), 32, 32, "head", True)
-		'If spineTest.PointInsideSlot(MouseX(), MouseY(), "head", True)
+		'If spineTest.RectOverlapsSlot(MouseX(), MouseY(), 32, 32, "bounding_slot", True)
+		If spineTest.PointInsideBoundingBox(MouseX(), MouseY(), SPINE_PRECISION_HULL)
 			spineTest.SetColor(255, 0, 0)
 		Else
 			spineTest.SetColor(255, 255, 255)

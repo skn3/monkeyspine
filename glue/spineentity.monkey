@@ -183,6 +183,16 @@ Class SpineEntity
 				'update attachment specifics
 				Select attachment.Type
 					Case SpineAttachmentType.BoundingBox
+						Local box:= SpineBoundingBoxAttachment(attachment)
+						
+						'vertices
+						length = box.Vertices.Length()
+						slotWorldVerticesLength[index] = length
+						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
+						box.ComputeWorldVertices(slot.Bone, slotWorldVertices[index])
+						
+						'hull
+						OnCalculateWorldHull(index, length)
 						
 					Case SpineAttachmentType.Region
 						Local region:= SpineRegionAttachment(attachment)
@@ -601,7 +611,7 @@ Class SpineEntity
 			If attachment = Null Continue
 						
 			Select attachment.Type
-				Case SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh, SpineAttachmentType.Region
+				Case SpineAttachmentType.BoundingBox, SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh, SpineAttachmentType.Region
 					'mesh
 					If debugMesh
 						length = slotWorldTrianglesLength[index]
@@ -882,7 +892,7 @@ Class SpineEntity
 		Return False
 	End
 	
-	Method RectOverlaps:Bool(x:Float, y:Float, width:Float, height:Float, precision:Int = 1)
+	Method RectOverlaps:Bool(x:Float, y:Float, width:Float, height:Float, precision:Int = SPINE_PRECISION_ATTACHMENT)
 		' --- check if a rect overlaps using varying levels of precision ---
 		'calculate first
 		CalculateBounding()
@@ -911,6 +921,72 @@ Class SpineEntity
 			'get slot
 			slot = skeleton.DrawOrder[index]
 			If slot.Attachment = Null Continue
+			
+			If SpineRectsOverlap(x, y, width, height, slotWorldBounding[index])
+				If SPINE_PRECISION_HULL < 2 Return True
+				If SpinePolyToPoly(tempVertices, slotWorldHull[index], slotWorldHullLength[index], -1, slotWorldHullLength[index]) Return True
+			EndIf
+		Next
+		
+		'Return fail
+		Return False
+	End
+	
+	Method PointInsideBoundingBox:Bool(x:Float, y:Float, precision:Int = 0)
+		' --- check if a point is inside using varying levels of precision ---
+		'calculate first
+		CalculateBounding()
+		
+		'check compelte bounding
+		If SpinePointInRect(x, y, bounding) = False Return False
+		
+		'check region bounding
+		Local slot:SpineSlot
+				
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
+		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
+			'get slot
+			slot = skeleton.DrawOrder[index]
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.BoundingBox Continue
+			
+			If SpinePointInRect(x, y, slotWorldBounding[index])
+				If SPINE_PRECISION_HULL < 2 Return True
+				If SpinePointInPoly(x, y, slotWorldHull[index], slotWorldHullLength[index]) Return True
+			EndIf
+		Next
+		
+		'Return fail
+		Return False
+	End
+	
+	Method RectOverlapsBoundingBox:Bool(x:Float, y:Float, width:Float, height:Float, precision:Int = SPINE_PRECISION_ATTACHMENT)
+		' --- check if a rect overlaps using varying levels of precision ---
+		'calculate first
+		CalculateBounding()
+		
+		'check compelte bounding
+		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
+		
+		'check region bounding
+		Local slot:SpineSlot
+		
+		'setup temp vertices For poly check
+		If precision > SPINE_PRECISION_ATTACHMENT
+			tempVertices[0] = x
+			tempVertices[1] = y
+			tempVertices[2] = x + width
+			tempVertices[3] = y
+			tempVertices[4] = x + width
+			tempVertices[5] = y + height
+			tempVertices[6] = x
+			tempVertices[7] = y + height
+		EndIf
+		
+		'go in reverse order using the zOrder so we Return the attachment closest to screen
+		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
+			'get slot
+			slot = skeleton.DrawOrder[index]
+			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.BoundingBox Continue
 			
 			If SpineRectsOverlap(x, y, width, height, slotWorldBounding[index])
 				If SPINE_PRECISION_HULL < 2 Return True
