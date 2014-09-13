@@ -310,6 +310,10 @@ Class SpineSkeletonJson
 				jsonItem = jsonAttachment.GetItem("edges")
 				If jsonItem <> Null mesh.Edges = GetIntArray(jsonAttachment, "edges")
 				
+				'put edges in correct order
+				'added by skn3 to make sure the edges are in the correct order
+				SpineOrderEdgesArray(mesh.Edges)
+				
 				mesh.Width = jsonAttachment.GetItem("width", 0.0) * Scale
 				mesh.Height = jsonAttachment.GetItem("height", 0.0) * Scale
 				
@@ -386,6 +390,10 @@ Class SpineSkeletonJson
 				
 				jsonItem = jsonAttachment.GetItem("edges")
 				If jsonItem <> Null mesh.Edges = GetIntArray(jsonAttachment, "edges")
+				
+				'put edges in correct order
+				'added by skn3 to make sure the edges are in the correct order
+				SpineOrderEdgesArray(mesh.Edges)
 				
 				mesh.Width = jsonAttachment.GetItem("width", 0.0) * Scale
 				mesh.Height = jsonAttachment.GetItem("height", 0.0) * Scale

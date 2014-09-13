@@ -3,6 +3,52 @@ Strict
 
 Import spine
 
+'misc
+Function SpineOrderEdgesArray:Void(in:Int[])
+	Local inTotal:= in.Length()
+	If inTotal < 4 Return
+	
+	Local outTotal:= inTotal
+	Local a:Int
+	Local b:Int
+	Local inOffset:Int
+	Local outOffset:Int
+	Local out:Int[outTotal]
+	Local last:Int
+		
+	'do first step
+	out[0] = in[0]
+	out[1] = in[1]
+	in[0] = in[inTotal - 2]
+	in[1] = in[inTotal - 1]
+	inTotal -= 2
+	last = out[1]
+	
+	For outOffset = 2 Until outTotal Step 2
+		'locate the edge that contains last vert reference (can be left or right)
+		For inOffset = 0 Until inTotal Step 2
+			If in[inOffset] = last
+				a = inOffset
+				b = inOffset + 1
+			ElseIf in[inOffset + 1] = last
+				a = inOffset + 1
+				b = inOffset
+			EndIf
+		Next
+		
+		out[outOffset] = in[a]
+		out[outOffset + 1] = in[b]
+		in[a] = in[inTotal - 2]
+		in[b] = in[inTotal - 1]
+		inTotal -= 2
+		last = out[outOffset + 1]
+	Next
+	
+	For outOffset = 0 Until outTotal
+		in[outOffset] = out[outOffset]
+	Next
+End
+
 'file system
 Function SpineExtractDir:String(path:String)
 	'extract the dir path portion of a path
@@ -360,7 +406,7 @@ Function SpineDrawLineRect:Void(x:Float, y:Float, width:Float, height:Float)
 	DrawLine(x, y + height, x, y)
 End
 
-Function SpineDrawLinePoly:Void(vertices:Float[])
+Function SpineDrawLinePoly:Void(vertices:Float[], snapToPixels:Bool = False)
 	' --- draw a lined poly ---
 	Local total:= vertices.Length()
 	
@@ -375,24 +421,42 @@ Function SpineDrawLinePoly:Void(vertices:Float[])
 	
 	'draw 1 line
 	If total < 6
-		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
+		If snapToPixels
+			DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
+		Else
+			DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
+		EndIf
 		Return
 	EndIf
 	
 	'draw 2 lines
 	If total < 8
-		DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
-		DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
+		If snapToPixels
+			DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
+			DrawLine(Int(vertices[2]), Int(vertices[3]), Int(vertices[4]), Int(vertices[5]))
+		Else
+			DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
+			DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
+		EndIf
 		Return		
 	EndIf
 	
 	'draw poly
 	Local lastX:Float
 	Local lastY:Float
-	For Local index:= 2 Until total Step 2
-		lastX = vertices[index]
-		lastY = vertices[index + 1]
-		DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)
-	Next
-	DrawLine(lastX, lastY, vertices[0], vertices[1])
+	If snapToPixels
+		For Local index:= 2 Until total Step 2
+			lastX = Int(vertices[index])
+			lastY = Int(vertices[index + 1])
+			DrawLine(Int(vertices[index - 2]), Int(vertices[index - 1]), lastX, lastY)
+		Next
+		DrawLine(lastX, lastY, Int(vertices[0]), Int(vertices[1]))
+	Else
+		For Local index:= 2 Until total Step 2
+			lastX = vertices[index]
+			lastY = vertices[index + 1]
+			DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)
+		Next
+		DrawLine(lastX, lastY, vertices[0], vertices[1])
+	EndIf
 End

@@ -222,20 +222,10 @@ Class SpineEntity
 						slotWorldHull[index][2] = slotWorldVertices[index][2]
 						slotWorldHull[index][3] = slotWorldVertices[index][3]
 						
-						slotWorldHull[index][4] = slotWorldVertices[index][2]
-						slotWorldHull[index][5] = slotWorldVertices[index][3]
-						slotWorldHull[index][6] = slotWorldVertices[index][4]
-						slotWorldHull[index][7] = slotWorldVertices[index][5]
-						
-						slotWorldHull[index][8] = slotWorldVertices[index][4]
-						slotWorldHull[index][9] = slotWorldVertices[index][5]
-						slotWorldHull[index][10] = slotWorldVertices[index][6]
-						slotWorldHull[index][11] = slotWorldVertices[index][7]
-						
-						slotWorldHull[index][12] = slotWorldVertices[index][6]
-						slotWorldHull[index][13] = slotWorldVertices[index][7]
-						slotWorldHull[index][14] = slotWorldVertices[index][0]
-						slotWorldHull[index][15] = slotWorldVertices[index][1]
+						slotWorldHull[index][4] = slotWorldVertices[index][4]
+						slotWorldHull[index][5] = slotWorldVertices[index][5]
+						slotWorldHull[index][6] = slotWorldVertices[index][6]
+						slotWorldHull[index][7] = slotWorldVertices[index][7]
 						
 					Case SpineAttachmentType.Mesh
 						Local mesh:= SpineMeshAttachment(attachment)
@@ -262,7 +252,7 @@ Class SpineEntity
 						OnCalculateWorldColor(slot, index)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.Edges)
+						OnCalculateWorldHull(index, mesh.Edges, mesh.HullLength)
 						
 					Case SpineAttachmentType.SkinnedMesh
 						Local mesh:= SpineSkinnedMeshAttachment(attachment)
@@ -298,7 +288,7 @@ Class SpineEntity
 						OnCalculateWorldColor(slot, index)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.Edges)
+						OnCalculateWorldHull(index, mesh.Edges, mesh.HullLength)
 				End
 			Next
 			
@@ -321,21 +311,23 @@ Class SpineEntity
 		slotWorldAlpha[index] = (skeleton.A * slot.A)
 	End
 	
-	Method OnCalculateWorldHull:Void(index:Int, edges:Int[])
-		Local edgesTotal:Int = edges.Length()
-		Local length:= edgesTotal * 2
-		slotWorldHullLength[index] = length
-		If length > slotWorldHull[index].Length() slotWorldHull[index] = New Float[length]
-						
+	Method OnCalculateWorldHull:Void(index:Int, edges:Int[], hullLength:Int)
+		slotWorldHullLength[index] = hullLength
+		If hullLength > slotWorldHull[index].Length() slotWorldHull[index] = New Float[hullLength]
+		
 		Local hull:= slotWorldHull[index]
 		Local vertices:= slotWorldVertices[index]
-		Local offset:Int
-		For Local edgeIndex:= 0 Until edgesTotal Step 2
-			hull[offset] = vertices[edges[edgeIndex]]
-			hull[offset + 1] = vertices[edges[edgeIndex] + 1]
-			hull[offset + 2] = vertices[edges[edgeIndex + 1]]
-			hull[offset + 3] = vertices[edges[edgeIndex + 1] + 1]
-			offset += 4
+		Local hullIndex:Int
+		
+		hull[0] = vertices[edges[0]]
+		hull[1] = vertices[edges[0] + 1]
+		hullIndex += 2
+		
+		Local edgeLength:= edges.Length()
+		For Local edgeIndex:= 1 Until edgeLength - 1 Step 2
+			hull[hullIndex] = vertices[edges[edgeIndex]]
+			hull[hullIndex + 1] = vertices[edges[edgeIndex] + 1]
+			hullIndex += 2
 		Next
 	End
 	
@@ -643,22 +635,14 @@ Class SpineEntity
 						length = slotWorldHullLength[index]
 						If length > 0
 							mojo.SetColor(255, 0, 0)
-							If snapToPixels
-								For subIndex = 0 Until length Step 4
-									DrawLine(Int(slotWorldHull[index][subIndex]), Int(slotWorldHull[index][subIndex + 1]), Int(slotWorldHull[index][subIndex + 2]), Int(slotWorldHull[index][subIndex + 3]))
-								Next
-							Else
-								For subIndex = 0 Until length Step 4
-									DrawLine(slotWorldHull[index][subIndex], slotWorldHull[index][subIndex + 1], slotWorldHull[index][subIndex + 2], slotWorldHull[index][subIndex + 3])
-								Next
-							EndIf
+							SpineDrawLinePoly(slotWorldHull[index], snapToPixels)
 						EndIf
 					EndIf
 					
 					'bounding
 					If debugBounding
 						mojo.SetColor(128, 0, 255)
-						SpineDrawLinePoly(slotWorldBounding[index])
+						SpineDrawLinePoly(slotWorldBounding[index], snapToPixels)
 					EndIf
 			End
 		Next
@@ -666,7 +650,7 @@ Class SpineEntity
 		'entity bounding
 		If debugBounding
 			mojo.SetColor(128, 0, 255)
-			SpineDrawLinePoly(bounding)
+			SpineDrawLinePoly(bounding, snapToPixels)
 		EndIf
 		#EndIf
 		
@@ -880,14 +864,14 @@ Class SpineEntity
 	Method PointInside:Bool(x:Float, y:Float, precision:Int = 0)
 		' --- check if a point is inside using varying levels of precision ---
 		' 0 - entity bounds
-		' 1 - region bounds
-		' 2 - region rect
+		' 1 - attachment bounds
+		' 2 - attachment rect
 		'calculate first
 		CalculateBounding()
 		
 		'check compelte bounding
 		If SpinePointInRect(x, y, bounding) = False Return False
-		If precision < 1 Return True
+		If precision < SPINE_PRECISION_ATTACHMENT_BOUNDS Return True
 		
 		'check region bounding
 		Local slot:SpineSlot
@@ -897,23 +881,21 @@ Class SpineEntity
 		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
+			attachment = slot.Attachment
 			
 			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
+			If attachment = Null Continue
 			
-			'get attachment in correct format
-			attachment = SpineRegionAttachment(slot.Attachment)
-			
-			'need to do a hit test with point
-			'first do simple rect test, then poly test
-			If SpinePointInRect(x, y, attachment.BoundingVertices)
-				If precision < 2 Return True
+			If SpinePointInRect(x, y, slotWorldBounding)
+				If SPINE_PRECISION_ATTACHMENT_HULL < 2 Return True
 				
-				'check with rotated polys
-				If SpinePointInPoly(x, y, attachment.Vertices)
-					'hwere we could go one step further and check pixels.. but no.. not really in current monkey!
-					Return True
-				EndIf
+				Select attachment.Type
+					Case SpineAttachmentType.BoundingBox
+					Case SpineAttachmentType.Region
+						If SpinePointInPoly(x, y, slotWorldVertices[index]) Return True
+					Case SpineAttachmentType.Mesh
+					Case SpineAttachmentType.SkinnedMesh
+				End
 			EndIf
 		Next
 		
