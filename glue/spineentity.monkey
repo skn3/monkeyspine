@@ -75,6 +75,7 @@ Class SpineEntity
 	Field rotation:Float = 0.0
 	
 	Field lastTime:Float
+	Field lastSlotLookupIndex:Int
 	Field lastSlotLookupName:String
 	Field lastSlotLookup:SpineSlot
 	Field lastBoneLookupName:String
@@ -214,7 +215,7 @@ Class SpineEntity
 						OnCalculateWorldColor(slot, index)
 						
 						'hull
-						length = 16
+						length = 8
 						slotWorldHullLength[index] = length
 						If length > slotWorldHull[index].Length() slotWorldHull[index] = New Float[length]
 						slotWorldHull[index][0] = slotWorldVertices[index][0]
@@ -252,7 +253,8 @@ Class SpineEntity
 						OnCalculateWorldColor(slot, index)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.Edges, mesh.HullLength)
+						'If slot.Data.Name = "head" DebugStop()
+						OnCalculateWorldHull(index, mesh.HullLength)
 						
 					Case SpineAttachmentType.SkinnedMesh
 						Local mesh:= SpineSkinnedMeshAttachment(attachment)
@@ -288,7 +290,7 @@ Class SpineEntity
 						OnCalculateWorldColor(slot, index)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.Edges, mesh.HullLength)
+						OnCalculateWorldHull(index, mesh.HullLength)
 				End
 			Next
 			
@@ -311,23 +313,14 @@ Class SpineEntity
 		slotWorldAlpha[index] = (skeleton.A * slot.A)
 	End
 	
-	Method OnCalculateWorldHull:Void(index:Int, edges:Int[], hullLength:Int)
+	Method OnCalculateWorldHull:Void(index:Int, hullLength:Int)
 		slotWorldHullLength[index] = hullLength
 		If hullLength > slotWorldHull[index].Length() slotWorldHull[index] = New Float[hullLength]
 		
 		Local hull:= slotWorldHull[index]
 		Local vertices:= slotWorldVertices[index]
-		Local hullIndex:Int
-		
-		hull[0] = vertices[edges[0]]
-		hull[1] = vertices[edges[0] + 1]
-		hullIndex += 2
-		
-		Local edgeLength:= edges.Length()
-		For Local edgeIndex:= 1 Until edgeLength - 1 Step 2
-			hull[hullIndex] = vertices[edges[edgeIndex]]
-			hull[hullIndex + 1] = vertices[edges[edgeIndex] + 1]
-			hullIndex += 2
+		For Local vertIndex:= 0 Until hullLength
+			hull[vertIndex] = vertices[vertIndex]
 		Next
 	End
 	
@@ -635,14 +628,14 @@ Class SpineEntity
 						length = slotWorldHullLength[index]
 						If length > 0
 							mojo.SetColor(255, 0, 0)
-							SpineDrawLinePoly(slotWorldHull[index], snapToPixels)
+							SpineDrawLinePoly(slotWorldHull[index], slotWorldHullLength[index], snapToPixels)
 						EndIf
 					EndIf
 					
 					'bounding
 					If debugBounding
 						mojo.SetColor(128, 0, 255)
-						SpineDrawLinePoly(slotWorldBounding[index], snapToPixels)
+						SpineDrawLinePoly(slotWorldBounding[index], -1, snapToPixels)
 					EndIf
 			End
 		Next
@@ -650,7 +643,7 @@ Class SpineEntity
 		'entity bounding
 		If debugBounding
 			mojo.SetColor(128, 0, 255)
-			SpineDrawLinePoly(bounding, snapToPixels)
+			SpineDrawLinePoly(bounding, -1, snapToPixels)
 		EndIf
 		#EndIf
 		
@@ -863,39 +856,25 @@ Class SpineEntity
 	'collision api
 	Method PointInside:Bool(x:Float, y:Float, precision:Int = 0)
 		' --- check if a point is inside using varying levels of precision ---
-		' 0 - entity bounds
-		' 1 - attachment bounds
-		' 2 - attachment rect
 		'calculate first
 		CalculateBounding()
 		
 		'check compelte bounding
 		If SpinePointInRect(x, y, bounding) = False Return False
-		If precision < SPINE_PRECISION_ATTACHMENT_BOUNDS Return True
+		If precision < SPINE_PRECISION_ATTACHMENT Return True
 		
 		'check region bounding
 		Local slot:SpineSlot
-		Local attachment:SpineRegionAttachment
 				
 		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
-			attachment = slot.Attachment
+			If slot.Attachment = Null Continue
 			
-			'skip if not a region attachment
-			If attachment = Null Continue
-			
-			If SpinePointInRect(x, y, slotWorldBounding)
-				If SPINE_PRECISION_ATTACHMENT_HULL < 2 Return True
-				
-				Select attachment.Type
-					Case SpineAttachmentType.BoundingBox
-					Case SpineAttachmentType.Region
-						If SpinePointInPoly(x, y, slotWorldVertices[index]) Return True
-					Case SpineAttachmentType.Mesh
-					Case SpineAttachmentType.SkinnedMesh
-				End
+			If SpinePointInRect(x, y, slotWorldBounding[index])
+				If SPINE_PRECISION_HULL < 2 Return True
+				If SpinePointInPoly(x, y, slotWorldHull[index], slotWorldHullLength[index]) Return True
 			EndIf
 		Next
 		
@@ -905,22 +884,18 @@ Class SpineEntity
 	
 	Method RectOverlaps:Bool(x:Float, y:Float, width:Float, height:Float, precision:Int = 1)
 		' --- check if a rect overlaps using varying levels of precision ---
-		' 0 - entity bounds
-		' 1 - region bounds
-		' 2 - region rect
 		'calculate first
 		CalculateBounding()
 		
 		'check compelte bounding
 		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
-		If precision < 1 Return True
+		If precision < SPINE_PRECISION_ATTACHMENT Return True
 		
 		'check region bounding
 		Local slot:SpineSlot
-		Local attachment:SpineRegionAttachment
 		
 		'setup temp vertices For poly check
-		If precision > 1
+		If precision > SPINE_PRECISION_ATTACHMENT
 			tempVertices[0] = x
 			tempVertices[1] = y
 			tempVertices[2] = x + width
@@ -930,28 +905,16 @@ Class SpineEntity
 			tempVertices[6] = x
 			tempVertices[7] = y + height
 		EndIf
-				
+		
 		'go in reverse order using the zOrder so we Return the attachment closest to screen
 		For Local index:= skeleton.DrawOrder.Length() - 1 To 0 Step - 1
 			'get slot
 			slot = skeleton.DrawOrder[index]
+			If slot.Attachment = Null Continue
 			
-			'skip if not a region attachment
-			If slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Continue
-			
-			'get attachment in correct format
-			attachment = SpineRegionAttachment(slot.Attachment)
-			
-			'need to do a hit test with point
-			'first do simple rect test, then poly test
-			If SpineRectsOverlap(x, y, width, height, attachment.BoundingVertices)
-				If precision < 2 Return True
-				
-				'check with rotated polys
-				If SpinePolyToPoly(tempVertices, attachment.Vertices)
-					'here we could go one step further and check pixels.. but no.. not really in current monkey!
-					Return True
-				EndIf
+			If SpineRectsOverlap(x, y, width, height, slotWorldBounding[index])
+				If SPINE_PRECISION_HULL < 2 Return True
+				If SpinePolyToPoly(tempVertices, slotWorldHull[index], slotWorldHullLength[index], -1, slotWorldHullLength[index]) Return True
 			EndIf
 		Next
 		
@@ -966,26 +929,15 @@ Class SpineEntity
 	
 	Method PointInsideSlot:Bool(x:Float, y:Float, slot:SpineSlot, precise:Bool = True)
 		' --- check if a point is inside using varying levels of precision ---
-
-		'skip if not a region attachment
-		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Return False
+		If slot = Null or slot.Attachment = Null Return False
 		
-		'calculate first
 		CalculateBounding()
 						
-		'get attachment in correct format
-		Local attachment:= SpineRegionAttachment(slot.Attachment)
-		
-		'need to do a hit test with point
-		'first do simple rect test, then poly test
-		If SpinePointInRect(x, y, attachment.BoundingVertices)
+		Local index:= GetSlotIndex(slot.Data.Name)
+		If SpinePointInRect(x, y, slotWorldBounding[index])
 			If precise = False Return True
 			
-			'check with rotated polys
-			If SpinePointInPoly(x, y, attachment.Vertices)
-				'hwere we could go one step further and check pixels.. but no.. not really in current monkey!
-				Return True
-			EndIf
+			If SpinePointInPoly(x, y, slotWorldHull[index]) Return True
 		EndIf
 		
 		'Return fail
@@ -1000,16 +952,16 @@ Class SpineEntity
 	Method RectOverlapsSlot:Bool(x:Float, y:Float, width:Float, height:Float, slot:SpineSlot, precise:Bool = True)
 		' --- check if a rect overlaps using varying levels of precision ---
 		'skip if not a region attachment
-		If slot = Null or slot.Attachment = Null or slot.Attachment.Type <> SpineAttachmentType.Region Return False
+		If slot = Null or slot.Attachment = Null Return False
 		
-		'calculate first
 		CalculateBounding()
 		
-		'check compelte bounding
 		If SpineRectsOverlap(x, y, width, height, bounding) = False Return False
-				
-		'setup temp vertices For poly check
-		If precise
+					
+		Local index:= GetSlotIndex(slot.Data.Name)
+		If SpineRectsOverlap(x, y, width, height, slotWorldBounding[index])
+			If precise = False Return True
+			
 			tempVertices[0] = x
 			tempVertices[1] = y
 			tempVertices[2] = x + width
@@ -1018,21 +970,8 @@ Class SpineEntity
 			tempVertices[5] = y + height
 			tempVertices[6] = x
 			tempVertices[7] = y + height
-		EndIf
-						
-		'get attachment in correct format
-		Local attachment:= SpineRegionAttachment(slot.Attachment)
 			
-		'need to do a hit test with point
-		'first do simple rect test, then poly test
-		If SpineRectsOverlap(x, y, width, height, attachment.BoundingVertices)
-			If precise = False Return True
-			
-			'check with rotated polys
-			If SpinePolyToPoly(tempVertices, attachment.Vertices)
-				'here we could go one step further and check pixels.. but no.. not really in current monkey!
-				Return True
-			EndIf
+			If SpinePolyToPoly(tempVertices, slotWorldHull[index], -1, slotWorldHullLength[index]) Return True
 		EndIf
 		
 		'Return fail
@@ -1417,8 +1356,18 @@ Class SpineEntity
 		
 		'lookup
 		lastSlotLookupName = name
-		lastSlotLookup = skeleton.FindSlot(lastSlotLookupName)
+		lastSlotLookupIndex = skeleton.FindSlotIndex(lastSlotLookupName)
+		If lastSlotLookupIndex = -1
+			lastSlotLookup = Null
+		Else
+			lastSlotLookup = skeleton.Slots[lastSlotLookupIndex]
+		EndIf
 		Return lastSlotLookup
+	End
+	
+	Method GetSlotIndex:Int(name:String)
+		GetSlot(name)
+		Return lastSlotLookupIndex
 	End
 	
 	Method FindFirstSlotWithAttachment:SpineSlot()

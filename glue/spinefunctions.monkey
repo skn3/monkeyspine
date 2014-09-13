@@ -3,52 +3,6 @@ Strict
 
 Import spine
 
-'misc
-Function SpineOrderEdgesArray:Void(in:Int[])
-	Local inTotal:= in.Length()
-	If inTotal < 4 Return
-	
-	Local outTotal:= inTotal
-	Local a:Int
-	Local b:Int
-	Local inOffset:Int
-	Local outOffset:Int
-	Local out:Int[outTotal]
-	Local last:Int
-		
-	'do first step
-	out[0] = in[0]
-	out[1] = in[1]
-	in[0] = in[inTotal - 2]
-	in[1] = in[inTotal - 1]
-	inTotal -= 2
-	last = out[1]
-	
-	For outOffset = 2 Until outTotal Step 2
-		'locate the edge that contains last vert reference (can be left or right)
-		For inOffset = 0 Until inTotal Step 2
-			If in[inOffset] = last
-				a = inOffset
-				b = inOffset + 1
-			ElseIf in[inOffset + 1] = last
-				a = inOffset + 1
-				b = inOffset
-			EndIf
-		Next
-		
-		out[outOffset] = in[a]
-		out[outOffset + 1] = in[b]
-		in[a] = in[inTotal - 2]
-		in[b] = in[inTotal - 1]
-		inTotal -= 2
-		last = out[outOffset + 1]
-	Next
-	
-	For outOffset = 0 Until outTotal
-		in[outOffset] = out[outOffset]
-	Next
-End
-
 'file system
 Function SpineExtractDir:String(path:String)
 	'extract the dir path portion of a path
@@ -288,16 +242,17 @@ Function SpineRectsOverlap:Bool(x:Float, y:Float, width:Float, height:Float, ver
 	Return True
 End Function
 
-Function SpinePointInPoly:Bool(pointX:Float, pointY:Float, xy:Float[])
-	If xy.Length() < 6 Or (xy.Length() & 1) Return False
+Function SpinePointInPoly:Bool(pointX:Float, pointY:Float, xy:Float[], xyLength:Int = -1)
+	If xyLength = -1 xyLength = xy.Length()
+	If xyLength < 6 Or (xyLength & 1) Return False
 	
-	Local x1:Float=xy[xy.Length()-2]
-	Local y1:Float=xy[xy.Length()-1]
+	Local x1:Float = xy[xyLength - 2]
+	Local y1:Float = xy[xyLength - 1]
 	Local curQuad:Int = SpineGetQuad(pointX, pointY, x1, y1)
 	Local nextQuad:Int
 	Local total:Int
 	
-	For Local i:= 0 Until xy.Length() Step 2
+	For Local i:= 0 Until xyLength Step 2
 		Local x2:Float=xy[i]
 		Local y2:Float=xy[i+1]
 		nextQuad = SpineGetQuad(pointX, pointY, x2, y2)
@@ -320,7 +275,50 @@ Function SpinePointInPoly:Bool(pointX:Float, pointY:Float, xy:Float[])
 		y1=y2
 	Next
 	
-	If Abs(total)=4 Then Return True Else Return False
+	If Abs(total) = 4
+		Return True
+	EndIf
+	
+	Return False
+End Function
+
+Function SpinePolyToPoly:Bool(p1Xy:Float[], p2Xy:Float[], p1XyLength:Int = -1, p2XyLength:Int = -1)
+	If p1XyLength = -1 p1XyLength = p1Xy.Length()
+	If p2XyLength = -1 p2XyLength = p2Xy.Length()
+
+	If p1XyLength < 6 Or (p1XyLength & 1) Return False
+	If p2XyLength < 6 Or (p2XyLength & 1) Return False
+	
+	For Local i:Int = 0 Until p1XyLength Step 2
+		If SpinePointInPoly(p1Xy[i], p1Xy[i + 1], p2Xy, p2XyLength) Then Return True
+	Next
+	For Local i:Int = 0 Until p2XyLength Step 2
+		If SpinePointInPoly(p2Xy[i], p2Xy[i + 1], p1Xy, p1XyLength) Then Return True
+	Next
+	
+	Local l1X1:Float = p1Xy[p1XyLength - 2]
+	Local l1Y1:Float = p1Xy[p1XyLength - 1]
+	For Local i1:Int = 0 Until p1XyLength Step 2
+		Local l1X2:= p1Xy[i1]
+		Local l1Y2:= p1Xy[i1 + 1]
+		
+		Local l2X1:Float = p2Xy[p2XyLength - 2]
+		Local l2Y1:Float = p2Xy[p2XyLength - 1]
+		For Local i2:Int = 0 Until p2XyLength Step 2
+			Local l2X2:= p2Xy[i2]
+			Local l2Y2:= p2Xy[i2 + 1]
+			
+			If SpineLinesCross(l1X1, l1Y1, l1X2, l1Y2, l2X1, l2Y1, l2X2, l2Y2)
+				Return True
+			EndIf
+			
+			l2X1=l2X2
+			l2Y1=l2Y2
+		Next
+		l1X1=l1X2
+		l1Y1=l1Y2
+	Next
+	Return False
 End Function
 
 Function SpinePolyToPoly:Bool(p1Xy:Float[], p2Xy:Float[])
@@ -406,9 +404,9 @@ Function SpineDrawLineRect:Void(x:Float, y:Float, width:Float, height:Float)
 	DrawLine(x, y + height, x, y)
 End
 
-Function SpineDrawLinePoly:Void(vertices:Float[], snapToPixels:Bool = False)
+Function SpineDrawLinePoly:Void(vertices:Float[], total:Int = -1, snapToPixels:Bool = False)
 	' --- draw a lined poly ---
-	Local total:= vertices.Length()
+	If total = -1 total = vertices.Length()
 	
 	'draw none
 	If total < 2 Return

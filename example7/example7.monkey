@@ -50,7 +50,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetSkin("goblin")
 			'spineTest.SetSkin("goblingirl")
 			spineTest.SetScale(1.0)
-			spineTest.SetSpeed(0.5)
+			spineTest.SetSpeed(0.2)
 			
 			#ElseIf TEST = "powerup"
 			spineTest = LoadMojoSpineEntity("monkey://data/powerup.json")
@@ -101,6 +101,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 			DrawText(showMessageText, 5, 5)
 		EndIf
 		
+		SetColor(0, 0, 0)
+		DrawRect(MouseX(), MouseY(), 32, 32)
+		
 		'must alwasy Return
 		Return 0
 	End
@@ -123,8 +126,15 @@ Class MyApp Extends App Implements SpineEntityCallback
 		spineTest.Update(deltaFloat)
 		
 		'make changes to certain bones after it has been updated
-		spineTest.SetBonePosition("head", MouseX(), MouseY(), True)
+		'spineTest.SetBonePosition("head", MouseX(), MouseY(), True)
 		'spineTest.SetBoneRotation("head", MouseX(), True)
+		
+		If spineTest.RectOverlapsSlot(MouseX(), MouseY(), 32, 32, "head", True)
+		'If spineTest.PointInsideSlot(MouseX(), MouseY(), "head", True)
+			spineTest.SetColor(255, 0, 0)
+		Else
+			spineTest.SetColor(255, 255, 255)
+		EndIf
 		
 		'update fading message
 		If showMessageAlpha > 0
