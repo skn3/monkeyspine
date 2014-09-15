@@ -258,7 +258,11 @@ Class SpineEntity
 						slotWorldTrianglesLength[index] = length
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
 						
+						#If SPINE_ATLAS_ROTATE
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
+						#Else
 						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
+						#EndIf
 						
 						'color
 						OnCalculateWorldColor(slot, index)
@@ -295,7 +299,11 @@ Class SpineEntity
 						length = (mesh.Triangles.Length() / 3) * 12
 						slotWorldTrianglesLength[index] = length
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
+						#If SPINE_ATLAS_ROTATE
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
+						#Else
 						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
+						#EndIf
 						
 						'color
 						OnCalculateWorldColor(slot, index)
@@ -351,8 +359,13 @@ Class SpineEntity
 				out[triangleOffset + 1] = vertices[vertOffset + 1]
 							
 				'u,v (ugh have to convert "uvs" into image dimensions..????)
-				out[triangleOffset + 2] = (rendererObject.width / 1.0) * uvs[vertOffset]
-				out[triangleOffset + 3] = (rendererObject.height / 1.0) * uvs[vertOffset + 1]
+				#IF SPINE_ATLAS_ROTATE
+				out[triangleOffset + 2] = (Float(rendererObject.textureWidth) / 1.0) * uvs[vertOffset]
+				out[triangleOffset + 3] = (Float(rendererObject.textureHeight) / 1.0) * uvs[vertOffset + 1]
+				#Else
+				out[triangleOffset + 2] = (Float(rendererObject.width) / 1.0) * uvs[vertOffset]
+				out[triangleOffset + 3] = (Float(rendererObject.height) / 1.0) * uvs[vertOffset + 1]
+				#Endif
 							
 				triangleOffset += 4
 			Next

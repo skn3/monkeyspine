@@ -87,7 +87,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 				
 			#EndIf
 			
-			spineTest.SetDebug(True, False)
+			spineTest.SetDebug(False, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetFlip(False, False)

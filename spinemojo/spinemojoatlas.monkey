@@ -78,6 +78,11 @@ Class SpineMojoAtlas Implements SpineAtlas
 				'rotate
 				ReadTuple(file, tuple)
 				region.rotate = (tuple[0] = "true")
+				#If SPINE_ATLAS_ROTATE = False
+				If region.rotate
+					Throw SpineException("atlas rotation not supported in monkey")
+				EndIf
+				#EndIf
 				
 				'xy
 				ReadTuple(file, tuple)
@@ -90,14 +95,14 @@ Class SpineMojoAtlas Implements SpineAtlas
 				region.height = Int(tuple[1])
 
 				'uvs
-				region.u = region.x / page.width
-				region.v = region.y / page.height
+				region.u = Float(region.x) / Float(page.width)
+				region.v = Float(region.y) / Float(page.height)
 				If region.rotate
-					region.u2 = (region.x + region.height) / page.width
-					region.v2 = (region.y + region.width) / page.height
+					region.u2 = Float(region.x + region.height) / Float(page.width)
+					region.v2 = Float(region.y + region.width) / Float(page.height)
 				Else
-					region.u2 = (region.x + region.width) / page.width
-					region.v2 = (region.y + region.height) / page.height
+					region.u2 = Float(region.x + region.width) / Float(page.width)
+					region.v2 = Float(region.y + region.height) / Float(page.height)
 				EndIf
 				
 				'fix size???

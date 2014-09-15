@@ -66,6 +66,7 @@ Strict
 
 'preprocessor vars
 #SPINE_DEBUG_RENDER = True
+#SPINE_ATLAS_ROTATE = False'leave false, as support is broken
 
 'core
 Import mojo

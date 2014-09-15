@@ -51,13 +51,14 @@ Class SpineMeshAttachment Extends SpineAttachment
 			UVs = New Float[RegionUVs.Length()]
 		EndIf
 		
+		Local total:= UVs.Length()
 		If RegionRotate
-			For Local i:= 0 Until UVs.Length() Step 2
+			For Local i:= 0 Until total Step 2
 				UVs[i] = RegionU + RegionUVs[i + 1] * width
 				UVs[i + 1] = RegionV + height - RegionUVs[i] * height
 			Next
 		Else
-			For Local i:= 0 Until UVs.Length() Step 2
+			For Local i:= 0 Until total Step 2
 				UVs[i] = RegionU + RegionUVs[i] * width
 				UVs[i + 1] = RegionV + RegionUVs[i + 1] * height
 			Next

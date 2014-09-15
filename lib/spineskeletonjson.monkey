@@ -44,7 +44,6 @@ Class SpineSkeletonJson
 		Local jsonObjectDataItem:JSONDataItem
 		Local jsonObject:JSONObject
 		Local jsonItem:JSONDataItem
-		Local jsonChildObject:JSONObject
 		Local jsonChildArray:JSONArray
 		
 		Local boneName:String
