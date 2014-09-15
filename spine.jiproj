@@ -1,48 +1,6 @@
 <?xml version="1.0"?>
 <JiProj xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" EntryPoint=".\example7\example7.monkey" Name="spine">
   <Files>
-    <Document Filename=".\example1\example1.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
-    <Document Filename=".\example2\example2.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
-    <Document Filename=".\example3\example3.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
-    <Document Filename=".\example4\example4.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
-    <Document Filename=".\example5\example5.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
-    <Document Filename=".\example6\example6.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
-      <DocGUID />
-      <CursorPos>
-        <X>0</X>
-        <Y>0</Y>
-      </CursorPos>
-    </Document>
     <Document Filename=".\example7\example7.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
       <DocGUID />
       <CursorPos>
@@ -429,7 +387,7 @@
       </CursorPos>
     </Document>
   </Files>
-  <CompilerConfig Configuration="release" BuildMode="run" Target="Desktop_Game" />
+  <CompilerConfig Configuration="debug" BuildMode="run" Target="Desktop_Game" />
   <Version Major="14" Minor="9" Revision="9" Build="65" ProductName="Untitled product" />
   <PreBuildCommands />
 </JiProj>

@@ -29,6 +29,7 @@ Class SpineIkConstraint
 	End
 
 	Method Apply:Void()
+		'DebugStop()
 		Select Bones.Length()
 			Case 1
 				Apply(Bones[0], Target.WorldX, Target.WorldY, Mix)
@@ -60,6 +61,7 @@ Class SpineIkConstraint
 	'possible. The Target is specified in the world coordinate system.</summary>
 	'<param name="child">Any descendant bone of the parent.</param>
 	Function Apply:Void(parent:SpineBone, child:SpineBone, targetX:Float, targetY:Float, bendDirection:Int, alpha:Float)
+		'DebugStop()
 		Local childRotation:= child.Rotation
 		Local parentRotation:= parent.Rotation
 		if alpha = 0.0

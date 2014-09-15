@@ -44,8 +44,9 @@ Class SpineEntity
 	Field updating:Bool = False
 	Field rendering:Bool = False
 	
-	Field dirty:Bool
-	Field dirtyBounding:Bool
+	Field dirty:= True
+	Field dirtyBounding:= True
+	Field dirtyPose:= True
 	
 	Field slotWorldBounding:Float[][]
 	Field slotWorldVertices:Float[][]
@@ -164,10 +165,10 @@ Class SpineEntity
 			rootBone.ScaleX = oldRootScaleX * scaleX
 			rootBone.ScaleY = oldRootScaleY * scaleY
 			rootBone.Rotation = oldRootRotation + rotation
-			
-			'update skeleton
-			skeleton.UpdateWorldTransform()
 					
+			'let spine update
+			skeleton.UpdateWorldTransform()
+			
 			'update attachments
 			Local slot:SpineSlot
 			Local attachment:SpineAttachment
@@ -650,6 +651,51 @@ Class SpineEntity
 			End
 		Next
 		
+		'bones
+		If debugBones
+			Local bone:SpineBone
+			Local size:Int
+			
+			'draw line bones
+			mojo.SetColor(0, 0, 0)
+			mojo.SetAlpha(1.0)
+			length = skeleton.Bones.Length()
+			For index = 0 Until length
+				bone = skeleton.Bones[index]
+				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
+			Next
+			
+			'bone origins
+			For index = 0 Until length
+				bone = skeleton.Bones[index]
+				
+				If index = 0
+					'root bone
+					'draw a cross hair
+					mojo.SetColor(0, 0, 0)
+					size = 8
+					DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
+					DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
+					DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
+					DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
+					DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
+					DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
+				Else
+					'other bones
+					'draw just a box
+					mojo.SetColor(0, 0, 255)
+
+					size = 4
+					DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
+					DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
+					DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
+					DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
+					'DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
+					'DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
+				EndIf
+			Next
+		EndIf
+		
 		'entity bounding
 		If debugBounding
 			mojo.SetColor(128, 0, 255)
@@ -746,6 +792,12 @@ Class SpineEntity
 	'main api
 	Method Calculate:Void(force:Bool = False)
 		' --- this will calculate the entity ---
+		If dirtyPose
+			dirtyPose = False
+			skeleton.SetToSetupPose()
+			dirty = True
+		EndIf
+		
 		If force or dirty OnCalculate()
 	End
 	
@@ -1186,6 +1238,7 @@ Class SpineEntity
 		
 		'flag that the entity is dirty again
 		dirty = True
+		dirtyPose = True
 	End
 	
 	Method MixAnimation:Void(name:String, amount:Float, looping:Bool = False)

@@ -45,6 +45,7 @@ Class SpineSkeletonJson
 		Local jsonObject:JSONObject
 		Local jsonItem:JSONDataItem
 		Local jsonChildObject:JSONObject
+		Local jsonChildArray:JSONArray
 		
 		Local boneName:String
 		Local boneData:SpineBoneData
@@ -106,10 +107,10 @@ Class SpineSkeletonJson
 				
 				ikConstraintData = New SpineIkConstraintData(jsonObject.GetItem("name", ""))
 							
-				jsonChildObject = JSONObject(jsonObject.GetItem("bones"))
+				jsonChildArray = JSONArray(jsonObject.GetItem("bones"))
 				bonesCount = 0
-				If jsonChildObject
-					For boneName = EachIn jsonChildObject.Names()
+				If jsonChildArray <> Null
+					For boneName = EachIn jsonChildArray
 						boneData = skeletonData.FindBone(boneName)
 						If boneData = Null Throw New SpineException("IK bone found: " + boneName)
 						

@@ -1,8 +1,8 @@
 'see license.txt For source licenses
 Strict
 
-'version 19
-' - ported to latest runtime
+'version 19 (sep 2014)
+' - ported to latest runtime (tons of stuff added)
 'version 18
 ' - added RevertColor() and RevertAlpha() to spine entity (cheers rikman)
 'version 17

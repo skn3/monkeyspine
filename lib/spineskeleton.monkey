@@ -189,6 +189,12 @@ Class SpineSkeleton
 			IkConstraints[i].Apply()
 			i += 1
 		Forever
+		
+		'added by skn3
+		'do another update of world transforms otherwise it doesn't seem to apply...
+		For i = 0 Until total
+			Bones[i].UpdateWorldTransform()
+		Next
 	End
 
 	'<summary>Sets the bones and slots to their setup pose values.</summary>

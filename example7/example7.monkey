@@ -35,7 +35,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "ik"
+			#TEST = "goblin"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -91,7 +91,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetFlip(False, False)
-			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight - 60)
+			spineTest.SetPosition(DeviceWidth() / 2 - 100, DeviceHeight - 180)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)
@@ -137,14 +137,16 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'spineTest.SetPosition(MouseX(), MouseY())
 		'spineTest.SetRotation(spineTest.GetRotation() +1.0)
 		'spineTest.SetRotation(MouseY())
+		'spineTest.SetBonePosition("bone4", MouseX(), MouseY(), True)
 		spineTest.Update(deltaFloat)
 		
 		'make changes to certain bones after it has been updated
-		'spineTest.SetBonePosition("head", MouseX(), MouseY(), True)
+		'spineTest.SetBonePosition("bone4", MouseX(), MouseY(), True)
 		'spineTest.SetBoneRotation("head", MouseX(), True)
 		
 		'If spineTest.RectOverlapsSlot(MouseX(), MouseY(), 32, 32, "bounding_slot", True)
-		If spineTest.PointInsideBoundingBox(MouseX(), MouseY(), SPINE_PRECISION_HULL)
+		'If spineTest.PointInsideBoundingBox(MouseX(), MouseY(), SPINE_PRECISION_HULL)
+		If spineTest.PointInside(MouseX(), MouseY(), SPINE_PRECISION_HULL)
 			spineTest.SetColor(255, 0, 0)
 		Else
 			spineTest.SetColor(255, 255, 255)
