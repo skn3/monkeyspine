@@ -97,9 +97,12 @@ Class SpineEntity
 	End
 	
 	Method Load:Bool(skeletonPath:String, atlas:SpineAtlas, fileLoader:SpineFileLoader)
+		Self.atlas = atlas
+
 		' --- load a new spine entity ---
 		'load skeleton data
 		'we lock the atlas again
+
 		atlas.Lock()
 		Local skeletonJson:= New SpineSkeletonJson(atlas)
 		data = skeletonJson.ReadSkeletonData(skeletonPath)
