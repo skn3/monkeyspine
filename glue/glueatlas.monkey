@@ -57,7 +57,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 		Local imagesDir:String = SpineExtractDir(path)
 		
 		Local page:SpineDefaultAtlasPage
-		Local pageIndex:= 0
+		Local pageIndex:= -1
 		Local pageNew:= True
 		Local pageHasStart:= False
 		Local pageHasHeader:= False
@@ -98,13 +98,13 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 				'ignore blank lines
 				If line.Length > 0
 					If pageHasStart = False
+						pageIndex += 1
 						'first line has no ':' it states the image file
 						'get image path
 						pageFilePath = SpineCombinePaths(imagesDir, line)
 						
 						'create new page
 						page = SpineDefaultAtlasPage(atlas.AddPage(pageFilePath))
-						
 						'check that page was loaded
 						If page = Null Throw New SpineException("Invalid Image '" + pageFilePath + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
 						
@@ -143,6 +143,7 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 							'new region
 							regionNew = True
 							regionNextName = line
+							regionSave = True
 						EndIf
 					EndIf
 				EndIf
@@ -152,11 +153,13 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 					'page is finished
 					pageNew = True
 					pageHasHeader = False
+					pageHasStart = False
+					regionSave = True
 				Else
 					'do reset of values
 					If regionNew
 						regionNew = False
-						
+
 						regionName = regionNextName
 						regionIndex = -1
 						regionRotate = False
@@ -246,7 +249,6 @@ Class SpineDefaultAtlasLoader Implements SpineAtlasLoader
 				
 				'add the region
 				region = SpineDefaultAtlasRegion(atlas.AddRegion(page, regionName, regionX, regionY, regionWidth, regionHeight, regionFrameX, regionFrameY, regionFrameWidth, regionFrameHeight))
-				
 				'check to see if we failed to create this region?
 				If region = Null
 					Throw New SpineException("Invalid Region '" + regionName + "' For Page '" + pageIndex + "' In Atlas '" + path + "'")
@@ -273,7 +275,7 @@ Class SpineMakeAtlasLoader Implements SpineAtlasLoader
 		Local jsonPages:JSONArray
 		Local fileStream:= fileLoader.LoadFile(path)
 		If fileStream jsonPages = JSONArray(JSONData.ReadJSON(fileStream.ReadAll()))
-		If jsonPages = Null Throw New SpineException("Invalid Atlas '" + path + "'")
+		If jsonPages = Null Error SpineException("Invalid Atlas '" + path + "'")
 		
 		'get images directory
 		Local imagesDir:String = SpineExtractDir(path)
@@ -507,7 +509,7 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		
 		'load the page image
 		page.image = LoadImage(path)
-		If page.image = Null Throw New SpineException("Invalid atlas page image '" + path + "'")
+		If page.image = Null Error("Invalid atlas page image '" + path + "'")
 		
 		'add to pages
 		If pagesCount >= pages.Length pages = pages.Resize(pages.Length * 2 + 10)
@@ -539,13 +541,13 @@ Class SpineDefaultAtlas Implements SpineAtlas
 		region.image = region.page.image.GrabImage(x, y, width, height)
 		
 		'figure out correct mid handle
-		region.image.SetHandle(0, 0)'offsetX + (originalWidth / 2.0), offsetY + (originalHeight / 2.0))
-		
+		region.image.SetHandle(0, 0)
+
 		'add to regions
 		If regionsCount >= regions.Length regions = regions.Resize(regions.Length * 2 + 10)
 		regions[regionsCount] = region
 		regionsCount += 1
-		
+
 		'return it
 		Return region
 	End

@@ -475,6 +475,8 @@ Class SpineSkeletonJson
 				
 				'get the offset array
 				jsonOffsetArray = JSONArray(jsonOrder.GetItem("offsets"))
+				If (jsonOffsetArray = Null) Then Continue
+
 				jsonOffsetTotal = jsonOffsetArray.values.Count()
 				
 				'create draw order array and reset it
