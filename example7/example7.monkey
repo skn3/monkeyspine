@@ -35,7 +35,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "goblin"
+			#TEST = "ik"
 			
 			'which mode ?
 			#If TEST = "spineboy"

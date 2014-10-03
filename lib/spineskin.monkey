@@ -62,17 +62,23 @@ Class SpineSkin
 	Method AttachAll:Void(skeleton:SpineSkeleton, oldSkin:SpineSkin)
 		Local name:String
 		Local slot:SpineSlot
+		Local attachments:StringMap<SpineAttachment>
 		Local attachment:SpineAttachment
 				
-		For Local slotIndex:= 0 Until oldSkin.attachments.Length()
+		Local length:= oldSkin.attachments.Length()
+		For Local slotIndex:= 0 Until length
 			slot = skeleton.Slots[slotIndex]
-			For name = EachIn oldSkin.attachments[slotIndex].Keys()
-				attachment = oldSkin.attachments[slotIndex].ValueForKey(name)
-				If slot.Attachment = attachment
-					attachment = GetAttachment(slotIndex, name)
-					If attachment slot.Attachment = attachment
-				EndIf
-			Next
+			
+			attachments = oldSkin.attachments[slotIndex]
+			If attachments
+				For name = EachIn attachments.Keys()
+					attachment = attachments.ValueForKey(name)
+					If slot.Attachment = attachment
+						attachment = GetAttachment(slotIndex, name)
+						If attachment slot.Attachment = attachment
+					EndIf
+				Next
+			EndIf
 		Next
 	End
 End

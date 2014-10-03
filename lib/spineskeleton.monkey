@@ -99,7 +99,124 @@ Class SpineSkeleton
 
 	'<summary>Caches information about bones and IK constraints. Must be called if bones or IK constraints are added or removed.</summary>
 	Method UpdateCache:Void()
-		Local ikContraintIndex:Int
+		're-ported from c version
+		'https://github.com/EsotericSoftware/spine-runtimes/blob/master/spine-c/src/spine/Skeleton.c
+		Local i:Int
+		Local ii:Int
+		Local parent:SpineBone
+		Local child:SpineBone
+		Local ikContraint:SpineIkConstraint
+		Local current:SpineBone
+		Local break:Bool
+		Local ikConstraintsCount:= IkConstraints.Length()
+		Local boneCacheCount:= ikConstraintsCount + 1'we add one so we can use 0 as non ik bones index
+		Local bonesCount:= Bones.Length()
+		Local bone:SpineBone
+		
+		'reset arrays
+		boneCache = New SpineBone[boneCacheCount][]
+		Local boneCacheCounts:Int[boneCacheCount]
+		
+		'compute array sizes
+		For i = 0 Until bonesCount
+			current = Bones[i]
+			
+			break = False
+			Repeat
+				For ii = 0 Until ikConstraintsCount
+					ikContraint = IkConstraints[ii]
+					parent = ikContraint.Bones[0]
+					child = ikContraint.Bones[ikContraint.Bones.Length() -1]
+					
+					Repeat
+						If current = child
+							boneCacheCounts[ii] += 1
+							boneCacheCounts[ii + 1] += 1
+							
+							'goto outer
+							break = True
+							Exit
+						EndIf
+						
+						If child = parent Exit
+						child = child.Parent
+					Forever
+					
+					'goto outer
+					If break Exit
+				Next
+								
+				'goto outer
+				If break Exit
+				
+				current = current.Parent
+			Until current = Null
+			
+			'non ik bones
+			If break = False
+				boneCacheCounts[0] += 1
+			EndIf
+			
+			'this is outer!!!
+		Next
+	
+		'create arrays
+		For i = 0 Until boneCacheCount
+			boneCache[i] = New SpineBone[boneCacheCounts[i]]
+			boneCacheCounts[i] = 0
+		Next
+		
+		'populate arrays
+		For i = 0 Until bonesCount
+			bone = Bones[i]
+			current = bone
+			
+			break = False
+			Repeat
+				For ii = 0 Until ikConstraintsCount
+					ikContraint = IkConstraints[ii]
+					parent = ikContraint.Bones[0]
+					child = ikContraint.Bones[ikContraint.Bones.Length() -1]
+					
+					Repeat
+						If current = child
+							boneCache[ii][boneCacheCounts[ii]] = bone
+							boneCacheCounts[ii] += 1
+							boneCache[ii + 1][boneCacheCounts[ii + 1]] = bone
+							boneCacheCounts[ii + 1] += 1
+							
+							'goto outer
+							break = True
+							Exit
+						EndIf
+						
+						If child = parent Exit
+						child = child.Parent
+					Forever
+					
+					'goto outer
+					If break Exit
+				Next
+								
+				'goto outer
+				If break Exit
+				
+				current = current.Parent
+			Until current = Null
+			
+			'non ik bones
+			If break = False
+				boneCache[0][boneCacheCounts[0]] = bone
+				boneCacheCounts[0] += 1
+			EndIf
+			
+			'this is outer!!!
+		Next
+	End
+	
+	#rem
+	Method UpdateCacheOld:Void()
+		Local ii:Int
 		Local bone:SpineBone
 		Local parent:SpineBone
 		Local child:SpineBone
@@ -118,22 +235,23 @@ Class SpineSkeleton
 			boneCache[index] = New SpineBone[boneCount]
 		Next
 		
+		'compute array sizes
 		For index = 0 Until boneCount
 			bone = Bones[index]
 			current = bone
 			
 			break = False
 			Repeat
-				For ikContraintIndex = 0 Until ikConstraintsCount
-					ikContraint = IkConstraints[ikContraintIndex]
+				For ii = 0 Until ikConstraintsCount
+					ikContraint = IkConstraints[ii]
 					parent = ikContraint.Bones[0]
 					child = ikContraint.Bones[ikContraint.Bones.Length() -1]
 					Repeat
 						If current = child
-							If cacheIndex[ikContraintIndex] = boneCache[ikContraintIndex].Length() boneCache[ikContraintIndex] = boneCache[ikContraintIndex].Resize(cacheIndex[ikContraintIndex] * 2 + 10)
-							boneCache[ikContraintIndex][cacheIndex[ikContraintIndex]] = bone
-							boneCache[ikContraintIndex + 1][cacheIndex[ikContraintIndex]] = bone
-							cacheIndex[ikContraintIndex] += 1
+							If cacheIndex[ii] = boneCache[ii].Length() boneCache[ii] = boneCache[ii].Resize(cacheIndex[ii] * 2 + 10)
+							boneCache[ii][cacheIndex[ii]] = bone
+							boneCache[ii + 1][cacheIndex[ii]] = bone
+							cacheIndex[ii] += 1
 							
 							break = True
 							Exit
@@ -162,6 +280,7 @@ Class SpineSkeleton
 			If boneCache[index].Length() > cacheIndex[index] boneCache[index] = boneCache[index].Resize(cacheIndex[index])
 		Next
 	End
+	#end
 	
 	'<summary>Updates the world transform For each bone and applies IK constraints.</summary>
 	Method UpdateWorldTransform:Void()
@@ -192,9 +311,9 @@ Class SpineSkeleton
 		
 		'added by skn3
 		'do another update of world transforms otherwise it doesn't seem to apply...
-		For i = 0 Until total
-			Bones[i].UpdateWorldTransform()
-		Next
+		'For i = 0 Until total
+		'	Bones[i].UpdateWorldTransform()
+		'Next
 	End
 
 	'<summary>Sets the bones and slots to their setup pose values.</summary>

@@ -1,6 +1,10 @@
 'see license.txt For source licenses
 Strict
 
+'version 20
+' - major fix to UpdateCache and UpdateWorldTransform in spine skeleton. Now has fully functional IK
+' - updated license in accordance with spines new license
+' - small tweak to fix bug when switching from old skin to new skin
 'version 19 (sep 2014)
 ' - ported to latest runtime (tons of stuff added)
 'version 18
