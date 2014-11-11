@@ -53,15 +53,15 @@ Class SpineMojoRendererObject Implements SpineRendererObject
 		#EndIf
 	End
 	
-	Method Draw:Void(x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float)
+	Method Draw:Void(x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
 		#If SPINE_ATLAS_ROTATE
 		If rotate
-			DrawImage(image, x, y, angle - 90, scaleX, scaleY, 0)
+			DrawImage(image, x, y, angle - 90, scaleX * atlasScale, scaleY * atlasScale, 0)
 		Else
-			DrawImage(image, x, y, angle, scaleX, scaleY, 0)
+			DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale, 0)
 		EndIf
 		#Else
-		DrawImage(image, x, y, angle, scaleX, scaleY, 0)
+		DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale, 0)
 		#EndIf
 	End
 End
