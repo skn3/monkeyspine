@@ -217,9 +217,9 @@ Class SpineSkeletonJson
 				'get event from name
 				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
 				eventData = New SpineEventData(jsonName)
-				eventData.IntValue = jsonObject.GetItem("Int", 0)
-				eventData.FloatValue = jsonObject.GetItem("Int", 0.0)
-				eventData.StringValue = jsonObject.GetItem("Int", "")
+				eventData.IntValue = jsonObject.GetItem("int", 0)
+				eventData.FloatValue = jsonObject.GetItem("float", 0.0)
+				eventData.StringValue = jsonObject.GetItem("string", "")
 				
 				'add it
 				skeletonData.AddEvent(eventData)
@@ -878,9 +878,9 @@ Class SpineSkeletonJson
 				
 				'create New event
 				event = New SpineEvent(eventData)
-				event.IntValue = jsonEvent.GetItem("Int", eventData.IntValue)
-				event.FloatValue = jsonEvent.GetItem("Float", eventData.FloatValue)
-				event.StringValue = jsonEvent.GetItem("String", eventData.StringValue)
+				event.IntValue = jsonEvent.GetItem("int", eventData.IntValue)
+				event.FloatValue = jsonEvent.GetItem("float", eventData.FloatValue)
+				event.StringValue = jsonEvent.GetItem("string", eventData.StringValue)
 				
 				'process frame in timeline
 				timeline.SetFrame(frameIndex, jsonEvent.GetItem("time", 0.0), event)

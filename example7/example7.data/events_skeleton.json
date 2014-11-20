@@ -1,0 +1,45 @@
+{
+"skeleton": { "hash": "VMjJJxkyMQFUL6nSlI2InnxzsE4", "spine": "2.1.05", "width": 128, "height": 127.99, "images": "" },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "smile", "bone": "root", "attachment": "smile" }
+],
+"skins": {
+	"default": {
+		"smile": {
+			"smile": { "y": 64.99, "width": 128, "height": 128 }
+		}
+	}
+},
+"events": {
+	"down": {},
+	"up": {}
+},
+"animations": {
+	"animation": {
+		"bones": {
+			"root": {
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 0.3333, "x": 136.99, "y": 101 },
+					{ "time": 0.5, "x": 136.99, "y": 0 },
+					{ "time": 0.8333, "x": 298, "y": 135 },
+					{ "time": 1, "x": 298, "y": 0 },
+					{ "time": 1.3333, "x": 473.99, "y": 163 },
+					{ "time": 1.5, "x": 473.99, "y": 1 }
+				]
+			}
+		},
+		"events": [
+			{ "time": 0.3333, "name": "up", "int": 1, "float": 1, "string": "one" },
+			{ "time": 0.5, "name": "down", "int": 1, "float": 1, "string": "one" },
+			{ "time": 0.8333, "name": "up", "int": 2, "float": 2, "string": "two" },
+			{ "time": 1, "name": "down", "int": 2, "float": 2, "string": "two" },
+			{ "time": 1.3333, "name": "up", "int": 3, "float": 3, "string": "three" },
+			{ "time": 1.5, "name": "down", "int": 3, "float": 3, "string": "three" }
+		]
+	}
+}
+}

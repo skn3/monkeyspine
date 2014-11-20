@@ -22,9 +22,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnSpineEntityEvent:Void(entity:SpineEntity, event:String, intValue:Int, floatValue:Float, stringValue:String)
 		' --- event has triggered ---
-		Select entity
-			Case spineTest
-		End
+		Print "SpineEvent: " + event + " int:" + intValue + " float:" + floatValue + " string:" + stringValue
 	End
 	
 	Method OnCreate:Int()
@@ -35,7 +33,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "ik"
+			#TEST = "events"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -82,6 +80,11 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetAnimation("animation", True)
 			spineTest.SetSpeed(0.3)
 			
+			#ElseIf TEST = "events"
+			spineTest = LoadMojoSpineEntity("monkey://data/events_skeleton.json")
+			spineTest.SetAnimation("animation", True)
+			spineTest.SetSpeed(0.5)
+			
 			#Else
 			Error("no test specified")
 				
@@ -90,8 +93,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetDebug(False, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
+			spineTest.SetIgnoreRootPosition(False)
 			spineTest.SetFlip(False, False)
-			spineTest.SetPosition(DeviceWidth() / 2 - 100, DeviceHeight - 180)
+			spineTest.SetPosition(DeviceWidth() / 2, DeviceHeight() / 2)
 			
 		Catch exception:SpineException
 			Error("Exception: " + exception)

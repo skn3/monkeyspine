@@ -1,6 +1,9 @@
 'see license.txt For source licenses
 Strict
 
+'version 21
+' - fixed event data not coming through, cheers mouser
+' - added SetIgnoreRootPosition to SpineEntity. By default now spineentity will utilise the root bone position compared to 0,0 in spine editor. Set this to true if spine entity should ignore root bone position and force set to x,y of SpineEntity.
 'version 20
 ' - major fix to UpdateCache and UpdateWorldTransform in spine skeleton. Now has fully functional IK
 ' - updated license in accordance with spines new license

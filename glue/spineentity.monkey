@@ -31,6 +31,7 @@ Class SpineEntity
 	Field finished:Bool
 	
 	Field snapToPixels:Bool = False
+	Field ignoreRootPosition:Bool = False
 	
 	#If SPINE_DEBUG_RENDER = True
 	Field debugHull:Bool = False
@@ -160,8 +161,13 @@ Class SpineEntity
 			Local oldRootRotation:= rootBone.Rotation
 			
 			'update the skeleton/root bone properties
-			rootBone.X = x
-			rootBone.Y = y
+			If ignoreRootPosition
+				rootBone.X = x
+				rootBone.Y = y
+			Else
+				rootBone.X = oldRootX + x
+				rootBone.Y = oldRootY + y
+			EndIf
 			rootBone.ScaleX = oldRootScaleX * scaleX
 			rootBone.ScaleY = oldRootScaleY * scaleY
 			rootBone.Rotation = oldRootRotation + rotation
@@ -2271,15 +2277,21 @@ Class SpineEntity
 		Return bone.ScaleY
 	End
 		
+	'settings api
+	Method SetSnapToPixels:Void(snapToPixels:Bool)
+		' --- change if images should be snapped to pixels ---
+		Self.snapToPixels = snapToPixels
+	End
+	
+	Method SetIgnoreRootPosition:Void(ignoreRootPosition:Bool)
+		' --- change if entity should ignore positional data for the root bone ---
+		Self.ignoreRootPosition = ignoreRootPosition
+	End
+	
 	'api
 	Method GetName:String()
 		' --- Return name of skeleton ---
 		Return skeleton.Data.Name
-	End
-	
-	Method SetSnapToPixels:Void(snap:Bool)
-		' --- change if images should be snapped to pixels ---
-		Self.snapToPixels = snap
 	End
 	
 	Method SetCallback:Void(callback:SpineEntityCallback)
