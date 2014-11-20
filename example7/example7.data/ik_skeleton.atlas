@@ -1,0 +1,13 @@
+
+ik_skeleton.png
+size: 369,170
+format: RGBA8888
+filter: Linear,Linear
+repeat: xy
+arm
+  rotate: false
+  xy: 2, 2
+  size: 367, 168
+  orig: 367, 168
+  offset: 0, 0
+  index: -1
