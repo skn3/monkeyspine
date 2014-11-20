@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 22
+' - issue with merging pull request with different line-end-encoding ~r is now stripped out in mojo file reader
 'version 21
 ' - fixed event data not coming through, cheers mouser
 ' - added SetIgnoreRootPosition to SpineEntity. By default now spineentity will utilise the root bone position compared to 0,0 in spine editor. Set this to true if spine entity should ignore root bone position and force set to x,y of SpineEntity.

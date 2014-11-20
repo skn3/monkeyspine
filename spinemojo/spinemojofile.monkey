@@ -37,7 +37,15 @@ Class SpineMojoFile Implements SpineFile
 		For index = index Until total
 			'check For End of line
 			If buffer.PeekByte(index) = 10
-				Local result:String = buffer.PeekString(start, (index - start))
+				Local stringEndIndex:= index
+				
+				'remove ~r as well?
+				If index > 0 And buffer.PeekByte(index - 1) = 13
+					stringEndIndex -= 1
+				EndIf
+				
+				'grab the string
+				Local result:String = buffer.PeekString(start, (stringEndIndex - start))
 				index = index + 1
 				start = index
 				Return result

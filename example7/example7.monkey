@@ -33,7 +33,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "events"
+			#TEST = "ffd"
 			
 			'which mode ?
 			#If TEST = "spineboy"
