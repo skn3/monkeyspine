@@ -18,6 +18,9 @@ Class SpineEntity
 	Field skeleton:SpineSkeleton
 	
 	Private
+
+	Field atlasScale:Float
+
 	Field callback:SpineEntityCallback
 	
 	Field animation:SpineAnimation
@@ -568,9 +571,9 @@ Class SpineEntity
 					
 					'render
 					If snapToPixels
-						region.RendererObject.Draw(Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index])
+						region.RendererObject.Draw(Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					Else
-						region.RendererObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index])
+						region.RendererObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					EndIf
 					
 				Case SpineAttachmentType.SkinnedMesh
@@ -2297,5 +2300,10 @@ Class SpineEntity
 	Method SetCallback:Void(callback:SpineEntityCallback)
 		' --- change the callback ---
 		Self.callback = callback
+	End
+
+	Method SetAtlasScale:Void( value:Float )
+		' --- manually set scale for scaled atlas ---
+		Self.atlasScale = 1.0 / value
 	End
 End
