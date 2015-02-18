@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 23
+' - small tweak to set initial atlasScale in spineentity to 1.0 (otherwise images would render with 0x0 scale because multiplied by atlasScale = 0.0)
 'version 22
 ' - issue with merging pull request with different line-end-encoding ~r is now stripped out in mojo file reader
 'version 21

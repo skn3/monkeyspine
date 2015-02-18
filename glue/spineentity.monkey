@@ -19,7 +19,7 @@ Class SpineEntity
 	
 	Private
 
-	Field atlasScale:Float
+	Field atlasScale:Float = 1.0
 
 	Field callback:SpineEntityCallback
 	

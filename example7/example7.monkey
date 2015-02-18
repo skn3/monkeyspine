@@ -90,7 +90,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 				
 			#EndIf
 			
-			spineTest.SetDebug(False, False)
+			spineTest.SetDebug(True, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetIgnoreRootPosition(False)
@@ -110,6 +110,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		Cls(255, 255, 255)
 
 		'simples! render current item
+		DebugStop()
 		spineTest.Render()
 		
 		'render message
@@ -154,6 +155,10 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetColor(255, 0, 0)
 		Else
 			spineTest.SetColor(255, 255, 255)
+		EndIf
+		
+		If MouseDown(MOUSE_LEFT)
+			spineTest.SetPosition(MouseX(), MouseY())
 		EndIf
 		
 		'update fading message
