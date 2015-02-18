@@ -110,7 +110,6 @@ Class MyApp Extends App Implements SpineEntityCallback
 		Cls(255, 255, 255)
 
 		'simples! render current item
-		DebugStop()
 		spineTest.Render()
 		
 		'render message
