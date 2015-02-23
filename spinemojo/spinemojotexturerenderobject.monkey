@@ -3,7 +3,7 @@ Strict
 
 Import spine.spinemojo
 
-Class SpineMojoRendererObject Implements SpineRendererObject
+Class SpineMojoTextureRenderObject Implements SpineRenderObject
 	Private
 	Field image:Image
 	Field rotate:Bool

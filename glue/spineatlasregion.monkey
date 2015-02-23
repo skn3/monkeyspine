@@ -4,8 +4,8 @@ Strict
 Import spine
 
 Interface SpineAtlasRegion
-	Method rendererObject:SpineRendererObject() Property
-	Method rendererObject:Void(value:SpineRendererObject) Property
+	Method rendererObject:SpineRenderObject() Property
+	Method rendererObject:Void(value:SpineRenderObject) Property
 	Method page:String() Property
 	Method page:Void(value:SpineAtlasPage) Property
 	Method name:String() Property

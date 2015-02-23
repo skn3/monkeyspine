@@ -268,9 +268,9 @@ Class SpineEntity
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
 						
 						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
 						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
 						#EndIf
 						
 						'color
@@ -309,9 +309,9 @@ Class SpineEntity
 						slotWorldTrianglesLength[index] = length
 						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
 						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RendererObject)
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
 						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RendererObject)
+						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
 						#EndIf
 						
 						'color
@@ -352,7 +352,7 @@ Class SpineEntity
 		Next
 	End
 	
-	Method OnCalculateWorldTriangles:Void(out:Float[], vertices:Float[], triangles:Int[], uvs:Float[], rendererObject:SpineRendererObject)
+	Method OnCalculateWorldTriangles:Void(out:Float[], vertices:Float[], triangles:Int[], uvs:Float[], rendererObject:SpineRenderObject)
 		Local vertIndex:Int
 		Local total:= triangles.Length()
 		Local triangleOffset:Int
@@ -506,7 +506,7 @@ Class SpineEntity
 		Local triangleIndex:Int
 		Local slot:SpineSlot
 		Local attachment:SpineAttachment
-		Local rendererObject:SpineRendererObject
+		Local rendererObject:SpineRenderObject
 		Local total:Int
 		Local verts:Float[12]
 		Local length:Int
@@ -532,7 +532,7 @@ Class SpineEntity
 			Select attachment.Type
 				Case SpineAttachmentType.Mesh
 					Local mesh:= SpineMeshAttachment(attachment)
-					rendererObject = mesh.RendererObject
+					rendererObject = mesh.RenderObject
 					
 					'apply color
 					mojo.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index])
@@ -571,14 +571,14 @@ Class SpineEntity
 					
 					'render
 					If snapToPixels
-						region.RendererObject.Draw(Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
+						region.RenderObject.Draw(Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					Else
-						region.RendererObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
+						region.RenderObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					EndIf
 					
 				Case SpineAttachmentType.SkinnedMesh
 					Local mesh:= SpineSkinnedMeshAttachment(attachment)
-					rendererObject = mesh.RendererObject
+					rendererObject = mesh.RenderObject
 					
 					'apply color
 					mojo.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index])
@@ -741,9 +741,9 @@ Class SpineEntity
 				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
 				mojo.SetAlpha(attachment.WorldAlpha)
 				If snapToPixels
-					'attachment.RendererObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				Else
-					'attachment.RendererObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RendererObject.GetWidth() / 2.0), -Int(attachment.RendererObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				EndIf
 			Next
 		EndIf
@@ -1635,6 +1635,29 @@ Class SpineEntity
 	End
 	
 	'slot color api
+	Method SetSlotAttachment:Void(slotName:String, attachmentName:string)
+		' --- change the attachment of a slot ---
+		'check a slot exists
+		Local slot:= GetSlot(slotName)
+		If slot = Null Return
+		
+		skeleton.SetAttachment(slotName, attachmentName)
+		
+		'flag dirty
+		dirty = True
+	End
+	
+	Method SetSlotCustomAttachment:Void(slotName:String, attachment:SpineAttachment)
+		' --- change the attachment of a slot ---
+		Local slot:= GetSlot(slotName)
+		If slot = Null Return
+		
+		slot.Attachment = attachment
+		
+		'flag dirty
+		dirty = True
+	End
+	
 	Method SetSlotColor:Void(name:String, rgb:Int[])
 		' --- change the color of a slot ---
 		'check a slot exists

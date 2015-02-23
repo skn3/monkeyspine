@@ -5,7 +5,7 @@ Import spine.spinemojo
 
 Class SpineMojoAtlasRegion Implements SpineAtlasRegion
 	Private
-	Field _rendererObject:SpineMojoRendererObject
+	Field _rendererObject:SpineMojoTextureRenderObject
 	Field _page:SpineMojoAtlasPage
 	Field _name:String
 	Field _x:Int
@@ -26,12 +26,12 @@ Class SpineMojoAtlasRegion Implements SpineAtlasRegion
 	Field _pads:Int[]
 	Public
 
-	Method rendererObject:SpineRendererObject() Property
+	Method rendererObject:SpineRenderObject() Property
 		Return _rendererObject
 	End
 	
-	Method rendererObject:Void(value:SpineRendererObject) Property
-		_rendererObject = SpineMojoRendererObject(value)
+	Method rendererObject:Void(value:SpineRenderObject) Property
+		_rendererObject = SpineMojoTextureRenderObject(value)
 	End
 	
 	Method page:SpineAtlasPage() Property

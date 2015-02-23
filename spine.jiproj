@@ -344,7 +344,14 @@
         <Y>0</Y>
       </CursorPos>
     </Document>
-    <Document Filename=".\spinemojo\spinemojorendererobject.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
+    <Document Filename=".\spinemojo\spinemojoimageattachment.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
+      <DocGUID />
+      <CursorPos>
+        <X>0</X>
+        <Y>0</Y>
+      </CursorPos>
+    </Document>
+    <Document Filename=".\spinemojo\spinemojoimagerenderobject.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
       <DocGUID />
       <CursorPos>
         <X>0</X>
@@ -359,6 +366,13 @@
       </CursorPos>
     </Document>
     <Document Filename=".\spinemojo\spinemojotextureloader.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
+      <DocGUID />
+      <CursorPos>
+        <X>0</X>
+        <Y>0</Y>
+      </CursorPos>
+    </Document>
+    <Document Filename=".\spinemojo\spinemojotexturerenderobject.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
       <DocGUID />
       <CursorPos>
         <X>0</X>

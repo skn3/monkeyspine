@@ -1,6 +1,12 @@
 'see license.txt For source licenses
 Strict
 
+'version 24
+' - renamed SpineMojoRendererObject to SpineMojoTextureRenderObject
+' - added SpineMojoImageRenderObject
+' - added SpineMojoImageAttachment
+' - added new example to demonstrate custom attachment
+' - added SetSlotAttachment() and  SetSlotCustomAttachment() to spine entity
 'version 23
 ' - small tweak to set initial atlasScale in spineentity to 1.0 (otherwise images would render with 0x0 scale because multiplied by atlasScale = 0.0)
 'version 22

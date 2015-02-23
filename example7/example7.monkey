@@ -13,6 +13,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 	Field showMessageText:String
 	Field showMessageAlpha:Float = 4.0
 	
+	Field banana:SpineMojoImageAttachment
+	
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
 		' --- animation has finished ---
 		Select entity
@@ -31,9 +33,12 @@ Class MyApp Extends App Implements SpineEntityCallback
 		SetUpdateRate(60)
 		timestamp = Millisecs()
 		
+		'load some stuff to maybe use
+		banana = New SpineMojoImageAttachment("banana_attachment", "monkey://data/banana.png")
+		
 		'load spineTest
 		Try
-			#TEST = "ffd"
+			#TEST = "custom_attachment"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -84,13 +89,19 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/events_skeleton.json")
 			spineTest.SetAnimation("animation", True)
 			spineTest.SetSpeed(0.5)
+
+			#ElseIf TEST = "custom_attachment"
+			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
+			spineTest.SetAnimation("run", True)
+			spineTest.SetScale(0.4)
+			spineTest.SetSpeed(0.2)			
 			
 			#Else
 			Error("no test specified")
 				
 			#EndIf
 			
-			spineTest.SetDebug(True, False)
+			spineTest.SetDebug(False, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetIgnoreRootPosition(False)
@@ -143,6 +154,11 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'spineTest.SetRotation(MouseY())
 		'spineTest.SetBonePosition("bone4", MouseX(), MouseY(), True)
 		spineTest.Update(deltaFloat)
+		
+		'do stuff based on test
+		#If TEST = "custom_attachment"
+			spineTest.SetSlotCustomAttachment("gun", banana)
+		#EndIf
 		
 		'make changes to certain bones after it has been updated
 		'spineTest.SetBonePosition("bone4", MouseX(), MouseY(), True)

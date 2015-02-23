@@ -38,7 +38,7 @@ Class SpineRegionAttachment Extends SpineAttachment
 	Field A:Float
 	
 	Field Path:String
-	Field RendererObject:SpineRendererObject
+	Field RenderObject:SpineRenderObject
 
 	'constructor
 	Method New(name:String)

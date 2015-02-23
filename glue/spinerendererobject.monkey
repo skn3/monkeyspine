@@ -3,7 +3,7 @@ Strict
 
 Import spine
 
-Interface SpineRendererObject
+Interface SpineRenderObject
 	Method width:Int() Property
 	Method height:Int() Property
 	Method textureWidth:Int() Property

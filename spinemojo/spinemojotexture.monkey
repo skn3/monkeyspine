@@ -42,7 +42,7 @@ Class SpineMojoTexture Implements SpineTexture
 		EndIf
 	End
 	
-	Method Grab:SpineRendererObject(x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
-		Return New SpineMojoRendererObject(image, x, y, width, height, handleX, handleY, rotate)
+	Method Grab:SpineRenderObject(x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
+		Return New SpineMojoTextureRenderObject(image, x, y, width, height, handleX, handleY, rotate)
 	End
 End

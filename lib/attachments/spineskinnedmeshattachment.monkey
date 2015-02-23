@@ -32,7 +32,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	Field Triangles:Int[]
 
 	Field Path:String
-	Field RendererObject:SpineRendererObject
+	Field RenderObject:SpineRenderObject
 
 	'Nonessential.
 	Field Edges:Int[]

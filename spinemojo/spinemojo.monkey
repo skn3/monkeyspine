@@ -14,11 +14,14 @@ Import spinemojoatlas
 Import spinemojoatlasloader
 Import spinemojoatlaspage
 Import spinemojoatlasregion
+Import spinemojoatlasregion
 Import spinemojofile
 Import spinemojofileloader
-Import spinemojorendererobject
+Import spinemojotexturerenderobject
+Import spinemojoimagerenderobject
 Import spinemojotexture
 Import spinemojotextureloader
+Import spinemojoimageattachment
 
 'globals
 Private
