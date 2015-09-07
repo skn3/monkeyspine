@@ -404,7 +404,7 @@ Function SpineDrawLineRect:Void(x:Float, y:Float, width:Float, height:Float)
 	DrawLine(x, y + height, x, y)
 End
 
-Function SpineDrawLinePoly:Void(vertices:Float[], total:Int = -1, snapToPixels:Bool = False)
+Function SpineDrawLinePoly:Void(target:DrawList, vertices:Float[], total:Int = -1, snapToPixels:Bool = False)
 	' --- draw a lined poly ---
 	If total = -1 total = vertices.Length()
 	
@@ -413,16 +413,16 @@ Function SpineDrawLinePoly:Void(vertices:Float[], total:Int = -1, snapToPixels:B
 	
 	'draw point
 	If total < 4
-		DrawPoint(vertices[0], vertices[1])
+		target.DrawPoint(vertices[0], vertices[1])
 		Return
 	EndIf
 	
 	'draw 1 line
 	If total < 6
 		If snapToPixels
-			DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
+			target.DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
 		Else
-			DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
+			target.DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
 		EndIf
 		Return
 	EndIf
@@ -430,11 +430,11 @@ Function SpineDrawLinePoly:Void(vertices:Float[], total:Int = -1, snapToPixels:B
 	'draw 2 lines
 	If total < 8
 		If snapToPixels
-			DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
-			DrawLine(Int(vertices[2]), Int(vertices[3]), Int(vertices[4]), Int(vertices[5]))
+			target.DrawLine(Int(vertices[0]), Int(vertices[1]), Int(vertices[2]), Int(vertices[3]))
+			target.DrawLine(Int(vertices[2]), Int(vertices[3]), Int(vertices[4]), Int(vertices[5]))
 		Else
-			DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
-			DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
+			target.DrawLine(vertices[0], vertices[1], vertices[2], vertices[3])
+			target.DrawLine(vertices[2], vertices[3], vertices[4], vertices[5])
 		EndIf
 		Return		
 	EndIf
@@ -446,15 +446,15 @@ Function SpineDrawLinePoly:Void(vertices:Float[], total:Int = -1, snapToPixels:B
 		For Local index:= 2 Until total Step 2
 			lastX = Int(vertices[index])
 			lastY = Int(vertices[index + 1])
-			DrawLine(Int(vertices[index - 2]), Int(vertices[index - 1]), lastX, lastY)
+			target.DrawLine(Int(vertices[index - 2]), Int(vertices[index - 1]), lastX, lastY)
 		Next
-		DrawLine(lastX, lastY, Int(vertices[0]), Int(vertices[1]))
+		target.DrawLine(lastX, lastY, Int(vertices[0]), Int(vertices[1]))
 	Else
 		For Local index:= 2 Until total Step 2
 			lastX = vertices[index]
 			lastY = vertices[index + 1]
-			DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)
+			target.DrawLine(vertices[index - 2], vertices[index - 1], lastX, lastY)
 		Next
-		DrawLine(lastX, lastY, vertices[0], vertices[1])
+		target.DrawLine(lastX, lastY, vertices[0], vertices[1])
 	EndIf
 End

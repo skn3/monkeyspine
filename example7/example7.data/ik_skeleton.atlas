@@ -1,9 +1,9 @@
 
 ik_skeleton.png
-size: 369,170
+size: 512,256
 format: RGBA8888
 filter: Linear,Linear
-repeat: xy
+repeat: none
 arm
   rotate: false
   xy: 2, 2

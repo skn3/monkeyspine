@@ -12,6 +12,7 @@ End
 'Class to wrap spine
 Class SpineEntity
 	Global tempVertices:Float[8]
+	Global tempSnapToIntTriangles:Float[]
 	
 	Field atlas:SpineAtlas
 	Field data:SpineSkeletonData
@@ -55,8 +56,9 @@ Class SpineEntity
 	Field slotWorldBounding:Float[][]
 	Field slotWorldVertices:Float[][]
 	Field slotWorldVerticesLength:Int[]
-	Field slotWorldTriangles:Float[][]
-	Field slotWorldTrianglesLength:Int[]
+	Field slotWorldTriangleVerts:Float[][]
+	Field slotWorldTriangleUVs:Float[][]
+	Field slotWorldTriangleTotals:Int[]
 	Field slotWorldHull:Float[][]
 	Field slotWorldHullLength:Int[]
 	Field slotWorldX:Float[]
@@ -64,9 +66,9 @@ Class SpineEntity
 	Field slotWorldRotation:Float[]
 	Field slotWorldScaleX:Float[]
 	Field slotWorldScaleY:Float[]
-	Field slotWorldR:Int[]
-	Field slotWorldG:Int[]
-	Field slotWorldB:Int[]
+	Field slotWorldR:Float[]
+	Field slotWorldG:Float[]
+	Field slotWorldB:Float[]
 	Field slotWorldAlpha:Float[]
 	
 	Field bounding:Float[8]
@@ -108,20 +110,28 @@ Class SpineEntity
 		Local index:Int
 		Local total:= data.Slots.Length()
 		slotWorldBounding = New Float[total][]
+		
 		slotWorldVertices = New Float[total][]
 		slotWorldVerticesLength = New Int[total]
-		slotWorldTriangles = New Float[total][]
-		slotWorldTrianglesLength = New Int[total]
+		
+		slotWorldTriangleVerts = New Float[total][]
+		slotWorldTriangleUVs = New Float[total][]
+		slotWorldTriangleTotals = New Int[total]
+		
 		slotWorldHull = New Float[total][]
 		slotWorldHullLength = New Int[total]
+		
 		slotWorldX = New Float[total]
 		slotWorldY = New Float[total]
+		
 		slotWorldRotation = New Float[total]
+		
 		slotWorldScaleX = New Float[total]
 		slotWorldScaleY = New Float[total]
-		slotWorldR = New Int[total]
-		slotWorldG = New Int[total]
-		slotWorldB = New Int[total]
+		
+		slotWorldR = New Float[total]
+		slotWorldG = New Float[total]
+		slotWorldB = New Float[total]
 		slotWorldAlpha = New Float[total]
 		
 		'fill slot arrays
@@ -183,9 +193,12 @@ Class SpineEntity
 			Local attachment:SpineAttachment
 			Local bone:SpineBone
 			Local totalSlots:= skeleton.Slots.Length()
+			Local worldTriangleOffset:Int
+			Local vertIndex:Int
+			Local vertOffset:Int
 			
-			For Local index:= 0 Until totalSlots
-				slot = skeleton.Slots[index]
+			For Local slotIndex:= 0 Until totalSlots
+				slot = skeleton.Slots[slotIndex]
 				attachment = slot.Attachment
 				
 				If attachment = Null Continue
@@ -197,12 +210,12 @@ Class SpineEntity
 						
 						'vertices
 						length = box.Vertices.Length()
-						slotWorldVerticesLength[index] = length
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						box.ComputeWorldVertices(slot.Bone, slotWorldVertices[index])
+						slotWorldVerticesLength[slotIndex] = length
+						If length > slotWorldVertices[slotIndex].Length() slotWorldVertices[slotIndex] = New Float[length]
+						box.ComputeWorldVertices(slot.Bone, slotWorldVertices[slotIndex])
 						
 						'hull
-						OnCalculateWorldHull(index, length)
+						OnCalculateWorldHull(slotIndex, length)
 						
 					Case SpineAttachmentType.Region
 						Local region:= SpineRegionAttachment(attachment)
@@ -210,75 +223,94 @@ Class SpineEntity
 						
 						'vertices
 						length = 8
-						slotWorldVerticesLength[index] = length
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						region.ComputeWorldVertices(slot.Bone, slotWorldVertices[index])
+						slotWorldVerticesLength[slotIndex] = length
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
+						EndIf
+						
+						region.ComputeWorldVertices(slot.Bone, slotWorldVertices[slotIndex])
 						
 						'get world properties
-						slotWorldX[index] = bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
-						slotWorldY[index] = bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
-						slotWorldRotation[index] = bone.WorldRotation + region.Rotation
-						slotWorldScaleX[index] = bone.WorldScaleX * region.ScaleX
-						slotWorldScaleY[index] = bone.WorldScaleY * region.ScaleY
+						slotWorldX[slotIndex] = bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
+						slotWorldY[slotIndex] = bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
+						slotWorldRotation[slotIndex] = bone.WorldRotation + region.Rotation
+						slotWorldScaleX[slotIndex] = bone.WorldScaleX * region.ScaleX
+						slotWorldScaleY[slotIndex] = bone.WorldScaleY * region.ScaleY
 		
 						'do we need to flip it?
 						If skeleton.FlipX
-							slotWorldScaleX[index] = -slotWorldScaleX[index]
-							slotWorldRotation[index] = -slotWorldRotation[index]
+							slotWorldScaleX[slotIndex] = -slotWorldScaleX[slotIndex]
+							slotWorldRotation[slotIndex] = -slotWorldRotation[slotIndex]
 						EndIf
 						If skeleton.FlipY
-							slotWorldScaleY[index] = -slotWorldScaleY[index]
-							slotWorldRotation[index] = -slotWorldRotation[index]
+							slotWorldScaleY[slotIndex] = -slotWorldScaleY[slotIndex]
+							slotWorldRotation[slotIndex] = -slotWorldRotation[slotIndex]
 						EndIf
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
 						length = 8
-						slotWorldHullLength[index] = length
-						If length > slotWorldHull[index].Length() slotWorldHull[index] = New Float[length]
-						slotWorldHull[index][0] = slotWorldVertices[index][0]
-						slotWorldHull[index][1] = slotWorldVertices[index][1]
-						slotWorldHull[index][2] = slotWorldVertices[index][2]
-						slotWorldHull[index][3] = slotWorldVertices[index][3]
+						slotWorldHullLength[slotIndex] = length
+						If length > slotWorldHull[slotIndex].Length() slotWorldHull[slotIndex] = New Float[length]
+						slotWorldHull[slotIndex][0] = slotWorldVertices[slotIndex][0]
+						slotWorldHull[slotIndex][1] = slotWorldVertices[slotIndex][1]
+						slotWorldHull[slotIndex][2] = slotWorldVertices[slotIndex][2]
+						slotWorldHull[slotIndex][3] = slotWorldVertices[slotIndex][3]
 						
-						slotWorldHull[index][4] = slotWorldVertices[index][4]
-						slotWorldHull[index][5] = slotWorldVertices[index][5]
-						slotWorldHull[index][6] = slotWorldVertices[index][6]
-						slotWorldHull[index][7] = slotWorldVertices[index][7]
+						slotWorldHull[slotIndex][4] = slotWorldVertices[slotIndex][4]
+						slotWorldHull[slotIndex][5] = slotWorldVertices[slotIndex][5]
+						slotWorldHull[slotIndex][6] = slotWorldVertices[slotIndex][6]
+						slotWorldHull[slotIndex][7] = slotWorldVertices[slotIndex][7]
 						
 					Case SpineAttachmentType.Mesh
 						Local mesh:= SpineMeshAttachment(attachment)
 						
 						'vertices
 						length = mesh.Vertices.Length()
-						slotWorldVerticesLength[index] = length
+						slotWorldVerticesLength[slotIndex] = length
 						If length = 0
-							slotWorldTrianglesLength[index] = 0
+							slotWorldTriangleTotals[slotIndex] = 0
 							Continue
 						EndIf
 						
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
+						EndIf
+						mesh.ComputeWorldVertices(slot, slotWorldVertices[slotIndex])
 						
 						'triangles
-						length = (mesh.Triangles.Length() / 3) * 12
-						slotWorldTrianglesLength[index] = length
-						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
+						slotWorldTriangleTotals[slotIndex] = (mesh.Triangles.Length() / 3)
 						
-						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
-						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
-						#EndIf
+						length = slotWorldTriangleTotals[slotIndex] * 6
+						
+						If length > slotWorldTriangleVerts[slotIndex].Length()
+							slotWorldTriangleVerts[slotIndex] = New Float[length]
+							slotWorldTriangleUVs[slotIndex] = New Float[length]
+						EndIf
+												
+						worldTriangleOffset = 0
+						For Local triangleIndex:= 0 Until slotWorldTriangleTotals[slotIndex] * 3 Step 3
+							'build triangle verts
+							For vertOffset = 0 Until 3
+								vertIndex = mesh.Triangles[triangleIndex + vertOffset] * 2
+				
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset] = slotWorldVertices[slotIndex][vertIndex]
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset + 1] = slotWorldVertices[slotIndex][vertIndex + 1]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset] = mesh.UVs[vertIndex]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset + 1] = mesh.UVs[vertIndex + 1]
+							
+								worldTriangleOffset += 2
+							Next
+						Next
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
 						'If slot.Data.Name = "head" DebugStop()
-						OnCalculateWorldHull(index, mesh.HullLength)
+						OnCalculateWorldHull(slotIndex, mesh.HullLength)
 						
 					Case SpineAttachmentType.SkinnedMesh
 						Local mesh:= SpineSkinnedMeshAttachment(attachment)
@@ -295,30 +327,48 @@ Class SpineEntity
 							length += 2
 						Wend
 
-						slotWorldVerticesLength[index] = length
+						slotWorldVerticesLength[slotIndex] = length
 						If length = 0
-							slotWorldTrianglesLength[index] = 0
+							slotWorldTriangleTotals[slotIndex] = 0
 							Continue
 						EndIf
 						
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
+						EndIf
+						mesh.ComputeWorldVertices(slot, slotWorldVertices[slotIndex])
 						
 						'triangles
-						length = (mesh.Triangles.Length() / 3) * 12
-						slotWorldTrianglesLength[index] = length
-						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
-						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
-						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
-						#EndIf
+						slotWorldTriangleTotals[slotIndex] = (mesh.Triangles.Length() / 3)
+						
+						length = slotWorldTriangleTotals[slotIndex] * 6
+						
+						If length > slotWorldTriangleVerts[slotIndex].Length()
+							slotWorldTriangleVerts[slotIndex] = New Float[length]
+							slotWorldTriangleUVs[slotIndex] = New Float[length]
+						EndIf
+												
+						worldTriangleOffset = 0
+						For Local triangleIndex:= 0 Until slotWorldTriangleTotals[slotIndex] * 3 Step 3
+							'build triangle verts
+							For vertOffset = 0 Until 3
+								vertIndex = mesh.Triangles[triangleIndex + vertOffset] * 2
+				
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset] = slotWorldVertices[slotIndex][vertIndex]
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset + 1] = slotWorldVertices[slotIndex][vertIndex + 1]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset] = mesh.UVs[vertIndex]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset + 1] = mesh.UVs[vertIndex + 1]
+								'DebugStop()
+							
+								worldTriangleOffset += 2
+							Next
+						Next
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.HullLength)
+						OnCalculateWorldHull(slotIndex, mesh.HullLength)
 				End
 			Next
 			
@@ -335,10 +385,10 @@ Class SpineEntity
 	End
 	
 	Method OnCalculateWorldColor:Void(slot:SpineSlot, index:Int)
-		slotWorldR[index] = Int( (skeleton.R * slot.R) * 255.0)
-		slotWorldG[index] = Int( (skeleton.G * slot.G) * 255.0)
-		slotWorldB[index] = Int( (skeleton.B * slot.B) * 255.0)
-		slotWorldAlpha[index] = (skeleton.A * slot.A)
+		slotWorldR[index] = skeleton.R * slot.R
+		slotWorldG[index] = skeleton.G * slot.G
+		slotWorldB[index] = skeleton.B * slot.B
+		slotWorldAlpha[index] = skeleton.A * slot.A
 	End
 	
 	Method OnCalculateWorldHull:Void(index:Int, hullLength:Int)
@@ -349,35 +399,6 @@ Class SpineEntity
 		Local vertices:= slotWorldVertices[index]
 		For Local vertIndex:= 0 Until hullLength
 			hull[vertIndex] = vertices[vertIndex]
-		Next
-	End
-	
-	Method OnCalculateWorldTriangles:Void(out:Float[], vertices:Float[], triangles:Int[], uvs:Float[], rendererObject:SpineRenderObject)
-		Local vertIndex:Int
-		Local total:= triangles.Length()
-		Local triangleOffset:Int
-		Local vertOffset:Int
-		
-		For Local triangleIndex:= 0 Until total Step 3
-			'build triangle verts
-			For vertIndex = 0 Until 3
-				vertOffset = triangles[triangleIndex + vertIndex] * 2
-							
-				'x,y
-				out[triangleOffset] = vertices[vertOffset]
-				out[triangleOffset + 1] = vertices[vertOffset + 1]
-							
-				'u,v (ugh have to convert "uvs" into image dimensions..????)
-				#IF SPINE_ATLAS_ROTATE
-				out[triangleOffset + 2] = (Float(rendererObject.textureWidth) / 1.0) * uvs[vertOffset]
-				out[triangleOffset + 3] = (Float(rendererObject.textureHeight) / 1.0) * uvs[vertOffset + 1]
-				#Else
-				out[triangleOffset + 2] = (Float(rendererObject.width) / 1.0) * uvs[vertOffset]
-				out[triangleOffset + 3] = (Float(rendererObject.height) / 1.0) * uvs[vertOffset + 1]
-				#Endif
-							
-				triangleOffset += 4
-			Next
 		Next
 	End
 	
@@ -409,9 +430,7 @@ Class SpineEntity
 			
 			'apply slot bounding to overal min/max values
 			SpineGetPolyBounding(slotWorldVertices[index], vertices, total)
-			
-			'Print "slot " + slot.Data.Name + " = " + slotWorldVertices[index][0]
-			
+
 			'compute min/max
 			If vertices[0] < minX minX = vertices[0]
 			If vertices[0] > maxX maxX = vertices[0]
@@ -422,8 +441,7 @@ Class SpineEntity
 			If vertices[5] < minY minY = vertices[5]
 			If vertices[5] > maxY maxY = vertices[5]
 		Next
-		'DebugStop()
-		
+
 		'set entity bounding
 		bounding[0] = minX
 		bounding[1] = minY
@@ -499,16 +517,13 @@ Class SpineEntity
 		EndIf
 	End
 	
-	Method OnRender:Void()
+	Method OnRender:Void(target:DrawList)
 		' --- render the entity ---
 		Local index:Int
 		Local subIndex:Int
-		Local triangleIndex:Int
 		Local slot:SpineSlot
 		Local attachment:SpineAttachment
-		Local rendererObject:SpineRenderObject
 		Local total:Int
-		Local verts:Float[12]
 		Local length:Int
 				
 		'calculate again just incase something has changed
@@ -530,87 +545,39 @@ Class SpineEntity
 				
 			'draw it
 			Select attachment.Type
-				Case SpineAttachmentType.Mesh
-					Local mesh:= SpineMeshAttachment(attachment)
-					rendererObject = mesh.RenderObject
-					
-					'apply color
-					mojo.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index])
-					mojo.SetAlpha(slotWorldAlpha[index])
-					
-					'render
-					length = slotWorldTriangles[index].Length()
-					If snapToPixels
-						For triangleIndex = 0 Until length Step 12
-							For subIndex = 0 Until 12
-								verts[subIndex] = slotWorldTriangles[index][triangleIndex + subIndex]
-							Next
-							verts[0] = int(verts[0])
-							verts[1] = int(verts[1])
-							verts[4] = int(verts[4])
-							verts[5] = int(verts[5])
-							verts[8] = int(verts[8])
-							verts[9] = int(verts[9])
-							rendererObject.Draw(verts)
-						Next
-					Else
-						For triangleIndex = 0 Until length Step 12
-							For subIndex = 0 Until 12
-								verts[subIndex] = slotWorldTriangles[index][triangleIndex + subIndex]
-							Next
-							rendererObject.Draw(verts)
-						Next
-					EndIf
-					
 				Case SpineAttachmentType.Region
 					Local region:= SpineRegionAttachment(attachment)
 					
 					'apply color
-					mojo.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index])
-					mojo.SetAlpha(slotWorldAlpha[index])
+					target.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index], slotWorldAlpha[index])
 					
 					'render
 					If snapToPixels
-						region.RenderObject.Draw(Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
+						region.RenderObject.Draw(target, Int(slotWorldX[index]), Int(slotWorldY[index]), slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					Else
-						region.RenderObject.Draw(slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
+						region.RenderObject.Draw(target, slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					EndIf
 					
-				Case SpineAttachmentType.SkinnedMesh
-					Local mesh:= SpineSkinnedMeshAttachment(attachment)
-					rendererObject = mesh.RenderObject
-					
+				Case SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh
 					'apply color
-					mojo.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index])
-					mojo.SetAlpha(slotWorldAlpha[index])
+					target.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index], slotWorldAlpha[index])
 					
-					'render
-					length = slotWorldTriangles[index].Length()
+					'render all as batch
 					If snapToPixels
-						For triangleIndex = 0 Until length Step 12
-							For subIndex = 0 Until 12
-								verts[subIndex] = slotWorldTriangles[index][triangleIndex + subIndex]
-							Next
-							verts[0] = int(verts[0])
-							verts[1] = int(verts[1])
-							verts[4] = int(verts[4])
-							verts[5] = int(verts[5])
-							verts[8] = int(verts[8])
-							verts[9] = int(verts[9])
-							rendererObject.Draw(verts)
+						'need to make int versions of triangle verts
+						If tempSnapToIntTriangles.Length < slotWorldTriangleVerts[index].Length
+							tempSnapToIntTriangles = New Float[slotWorldTriangleVerts[index].Length]
+						EndIf
+						For Local snapIndex:= 0 Until slotWorldTriangleVerts[index].Length
+							tempSnapToIntTriangles[snapIndex] = Int(slotWorldTriangleVerts[index][snapIndex])
 						Next
+						
+						attachment.RenderObject.Draw(target, tempSnapToIntTriangles, slotWorldTriangleUVs[index], slotWorldTriangleTotals[index])
 					Else
-						For triangleIndex = 0 Until length Step 12
-							For subIndex = 0 Until 12
-								verts[subIndex] = slotWorldTriangles[index][triangleIndex + subIndex]
-							Next
-							rendererObject.Draw(verts)
-						Next
+						attachment.RenderObject.Draw(target, slotWorldTriangleVerts[index], slotWorldTriangleUVs[index], slotWorldTriangleTotals[index])
 					EndIf
 					
 			End
-			'mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
-			'mojo.SetAlpha(attachment.WorldAlpha)
 		Next
 		#If SPINE_DEBUG_RENDER = True
 		EndIf
@@ -637,20 +604,20 @@ Class SpineEntity
 				Case SpineAttachmentType.BoundingBox, SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh, SpineAttachmentType.Region
 					'mesh
 					If debugMesh
-						length = slotWorldTrianglesLength[index]
+						length = slotWorldTriangleTotals[index]
 						If length > 0
-							mojo.SetColor(0, 229, 255)
+							target.SetColor(0.0, (1.0 / 255) * 229, 1.0)
 							If snapToPixels
-								For subIndex = 0 Until length Step 12
-									DrawLine(Int(slotWorldTriangles[index][subIndex]), Int(slotWorldTriangles[index][subIndex + 1]), Int(slotWorldTriangles[index][subIndex + 4]), Int(slotWorldTriangles[index][subIndex + 5]))
-									DrawLine(Int(slotWorldTriangles[index][subIndex + 4]), Int(slotWorldTriangles[index][subIndex + 5]), Int(slotWorldTriangles[index][subIndex + 8]), Int(slotWorldTriangles[index][subIndex + 9]))
-									DrawLine(Int(slotWorldTriangles[index][subIndex + 8]), Int(slotWorldTriangles[index][subIndex + 9]), Int(slotWorldTriangles[index][subIndex]), Int(slotWorldTriangles[index][subIndex + 1]))
+								For subIndex = 0 Until length Step 6
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex]), Int(slotWorldTriangleVerts[index][subIndex + 1]), Int(slotWorldTriangleVerts[index][subIndex + 2]), Int(slotWorldTriangleVerts[index][subIndex + 3]))
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex + 2]), Int(slotWorldTriangleVerts[index][subIndex + 3]), Int(slotWorldTriangleVerts[index][subIndex + 4]), Int(slotWorldTriangleVerts[index][subIndex + 5]))
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex + 4]), Int(slotWorldTriangleVerts[index][subIndex + 5]), Int(slotWorldTriangleVerts[index][subIndex]), Int(slotWorldTriangleVerts[index][subIndex + 1]))
 								Next
 							Else
-								For subIndex = 0 Until length Step 12
-									DrawLine(slotWorldTriangles[index][subIndex], slotWorldTriangles[index][subIndex + 1], slotWorldTriangles[index][subIndex + 4], slotWorldTriangles[index][subIndex + 5])
-									DrawLine(slotWorldTriangles[index][subIndex + 4], slotWorldTriangles[index][subIndex + 5], slotWorldTriangles[index][subIndex + 8], slotWorldTriangles[index][subIndex + 9])
-									DrawLine(slotWorldTriangles[index][subIndex + 8], slotWorldTriangles[index][subIndex + 9], slotWorldTriangles[index][subIndex], slotWorldTriangles[index][subIndex + 1])
+								For subIndex = 0 Until length Step 6
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex], slotWorldTriangleVerts[index][subIndex + 1], slotWorldTriangleVerts[index][subIndex + 2], slotWorldTriangleVerts[index][subIndex + 3])
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex + 2], slotWorldTriangleVerts[index][subIndex + 3], slotWorldTriangleVerts[index][subIndex + 4], slotWorldTriangleVerts[index][subIndex + 5])
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex + 4], slotWorldTriangleVerts[index][subIndex + 5], slotWorldTriangleVerts[index][subIndex], slotWorldTriangleVerts[index][subIndex + 1])
 								Next
 							EndIf
 						EndIf
@@ -660,15 +627,15 @@ Class SpineEntity
 					If debugHull
 						length = slotWorldHullLength[index]
 						If length > 0
-							mojo.SetColor(255, 0, 0)
-							SpineDrawLinePoly(slotWorldHull[index], slotWorldHullLength[index], snapToPixels)
+							target.SetColor(1.0, 0.0, 0.0)
+							SpineDrawLinePoly(target, slotWorldHull[index], slotWorldHullLength[index], snapToPixels)
 						EndIf
 					EndIf
 					
 					'bounding
 					If debugBounding
-						mojo.SetColor(128, 0, 255)
-						SpineDrawLinePoly(slotWorldBounding[index], -1, snapToPixels)
+						target.SetColor(0.5, 0, 1.0)
+						SpineDrawLinePoly(target, slotWorldBounding[index], -1, snapToPixels)
 					EndIf
 			End
 		Next
@@ -679,12 +646,11 @@ Class SpineEntity
 			Local size:Int
 			
 			'draw line bones
-			mojo.SetColor(0, 0, 0)
-			mojo.SetAlpha(1.0)
+			target.SetColor(0.0, 0.0, 0.0, 1.0)
 			length = skeleton.Bones.Length()
 			For index = 0 Until length
 				bone = skeleton.Bones[index]
-				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
+				target.DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
 			Next
 			
 			'bone origins
@@ -694,34 +660,35 @@ Class SpineEntity
 				If index = 0
 					'root bone
 					'draw a cross hair
-					mojo.SetColor(0, 0, 0)
+					target.SetColor(0.0, 0.0, 0.0)
+					
 					size = 8
-					DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
-					DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
-					DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
-					DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
-					DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
-					DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
+					target.DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
+					target.DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
+					target.DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
+					target.DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
+					target.DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
+					target.DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
 				Else
 					'other bones
 					'draw just a box
-					mojo.SetColor(0, 0, 255)
+					target.SetColor(0.0, 0.0, 1.0)
 
 					size = 4
-					DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
-					DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
-					DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
-					DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
-					'DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
-					'DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
+					target.DrawLine(bone.WorldX - size, bone.WorldY - size, bone.WorldX + size, bone.WorldY - size)
+					target.DrawLine(bone.WorldX + size, bone.WorldY - size, bone.WorldX + size, bone.WorldY + size)
+					target.DrawLine(bone.WorldX + size, bone.WorldY + size, bone.WorldX - size, bone.WorldY + size)
+					target.DrawLine(bone.WorldX - size, bone.WorldY + size, bone.WorldX - size, bone.WorldY - size)
+					'target.DrawLine(bone.WorldX, bone.WorldY - size + 2, bone.WorldX, bone.WorldY + size + 2)
+					'target.DrawLine(bone.WorldX - size+2, bone.WorldY, bone.WorldX + size+2, bone.WorldY)
 				EndIf
 			Next
 		EndIf
 		
 		'entity bounding
 		If debugBounding
-			mojo.SetColor(128, 0, 255)
-			SpineDrawLinePoly(bounding, -1, snapToPixels)
+			target.SetColor(0.5, 0, 1.0)
+			SpineDrawLinePoly(target, bounding, -1, snapToPixels)
 		EndIf
 		#EndIf
 		
@@ -738,12 +705,11 @@ Class SpineEntity
 				attachment = SpineRegionAttachment(slot.Attachment)
 				
 				'draw it
-				mojo.SetColor(attachment.WorldR * 255, attachment.WorldG * 255, attachment.WorldB * 255)
-				mojo.SetAlpha(attachment.WorldAlpha)
+				target.SetColor(attachment.WorldR, attachment.WorldG, attachment.WorldB,attachment.WorldAlph)
 				If snapToPixels
-					'attachment.RenderObject.Draw(Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(target,Int(attachment.WorldX), Int(attachment.WorldY), attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, -Int(attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				Else
-					'attachment.RenderObject.Draw(attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
+					'attachment.RenderObject.Draw(target,attachment.WorldX, attachment.WorldY, attachment.WorldRotation, attachment.WorldScaleX, attachment.WorldScaleY, - (attachment.RenderObject.GetWidth() / 2.0), -Int(attachment.RenderObject.GetHeight() / 2.0), attachment.Vertices)
 				EndIf
 			Next
 		EndIf
@@ -761,8 +727,8 @@ Class SpineEntity
 				attachment = SpineRegionAttachment(slot.Attachment)
 				
 				'draw lined rect around region
-				mojo.SetColor(0, 0, 255)
-				SpineDrawLinePoly(attachment.Vertices)
+				target.SetColor(0.0, 0.0, 1.0)
+				SpineDrawLinePoly(target,attachment.Vertices)
 			Next
 		EndIf
 		
@@ -771,11 +737,10 @@ Class SpineEntity
 			Local bone:SpineBone
 			
 			'draw line bones
-			mojo.SetColor(255, 0, 0)
-			mojo.SetAlpha(1.0)
+			target.SetColor(1.0, 0.0, 0.0,1.0)
 			For index = 0 Until skeleton.Bones.Length()
 				bone = skeleton.Bones[index]
-				DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
+				target.DrawLine(bone.WorldX, bone.WorldY, bone.Data.Length * bone.M00 + bone.WorldX, bone.Data.Length * bone.M10 + bone.WorldY)
 			Next
 			
 			'bone origins
@@ -785,17 +750,17 @@ Class SpineEntity
 				If index = 0
 					'root bone
 					'draw a cross hair
-					mojo.SetColor(0, 0, 255)
-					DrawLine(bone.WorldX - 4, bone.WorldY - 4, bone.WorldX + 4, bone.WorldY - 4)
-					DrawLine(bone.WorldX + 4, bone.WorldY - 4, bone.WorldX + 4, bone.WorldY + 4)
-					DrawLine(bone.WorldX + 4, bone.WorldY + 4, bone.WorldX - 4, bone.WorldY + 4)
-					DrawLine(bone.WorldX - 4, bone.WorldY + 4, bone.WorldX - 4, bone.WorldY - 4)
-					DrawLine(bone.WorldX, bone.WorldY - 6, bone.WorldX, bone.WorldY + 6)
-					DrawLine(bone.WorldX - 6, bone.WorldY, bone.WorldX + 6, bone.WorldY)
+					target.SetColor(0.0, 0.0, 1.0)
+					target.DrawLine(bone.WorldX - 4, bone.WorldY - 4, bone.WorldX + 4, bone.WorldY - 4)
+					target.DrawLine(bone.WorldX + 4, bone.WorldY - 4, bone.WorldX + 4, bone.WorldY + 4)
+					target.DrawLine(bone.WorldX + 4, bone.WorldY + 4, bone.WorldX - 4, bone.WorldY + 4)
+					target.DrawLine(bone.WorldX - 4, bone.WorldY + 4, bone.WorldX - 4, bone.WorldY - 4)
+					target.DrawLine(bone.WorldX, bone.WorldY - 6, bone.WorldX, bone.WorldY + 6)
+					target.DrawLine(bone.WorldX - 6, bone.WorldY, bone.WorldX + 6, bone.WorldY)
 				Else
 					'other bones
 					'draw just a box
-					mojo.SetColor(0, 255, 0)
+					target.SetColor(0.0, 1.0, 0)
 					DrawRect(bone.WorldX - 2, bone.WorldY - 2, 4, 4)
 				EndIf
 			Next
@@ -804,8 +769,8 @@ Class SpineEntity
 		'render bounding For entire skeleton
 		If debugBounding
 			CalculateBounding()
-			mojo.SetColor(255, 0, 0)
-			SpineDrawLinePoly(bounding)
+			target.SetColor(1.0, 0.0, 0.0)
+			SpineDrawLinePoly(target,bounding)
 		EndIf
 		#End
 	End
@@ -840,12 +805,12 @@ Class SpineEntity
 		updating = False
 	End
 	
-	Method Render:Void()
+	Method Render:Void(target:DrawList)
 		' --- render the entity --
 		'only render if not rendering or updating
 		If rendering or updating Return
 		rendering = True
-		OnRender()
+		OnRender(target)
 		rendering = False
 	End
 	
@@ -1129,11 +1094,11 @@ Class SpineEntity
 	End
 	
 	'color api
-	Method SetColor:Void(r:Int, g:Int, b:Int)
+	Method SetColor:Void(r:Float, g:Float, b:Float)
 		' --- change color of the entity ---
-		skeleton.R = r / 255.0
-		skeleton.G = g / 255.0
-		skeleton.B = b / 255.0
+		skeleton.R = r
+		skeleton.G = g
+		skeleton.B = b
 		
 		'flag dirty
 		dirty = True
@@ -1165,29 +1130,29 @@ Class SpineEntity
 		dirty = True
 	End
 	
-	Method GetColor:Int[] ()
+	Method GetColor:Float[] ()
 		' --- get color of skeleton ---
-		Return[Int(skeleton.R * 255), Int(skeleton.G * 255), Int(skeleton.B * 255)]
+		Return[skeleton.R, skeleton.G, skeleton.B]
 	End
 	
-	Method GetColor:Void(rgb:Int[])
+	Method GetColor:Void(rgb:Float[])
 		' --- get color of skeleton ---
-		rgb[0] = skeleton.R * 255
-		rgb[1] = skeleton.G * 255
-		rgb[2] = skeleton.B * 255
+		rgb[0] = skeleton.R
+		rgb[1] = skeleton.G
+		rgb[2] = skeleton.B
 	End
 	
-	Method GetR:Int()
+	Method GetR:Float()
 		' --- get color of skeleton ---
 		Return skeleton.R
 	End
 	
-	Method GetG:Int()
+	Method GetG:Float()
 		' --- get color of skeleton ---
 		Return skeleton.G
 	End
 	
-	Method GetB:Int()
+	Method GetB:Float()
 		' --- get color of skeleton ---
 		Return skeleton.B
 	End
@@ -1658,35 +1623,35 @@ Class SpineEntity
 		dirty = True
 	End
 	
-	Method SetSlotColor:Void(name:String, rgb:Int[])
+	Method SetSlotColor:Void(name:String, rgb:Float[])
 		' --- change the color of a slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return
 		
-		slot.R = rgb[0] / 255.0
-		slot.G = rgb[1] / 255.0
-		slot.B = rgb[2] / 255.0
+		slot.R = rgb[0]
+		slot.G = rgb[1]
+		slot.B = rgb[2]
 		
 		'flag dirty
 		dirty = True
 	End
 	
-	Method SetSlotColor:Void(name:String, r:Int, g:Int, b:Int)
+	Method SetSlotColor:Void(name:String, r:Float, g:Float, b:Float)
 		' --- change the color of a slot ---
 		'check a slot exists
 		Local slot:= GetSlot(name)
 		If slot = Null Return
 		
-		slot.R = r / 255.0
-		slot.G = g / 255.0
-		slot.B = b / 255.0
+		slot.R = r
+		slot.G = g
+		slot.B = b
 		
 		'flag dirty
 		dirty = True
 	End
 		
-	Method GetSlotColor:Int[] (name:String, world:Bool = False)
+	Method GetSlotColor:Float[] (name:String, world:Bool = False)
 		' --- get color of a particular slot ---
 		If world
 			Local index:= skeleton.FindSlotIndex(name)
@@ -1700,18 +1665,18 @@ Class SpineEntity
 			If slot = Null Return[0, 0, 0]
 			
 			'Local
-			Return[Int(slot.R * 255), Int(slot.G * 255), Int(slot.B * 255)]
+			Return[slot.R, slot.G, slot.B]
 		EndIf
 	End
 	
-	Method GetSlotColor:Void(name:String, rgb:Int[], world:Bool = False)
+	Method GetSlotColor:Void(name:String, rgb:Float[], world:Bool = False)
 		' --- get color of a particular slot ---
 		If world
 			Local index:= skeleton.FindSlotIndex(name)
 			If index = -1
-				rgb[0] = 0
-				rgb[1] = 0
-				rgb[2] = 0
+				rgb[0] = 0.0
+				rgb[1] = 0.0
+				rgb[2] = 0.0
 				Return
 			EndIf
 			
@@ -1723,61 +1688,61 @@ Class SpineEntity
 			'check a slot exists
 			Local slot:= GetSlot(name)
 			If slot = Null
-				rgb[0] = 0
-				rgb[1] = 0
-				rgb[2] = 0
+				rgb[0] = 0.0
+				rgb[1] = 0.0
+				rgb[2] = 0.0
 				Return
 			EndIf
 			
 			'Local
-			rgb[0] = slot.R * 255
-			rgb[1] = slot.G * 255
-			rgb[2] = slot.B * 255
+			rgb[0] = slot.R
+			rgb[1] = slot.G
+			rgb[2] = slot.B
 		EndIf
 	End
 	
-	Method GetSlotColorR:Int(name:String, world:Bool = False)
+	Method GetSlotColorR:Float(name:String, world:Bool = False)
 		' --- get color of a particular slot ---
 		If world
 			Local index:= skeleton.FindSlotIndex(name)
-			If index = -1 Return 0
+			If index = -1 Return 0.0
 			
 			Calculate()
 			Return slotWorldR[index]
 		Else
 			Local slot:= GetSlot(name)
-			If slot = Null Return 0
-			Return slot.R * 255
+			If slot = Null Return 0.0
+			Return slot.R
 		EndIf
 	End
 	
-	Method GetSlotColorG:Int(name:String, world:Bool = False)
+	Method GetSlotColorG:Float(name:String, world:Bool = False)
 		' --- get color of a particular slot ---
 		If world
 			Local index:= skeleton.FindSlotIndex(name)
-			If index = -1 Return 0
+			If index = -1 Return 0.0
 			
 			Calculate()
 			Return slotWorldG[index]
 		Else
 			Local slot:= GetSlot(name)
-			If slot = Null Return 0
-			Return slot.G * 255
+			If slot = Null Return 0.0
+			Return slot.G
 		EndIf
 	End
 	
-	Method GetSlotColorB:Int(name:String, world:Bool = False)
+	Method GetSlotColorB:Float(name:String, world:Bool = False)
 		' --- get color of a particular slot ---
 		If world
 			Local index:= skeleton.FindSlotIndex(name)
-			If index = -1 Return 0
+			If index = -1 Return 0.0
 			
 			Calculate()
 			Return slotWorldB[index]
 		Else
 			Local slot:= GetSlot(name)
-			If slot = Null Return 0
-			Return slot.B * 255
+			If slot = Null Return 0.0
+			Return slot.B
 		EndIf
 	End
 	

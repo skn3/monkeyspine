@@ -394,7 +394,7 @@
       </CursorPos>
     </Document>
   </Files>
-  <CompilerConfig Configuration="debug" BuildMode="run" Target="Desktop_Game_(Glfw2)" />
+  <CompilerConfig Configuration="debug" BuildMode="run" Target="Html5_Game" />
   <Version Major="14" Minor="9" Revision="9" Build="65" ProductName="Untitled product" />
   <PreBuildCommands />
 </JiProj>

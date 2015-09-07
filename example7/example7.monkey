@@ -15,6 +15,8 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Field banana:SpineMojoImageAttachment
 	
+	Field canvas:Canvas
+	
 	Method OnSpineEntityAnimationComplete:Void(entity:SpineEntity, name:String)
 		' --- animation has finished ---
 		Select entity
@@ -30,6 +32,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	Method OnCreate:Int()
 		' --- create the app ---
 		'setup runtime
+		canvas = New Canvas()
 		SetUpdateRate(60)
 		timestamp = Millisecs()
 		
@@ -41,16 +44,17 @@ Class MyApp Extends App Implements SpineEntityCallback
 			#TEST = "custom_attachment"
 			
 			'which mode ?
-			#If TEST = "spineboy"
-			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
-			spineTest.SetAnimation("run", True)
-			spineTest.SetScale(0.4)
-			spineTest.SetSpeed(0.5)
-			
-			#ElseIf TEST = "goblin"
+			#If TEST = "goblin"
 			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
 			spineTest.SetAnimation("walk", True)
 			spineTest.SetSkin("goblin")
+			'spineTest.SetSkin("goblingirl")
+			spineTest.SetScale(1.0)
+			spineTest.SetSpeed(0.2)
+			
+			#ElseIf TEST = "spear"
+			spineTest = LoadMojoSpineEntity("monkey://data/goblins-spear.json")
+			spineTest.SetAnimation("walk", True)
 			'spineTest.SetSkin("goblingirl")
 			spineTest.SetScale(1.0)
 			spineTest.SetSpeed(0.2)
@@ -75,6 +79,10 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_skeleton.json")
 			spineTest.SetAnimation("animation", True)
 			
+			#ElseIf TEST = "skinned_mesh_really_simple"
+			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_really_simple.json")
+			spineTest.SetAnimation("animation", True)
+			
 			#ElseIf TEST = "bounding_boxes"
 			spineTest = LoadMojoSpineEntity("monkey://data/bounding_boxes_skeleton.json")
 			spineTest.SetAnimation("animation", True)
@@ -94,14 +102,14 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
 			spineTest.SetAnimation("run", True)
 			spineTest.SetScale(0.4)
-			spineTest.SetSpeed(0.2)			
+			spineTest.SetSpeed(0.2)
 			
 			#Else
 			Error("no test specified")
 				
 			#EndIf
 			
-			spineTest.SetDebug(False, False)
+			spineTest.SetDebug(True, False)
 			spineTest.SetCallback(Self)
 			spineTest.SetSnapToPixels(False)
 			spineTest.SetIgnoreRootPosition(False)
@@ -118,20 +126,22 @@ Class MyApp Extends App Implements SpineEntityCallback
 	
 	Method OnRender:Int()
 		' --- render the app ---
-		Cls(255, 255, 255)
+		canvas.Clear(0.6, 0.6, 0.6)
+		canvas.SetBlendMode(BlendMode.Alpha)
 
 		'simples! render current item
-		spineTest.Render()
+		spineTest.Render(canvas)
 		
 		'render message
 		If showMessageAlpha > 0.0
-			SetColor(255, 255, 255)
-			SetAlpha(Min(1.0, showMessageAlpha))
-			DrawText(showMessageText, 5, 5)
+			canvas.SetColor(1.0, 1.0, 1.0, Min(1.0, showMessageAlpha))
+			canvas.DrawText(showMessageText, 5, 5)
 		EndIf
 		
 		'SetColor(0, 0, 0)
 		'DrawRect(MouseX(), MouseY(), 32, 32)
+		
+		canvas.Flush()
 		
 		'must alwasy Return
 		Return 0
@@ -167,9 +177,9 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'If spineTest.RectOverlapsSlot(MouseX(), MouseY(), 32, 32, "bounding_slot", True)
 		'If spineTest.PointInsideBoundingBox(MouseX(), MouseY(), SPINE_PRECISION_HULL)
 		If spineTest.PointInside(MouseX(), MouseY(), SPINE_PRECISION_HULL)
-			spineTest.SetColor(255, 0, 0)
+			spineTest.SetColor(1.0, 0.0, 0.0)
 		Else
-			spineTest.SetColor(255, 255, 255)
+			spineTest.SetColor(1.0, 1.0, 1.0)
 		EndIf
 		
 		If MouseDown(MOUSE_LEFT)

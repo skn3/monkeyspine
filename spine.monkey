@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 25
+' - big update to port spine to work with mojo2
 'version 24
 ' - renamed SpineMojoRendererObject to SpineMojoTextureRenderObject
 ' - added SpineMojoImageRenderObject
@@ -86,7 +88,7 @@ Strict
 #SPINE_ATLAS_ROTATE = False'leave false, as support is broken
 
 'core
-Import mojo
+Import mojo2
 Import monkey.map
 Import monkey.boxes
 Import brl.databuffer
