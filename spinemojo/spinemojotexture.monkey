@@ -8,7 +8,7 @@ Class SpineMojoTexture Implements SpineTexture
 	Field _path:String
 	Field _width:Int
 	Field _height:Int
-	Field image:Image
+	Field material:Material
 	Public
 		
 	Method path:String() Property
@@ -23,26 +23,30 @@ Class SpineMojoTexture Implements SpineTexture
 		Return _height
 	End
 	
-	Method Load:Void(path:String)
+	Method Load:Void(path:String, flags:Int = Image.Filter | Image.Mipmap, shader:Shader = Null)
 		_path = path
-		image = mojo.LoadImage(path)
-		If image
-			_width = image.Width()
-			_height = image.Height()
+		
+		'uses default shader when shader = null
+		material = material.Load(path, flags, shader)
+		
+		If material
+			_width = material.Width()
+			_height = material.Height()
 		EndIf
 	End
 	
 	Method Discard:Void()
-		If image
-			image.Discard()
-			image = Null
-			_path = ""
-			_width = 0
-			_height = 0
+		If material
+			material.Destroy()
+			material = Null
 		EndIf
+		
+		_path = ""
+		_width = 0
+		_height = 0
 	End
 	
 	Method Grab:SpineRenderObject(x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
-		Return New SpineMojoTextureRenderObject(image, x, y, width, height, handleX, handleY, rotate)
+		Return New SpineMojoTextureRenderObject(material, x, y, width, height, handleX, handleY, rotate)
 	End
 End

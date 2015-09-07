@@ -45,6 +45,7 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	End
 
 	Method UpdateUVs:Void()
+		Return
 		Local width:Float = RegionU2 - RegionU
 		Local height:Float = RegionV2 - RegionV
 		

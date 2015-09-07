@@ -30,16 +30,15 @@ Class SpineMojoImageRenderObject Implements SpineRenderObject
 	End Method
 	
 	Method New(path:String, handleX:Float = 0.0, handleY:Float = 0.0)
-		Self.image = LoadImage(path)
+		Self.image = Image.Load(path)
 		Self.image.SetHandle(handleX, handleY)
 	End Method
 			
-	Method Draw:Void(verts:Float[])
-		'polys are pre-rotated so we dont need to do it here
-		DrawPoly(verts, image, 0)
+	Method Draw:Void(target:DrawList, verts:Float[], uvs:Float[], count:Int)
+		target.DrawPrimitives(3, count, verts, uvs, image.Material)
 	End
 	
-	Method Draw:Void(x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
-		DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale, 0)
+	Method Draw:Void(target:DrawList,x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
+		target.DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale)
 	End
 End

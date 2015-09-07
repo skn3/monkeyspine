@@ -86,7 +86,7 @@ Strict
 #SPINE_ATLAS_ROTATE = False'leave false, as support is broken
 
 'core
-Import mojo
+Import mojo2
 Import monkey.map
 Import monkey.boxes
 Import brl.databuffer

@@ -10,6 +10,6 @@ Interface SpineRenderObject
 	Method textureHeight:Int() Property
 	
 	'Method Draw:Void(x:Float, y:Float)
-	Method Draw:Void(verts:Float[])
-	Method Draw:Void(x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
+	Method Draw:Void(target:DrawList, verts:Float[], uvs:Float[], count:Int)
+	Method Draw:Void(target:DrawList, x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
 End

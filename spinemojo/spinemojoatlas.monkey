@@ -133,7 +133,7 @@ Class SpineMojoAtlas Implements SpineAtlas
 				region.index = Int(ReadValue(file))
 	
 				'grab the mojo image
-				region.rendererObject = page.texture.Grab(region.x, region.y, region.width, region.height, region.width / 2.0, region.height / 2.0, region.rotate)
+				region.rendererObject = page.texture.Grab(region.x, region.y, region.width, region.height, 0.5, 0.5, region.rotate)
 				
 				'add teh region
 				regions.Insert(region.name, region)

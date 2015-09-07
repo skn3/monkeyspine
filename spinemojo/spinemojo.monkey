@@ -4,7 +4,7 @@ Strict
 Import spine
 
 'mojo imports
-Import mojo
+Import mojo2
 Import brl.filepath
 Import brl.databuffer
 Import monkey.map

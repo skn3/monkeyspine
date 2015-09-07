@@ -7,7 +7,7 @@ Class SpineMojoTextureRenderObject Implements SpineRenderObject
 	Private
 	Field image:Image
 	Field rotate:Bool
-	Field texture:Image
+	Field material:Material
 	Public
 	
 	Method width:Int() Property
@@ -19,49 +19,42 @@ Class SpineMojoTextureRenderObject Implements SpineRenderObject
 	End
 	
 	Method textureWidth:Int() Property
-		Return texture.Width()
+		Return material.Width()
 	End
 	
 	Method textureHeight:Int() Property
-		Return texture.Height()
+		Return material.Height()
 	End
 	
-	Method New(image:Image, x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
+	Method New(material:Material, x:Int, y:Int, width:Int, height:Int, handleX:Float, handleY:Float, rotate:Bool)
 		Self.rotate = rotate
-		texture = image
+		Self.material = material
 		
+		'create an image so we can use it
 		#If SPINE_ATLAS_ROTATE
 		If rotate
-			Self.image = image.GrabImage(x, y, height, width)
-			Self.image.SetHandle(handleY, handleX)
+			image = New Image(material, x, y, height, width, handleY, handleX)
 		Else
-			Self.image = image.GrabImage(x, y, width, height)
-			Self.image.SetHandle(handleX, handleY)
+			image = New Image(material, x, y, width, height, handleX, handleY)
 		EndIf
 		#Else
-		Self.image = image.GrabImage(x, y, width, height)
-		Self.image.SetHandle(handleX, handleY)
+		image = New Image(material, x, y, width, height, handleX, handleY)
 		#EndIf
 	End Method
 			
-	Method Draw:Void(verts:Float[])
-		'polys are pre-rotated so we dont need to do it here
-		#If SPINE_ATLAS_ROTATE
-		DrawPoly(verts, texture, 0)
-		#Else
-		DrawPoly(verts, image, 0)
-		#EndIf
+	Method Draw:Void(target:DrawList, verts:Float[], uvs:Float[], count:Int)
+		target.DrawPrimitives(3, count, verts, uvs, material)
 	End
 	
-	Method Draw:Void(x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
+	Method Draw:Void(target:DrawList, x:Float, y:Float, angle:Float, scaleX:Float, scaleY:Float, atlasScale:Float)
 		#If SPINE_ATLAS_ROTATE
 		If rotate
-			DrawImage(image, x, y, angle - 90, scaleX * atlasScale, scaleY * atlasScale, 0)
+			target.DrawImage(image, x, y, angle - 90, scaleX * atlasScale, scaleY * atlasScale)
 		Else
-			DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale, 0)
+			target.DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale)
 		EndIf
 		#Else
-		DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale, 0)
+		target.DrawImage(image, x, y, angle, scaleX * atlasScale, scaleY * atlasScale)
 		#EndIf
 	End
 End
