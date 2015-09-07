@@ -32,7 +32,6 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	Field Triangles:Int[]
 
 	Field Path:String
-	Field RenderObject:SpineRenderObject
 
 	'Nonessential.
 	Field Edges:Int[]
@@ -45,7 +44,6 @@ Class SpineSkinnedMeshAttachment Extends SpineAttachment
 	End
 
 	Method UpdateUVs:Void()
-		Return
 		Local width:Float = RegionU2 - RegionU
 		Local height:Float = RegionV2 - RegionV
 		

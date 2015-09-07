@@ -41,19 +41,20 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "goblin"
+			#TEST = "custom_attachment"
 			
 			'which mode ?
-			#If TEST = "spineboy"
-			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
-			spineTest.SetAnimation("run", True)
-			spineTest.SetScale(0.4)
-			spineTest.SetSpeed(0.5)
-			
-			#ElseIf TEST = "goblin"
+			#If TEST = "goblin"
 			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
 			spineTest.SetAnimation("walk", True)
 			spineTest.SetSkin("goblin")
+			'spineTest.SetSkin("goblingirl")
+			spineTest.SetScale(1.0)
+			spineTest.SetSpeed(0.2)
+			
+			#ElseIf TEST = "spear"
+			spineTest = LoadMojoSpineEntity("monkey://data/goblins-spear.json")
+			spineTest.SetAnimation("walk", True)
 			'spineTest.SetSkin("goblingirl")
 			spineTest.SetScale(1.0)
 			spineTest.SetSpeed(0.2)
@@ -78,6 +79,10 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_skeleton.json")
 			spineTest.SetAnimation("animation", True)
 			
+			#ElseIf TEST = "skinned_mesh_really_simple"
+			spineTest = LoadMojoSpineEntity("monkey://data/skinned_mesh_really_simple.json")
+			spineTest.SetAnimation("animation", True)
+			
 			#ElseIf TEST = "bounding_boxes"
 			spineTest = LoadMojoSpineEntity("monkey://data/bounding_boxes_skeleton.json")
 			spineTest.SetAnimation("animation", True)
@@ -97,7 +102,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
 			spineTest.SetAnimation("run", True)
 			spineTest.SetScale(0.4)
-			spineTest.SetSpeed(0.2)			
+			spineTest.SetSpeed(0.2)
 			
 			#Else
 			Error("no test specified")

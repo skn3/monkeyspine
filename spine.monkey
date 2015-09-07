@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 25
+' - big update to port spine to work with mojo2
 'version 24
 ' - renamed SpineMojoRendererObject to SpineMojoTextureRenderObject
 ' - added SpineMojoImageRenderObject

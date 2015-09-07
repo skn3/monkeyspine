@@ -12,6 +12,7 @@ End
 'Class to wrap spine
 Class SpineEntity
 	Global tempVertices:Float[8]
+	Global tempSnapToIntTriangles:Float[]
 	
 	Field atlas:SpineAtlas
 	Field data:SpineSkeletonData
@@ -36,9 +37,6 @@ Class SpineEntity
 	Field snapToPixels:Bool = False
 	Field ignoreRootPosition:Bool = False
 	
-	Field renderTriangleVerts:Float[]
-	Field renderTriangleUVs:Float[]
-	
 	#If SPINE_DEBUG_RENDER = True
 	Field debugHull:Bool = False
 	Field debugMesh:Bool = False
@@ -58,8 +56,9 @@ Class SpineEntity
 	Field slotWorldBounding:Float[][]
 	Field slotWorldVertices:Float[][]
 	Field slotWorldVerticesLength:Int[]
-	Field slotWorldTriangles:Float[][]
-	Field slotWorldTrianglesLength:Int[]
+	Field slotWorldTriangleVerts:Float[][]
+	Field slotWorldTriangleUVs:Float[][]
+	Field slotWorldTriangleTotals:Int[]
 	Field slotWorldHull:Float[][]
 	Field slotWorldHullLength:Int[]
 	Field slotWorldX:Float[]
@@ -111,17 +110,25 @@ Class SpineEntity
 		Local index:Int
 		Local total:= data.Slots.Length()
 		slotWorldBounding = New Float[total][]
+		
 		slotWorldVertices = New Float[total][]
 		slotWorldVerticesLength = New Int[total]
-		slotWorldTriangles = New Float[total][]
-		slotWorldTrianglesLength = New Int[total]
+		
+		slotWorldTriangleVerts = New Float[total][]
+		slotWorldTriangleUVs = New Float[total][]
+		slotWorldTriangleTotals = New Int[total]
+		
 		slotWorldHull = New Float[total][]
 		slotWorldHullLength = New Int[total]
+		
 		slotWorldX = New Float[total]
 		slotWorldY = New Float[total]
+		
 		slotWorldRotation = New Float[total]
+		
 		slotWorldScaleX = New Float[total]
 		slotWorldScaleY = New Float[total]
+		
 		slotWorldR = New Float[total]
 		slotWorldG = New Float[total]
 		slotWorldB = New Float[total]
@@ -186,9 +193,12 @@ Class SpineEntity
 			Local attachment:SpineAttachment
 			Local bone:SpineBone
 			Local totalSlots:= skeleton.Slots.Length()
+			Local worldTriangleOffset:Int
+			Local vertIndex:Int
+			Local vertOffset:Int
 			
-			For Local index:= 0 Until totalSlots
-				slot = skeleton.Slots[index]
+			For Local slotIndex:= 0 Until totalSlots
+				slot = skeleton.Slots[slotIndex]
 				attachment = slot.Attachment
 				
 				If attachment = Null Continue
@@ -200,12 +210,12 @@ Class SpineEntity
 						
 						'vertices
 						length = box.Vertices.Length()
-						slotWorldVerticesLength[index] = length
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						box.ComputeWorldVertices(slot.Bone, slotWorldVertices[index])
+						slotWorldVerticesLength[slotIndex] = length
+						If length > slotWorldVertices[slotIndex].Length() slotWorldVertices[slotIndex] = New Float[length]
+						box.ComputeWorldVertices(slot.Bone, slotWorldVertices[slotIndex])
 						
 						'hull
-						OnCalculateWorldHull(index, length)
+						OnCalculateWorldHull(slotIndex, length)
 						
 					Case SpineAttachmentType.Region
 						Local region:= SpineRegionAttachment(attachment)
@@ -213,75 +223,94 @@ Class SpineEntity
 						
 						'vertices
 						length = 8
-						slotWorldVerticesLength[index] = length
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						region.ComputeWorldVertices(slot.Bone, slotWorldVertices[index])
+						slotWorldVerticesLength[slotIndex] = length
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
+						EndIf
+						
+						region.ComputeWorldVertices(slot.Bone, slotWorldVertices[slotIndex])
 						
 						'get world properties
-						slotWorldX[index] = bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
-						slotWorldY[index] = bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
-						slotWorldRotation[index] = bone.WorldRotation + region.Rotation
-						slotWorldScaleX[index] = bone.WorldScaleX * region.ScaleX
-						slotWorldScaleY[index] = bone.WorldScaleY * region.ScaleY
+						slotWorldX[slotIndex] = bone.WorldX + region.X * bone.M00 + region.Y * bone.M01
+						slotWorldY[slotIndex] = bone.WorldY + region.X * bone.M10 + region.Y * bone.M11
+						slotWorldRotation[slotIndex] = bone.WorldRotation + region.Rotation
+						slotWorldScaleX[slotIndex] = bone.WorldScaleX * region.ScaleX
+						slotWorldScaleY[slotIndex] = bone.WorldScaleY * region.ScaleY
 		
 						'do we need to flip it?
 						If skeleton.FlipX
-							slotWorldScaleX[index] = -slotWorldScaleX[index]
-							slotWorldRotation[index] = -slotWorldRotation[index]
+							slotWorldScaleX[slotIndex] = -slotWorldScaleX[slotIndex]
+							slotWorldRotation[slotIndex] = -slotWorldRotation[slotIndex]
 						EndIf
 						If skeleton.FlipY
-							slotWorldScaleY[index] = -slotWorldScaleY[index]
-							slotWorldRotation[index] = -slotWorldRotation[index]
+							slotWorldScaleY[slotIndex] = -slotWorldScaleY[slotIndex]
+							slotWorldRotation[slotIndex] = -slotWorldRotation[slotIndex]
 						EndIf
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
 						length = 8
-						slotWorldHullLength[index] = length
-						If length > slotWorldHull[index].Length() slotWorldHull[index] = New Float[length]
-						slotWorldHull[index][0] = slotWorldVertices[index][0]
-						slotWorldHull[index][1] = slotWorldVertices[index][1]
-						slotWorldHull[index][2] = slotWorldVertices[index][2]
-						slotWorldHull[index][3] = slotWorldVertices[index][3]
+						slotWorldHullLength[slotIndex] = length
+						If length > slotWorldHull[slotIndex].Length() slotWorldHull[slotIndex] = New Float[length]
+						slotWorldHull[slotIndex][0] = slotWorldVertices[slotIndex][0]
+						slotWorldHull[slotIndex][1] = slotWorldVertices[slotIndex][1]
+						slotWorldHull[slotIndex][2] = slotWorldVertices[slotIndex][2]
+						slotWorldHull[slotIndex][3] = slotWorldVertices[slotIndex][3]
 						
-						slotWorldHull[index][4] = slotWorldVertices[index][4]
-						slotWorldHull[index][5] = slotWorldVertices[index][5]
-						slotWorldHull[index][6] = slotWorldVertices[index][6]
-						slotWorldHull[index][7] = slotWorldVertices[index][7]
+						slotWorldHull[slotIndex][4] = slotWorldVertices[slotIndex][4]
+						slotWorldHull[slotIndex][5] = slotWorldVertices[slotIndex][5]
+						slotWorldHull[slotIndex][6] = slotWorldVertices[slotIndex][6]
+						slotWorldHull[slotIndex][7] = slotWorldVertices[slotIndex][7]
 						
 					Case SpineAttachmentType.Mesh
 						Local mesh:= SpineMeshAttachment(attachment)
 						
 						'vertices
 						length = mesh.Vertices.Length()
-						slotWorldVerticesLength[index] = length
+						slotWorldVerticesLength[slotIndex] = length
 						If length = 0
-							slotWorldTrianglesLength[index] = 0
+							slotWorldTriangleTotals[slotIndex] = 0
 							Continue
 						EndIf
 						
-						If length > slotWorldVertices[index].Length() slotWorldVertices[index] = New Float[length]
-						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
+						EndIf
+						mesh.ComputeWorldVertices(slot, slotWorldVertices[slotIndex])
 						
 						'triangles
-						length = (mesh.Triangles.Length() / 3) * 12
-						slotWorldTrianglesLength[index] = length
-						If length > slotWorldTriangles[index].Length() slotWorldTriangles[index] = New Float[length]
+						slotWorldTriangleTotals[slotIndex] = (mesh.Triangles.Length() / 3)
 						
-						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
-						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
-						#EndIf
+						length = slotWorldTriangleTotals[slotIndex] * 6
+						
+						If length > slotWorldTriangleVerts[slotIndex].Length()
+							slotWorldTriangleVerts[slotIndex] = New Float[length]
+							slotWorldTriangleUVs[slotIndex] = New Float[length]
+						EndIf
+												
+						worldTriangleOffset = 0
+						For Local triangleIndex:= 0 Until slotWorldTriangleTotals[slotIndex] * 3 Step 3
+							'build triangle verts
+							For vertOffset = 0 Until 3
+								vertIndex = mesh.Triangles[triangleIndex + vertOffset] * 2
+				
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset] = slotWorldVertices[slotIndex][vertIndex]
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset + 1] = slotWorldVertices[slotIndex][vertIndex + 1]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset] = mesh.UVs[vertIndex]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset + 1] = mesh.UVs[vertIndex + 1]
+							
+								worldTriangleOffset += 2
+							Next
+						Next
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
 						'If slot.Data.Name = "head" DebugStop()
-						OnCalculateWorldHull(index, mesh.HullLength)
+						OnCalculateWorldHull(slotIndex, mesh.HullLength)
 						
 					Case SpineAttachmentType.SkinnedMesh
 						Local mesh:= SpineSkinnedMeshAttachment(attachment)
@@ -298,36 +327,48 @@ Class SpineEntity
 							length += 2
 						Wend
 
-						slotWorldVerticesLength[index] = length
+						slotWorldVerticesLength[slotIndex] = length
 						If length = 0
-							slotWorldTrianglesLength[index] = 0
+							slotWorldTriangleTotals[slotIndex] = 0
 							Continue
 						EndIf
 						
-						If length > slotWorldVertices[index].Length()
-							slotWorldVertices[index] = New Float[length]
+						If length > slotWorldVertices[slotIndex].Length()
+							slotWorldVertices[slotIndex] = New Float[length]
 						EndIf
-						mesh.ComputeWorldVertices(slot, slotWorldVertices[index])
+						mesh.ComputeWorldVertices(slot, slotWorldVertices[slotIndex])
 						
 						'triangles
-						length = (mesh.Triangles.Length() / 3) * 12
-						slotWorldTrianglesLength[index] = length
+						slotWorldTriangleTotals[slotIndex] = (mesh.Triangles.Length() / 3)
 						
-						If length > slotWorldTriangles[index].Length()
-							slotWorldTriangles[index] = New Float[length]
+						length = slotWorldTriangleTotals[slotIndex] * 6
+						
+						If length > slotWorldTriangleVerts[slotIndex].Length()
+							slotWorldTriangleVerts[slotIndex] = New Float[length]
+							slotWorldTriangleUVs[slotIndex] = New Float[length]
 						EndIf
-						
-						#If SPINE_ATLAS_ROTATE
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.UVs, mesh.RenderObject)
-						#Else
-						OnCalculateWorldTriangles(slotWorldTriangles[index], slotWorldVertices[index], mesh.Triangles, mesh.RegionUVs, mesh.RenderObject)
-						#EndIf
+												
+						worldTriangleOffset = 0
+						For Local triangleIndex:= 0 Until slotWorldTriangleTotals[slotIndex] * 3 Step 3
+							'build triangle verts
+							For vertOffset = 0 Until 3
+								vertIndex = mesh.Triangles[triangleIndex + vertOffset] * 2
+				
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset] = slotWorldVertices[slotIndex][vertIndex]
+								slotWorldTriangleVerts[slotIndex][worldTriangleOffset + 1] = slotWorldVertices[slotIndex][vertIndex + 1]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset] = mesh.UVs[vertIndex]
+								slotWorldTriangleUVs[slotIndex][worldTriangleOffset + 1] = mesh.UVs[vertIndex + 1]
+								'DebugStop()
+							
+								worldTriangleOffset += 2
+							Next
+						Next
 						
 						'color
-						OnCalculateWorldColor(slot, index)
+						OnCalculateWorldColor(slot, slotIndex)
 						
 						'hull
-						OnCalculateWorldHull(index, mesh.HullLength)
+						OnCalculateWorldHull(slotIndex, mesh.HullLength)
 				End
 			Next
 			
@@ -358,30 +399,6 @@ Class SpineEntity
 		Local vertices:= slotWorldVertices[index]
 		For Local vertIndex:= 0 Until hullLength
 			hull[vertIndex] = vertices[vertIndex]
-		Next
-	End
-	
-	Method OnCalculateWorldTriangles:Void(out:Float[], vertices:Float[], triangles:Int[], uvs:Float[], rendererObject:SpineRenderObject)
-		Local vertIndex:Int
-		Local total:= triangles.Length()
-		Local triangleOffset:Int
-		Local vertOffset:Int
-		
-		For Local triangleIndex:= 0 Until total Step 3
-			'build triangle verts
-			For vertIndex = 0 Until 3
-				vertOffset = triangles[triangleIndex + vertIndex] * 2
-				
-				'x,y
-				out[triangleOffset] = vertices[vertOffset]
-				out[triangleOffset + 1] = vertices[vertOffset + 1]
-							
-				'as we are taking a portion of the Material texturte space we have to calculate properly
-				out[triangleOffset + 2] = uvs[vertOffset] / (Float(rendererObject.textureWidth) / rendererObject.width)
-				out[triangleOffset + 3] = uvs[vertOffset + 1] / (Float(rendererObject.textureHeight) / rendererObject.height)
-							
-				triangleOffset += 4
-			Next
 		Next
 	End
 	
@@ -504,14 +521,10 @@ Class SpineEntity
 		' --- render the entity ---
 		Local index:Int
 		Local subIndex:Int
-		Local triangleIndex:Int
-		Local triangleTotal:Int
 		Local slot:SpineSlot
 		Local attachment:SpineAttachment
-		Local rendererObject:SpineRenderObject
 		Local total:Int
 		Local length:Int
-		Local primIndex:Int
 				
 		'calculate again just incase something has changed
 		'this wont do any calculation if the entity has not been flagged as dirty!
@@ -532,74 +545,7 @@ Class SpineEntity
 				
 			'draw it
 			Select attachment.Type
-				Case SpineAttachmentType.Mesh
-					Continue
-					Local mesh:= SpineMeshAttachment(attachment)
-					rendererObject = mesh.RenderObject
-					
-					'apply color
-					target.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index], slotWorldAlpha[index])
-					
-					'preprate render trinagles array
-					'this allows us to fill all vert/texcoords and render at once
-					length = slotWorldTriangles[index].Length()
-					triangleTotal = length / 12
-					If renderTriangleVerts.Length < triangleTotal * 6
-						renderTriangleVerts = New Float[triangleTotal * 6]
-						renderTriangleUVs = New Float[triangleTotal * 6]
-					EndIf
-					
-					'render
-					primIndex = 0
-					If snapToPixels
-						For triangleIndex = 0 Until length Step 12
-							'fill verts
-							'...but snap to int pixels
-							renderTriangleVerts[primIndex + 0] = Int(slotWorldTriangles[index][triangleIndex + 0])
-							renderTriangleVerts[primIndex + 1] = Int(slotWorldTriangles[index][triangleIndex + 1])
-							renderTriangleVerts[primIndex + 2] = Int(slotWorldTriangles[index][triangleIndex + 4])
-							renderTriangleVerts[primIndex + 3] = Int(slotWorldTriangles[index][triangleIndex + 5])
-							renderTriangleVerts[primIndex + 4] = Int(slotWorldTriangles[index][triangleIndex + 8])
-							renderTriangleVerts[primIndex + 5] = Int(slotWorldTriangles[index][triangleIndex + 9])
-							
-							'fill uvs
-							renderTriangleUVs[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 2]
-							renderTriangleUVs[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 3]
-							renderTriangleUVs[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 6]
-							renderTriangleUVs[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 7]
-							renderTriangleUVs[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 10]
-							renderTriangleUVs[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 11]
-								
-							primIndex += 6
-						Next
-					Else						
-						For triangleIndex = 0 Until length Step 12
-							'fill verts
-							renderTriangleVerts[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 0]
-							renderTriangleVerts[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 1]
-							renderTriangleVerts[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 4]
-							renderTriangleVerts[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 5]
-							renderTriangleVerts[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 8]
-							renderTriangleVerts[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 9]
-							
-							'fill uvs
-							renderTriangleUVs[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 2]
-							renderTriangleUVs[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 3]
-							renderTriangleUVs[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 6]
-							renderTriangleUVs[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 7]
-							renderTriangleUVs[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 10]
-							renderTriangleUVs[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 11]
-							
-							'update offset
-							primIndex += 6
-						Next
-					EndIf
-					
-					'render all as batch
-					rendererObject.Draw(target, renderTriangleVerts, renderTriangleUVs, triangleTotal)
-					
 				Case SpineAttachmentType.Region
-					Continue
 					Local region:= SpineRegionAttachment(attachment)
 					
 					'apply color
@@ -612,70 +558,24 @@ Class SpineEntity
 						region.RenderObject.Draw(target, slotWorldX[index], slotWorldY[index], slotWorldRotation[index], slotWorldScaleX[index], slotWorldScaleY[index], Self.atlasScale)
 					EndIf
 					
-				Case SpineAttachmentType.SkinnedMesh
-					Local mesh:= SpineSkinnedMeshAttachment(attachment)
-					rendererObject = mesh.RenderObject
-					
+				Case SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh
 					'apply color
 					target.SetColor(slotWorldR[index], slotWorldG[index], slotWorldB[index], slotWorldAlpha[index])
 					
-					'preprate render trinagles array
-					'this allows us to fill all vert/texcoords and render at once
-					length = slotWorldTriangles[index].Length()
-					triangleTotal = length / 12
-					If renderTriangleVerts.Length < triangleTotal * 6
-						renderTriangleVerts = New Float[triangleTotal * 6]
-						renderTriangleUVs = New Float[triangleTotal * 6]
-					EndIf
-					
-					'render
-					primIndex = 0
-					If snapToPixels
-						For triangleIndex = 0 Until length Step 12
-							'fill verts
-							'...but snap to int pixels
-							renderTriangleVerts[primIndex + 0] = Int(slotWorldTriangles[index][triangleIndex + 0])
-							renderTriangleVerts[primIndex + 1] = Int(slotWorldTriangles[index][triangleIndex + 1])
-							renderTriangleVerts[primIndex + 2] = Int(slotWorldTriangles[index][triangleIndex + 4])
-							renderTriangleVerts[primIndex + 3] = Int(slotWorldTriangles[index][triangleIndex + 5])
-							renderTriangleVerts[primIndex + 4] = Int(slotWorldTriangles[index][triangleIndex + 8])
-							renderTriangleVerts[primIndex + 5] = Int(slotWorldTriangles[index][triangleIndex + 9])
-						
-							'fill uvs
-							renderTriangleUVs[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 2]
-							renderTriangleUVs[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 3]
-							renderTriangleUVs[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 6]
-							renderTriangleUVs[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 7]
-							renderTriangleUVs[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 10]
-							renderTriangleUVs[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 11]
-							
-							primIndex += 6
-						Next
-					Else
-						For triangleIndex = 0 Until length Step 12
-							'fill verts
-							renderTriangleVerts[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 0]
-							renderTriangleVerts[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 1]
-							renderTriangleVerts[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 4]
-							renderTriangleVerts[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 5]
-							renderTriangleVerts[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 8]
-							renderTriangleVerts[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 9]
-						
-							'fill uvs
-							renderTriangleUVs[primIndex + 0] = slotWorldTriangles[index][triangleIndex + 2]
-							renderTriangleUVs[primIndex + 1] = slotWorldTriangles[index][triangleIndex + 3]
-							renderTriangleUVs[primIndex + 2] = slotWorldTriangles[index][triangleIndex + 6]
-							renderTriangleUVs[primIndex + 3] = slotWorldTriangles[index][triangleIndex + 7]
-							renderTriangleUVs[primIndex + 4] = slotWorldTriangles[index][triangleIndex + 10]
-							renderTriangleUVs[primIndex + 5] = slotWorldTriangles[index][triangleIndex + 11]
-						
-							'update offset
-							primIndex += 6
-						Next
-					EndIf
-					
 					'render all as batch
-					rendererObject.Draw(target, renderTriangleVerts, renderTriangleUVs, triangleTotal)
+					If snapToPixels
+						'need to make int versions of triangle verts
+						If tempSnapToIntTriangles.Length < slotWorldTriangleVerts[index].Length
+							tempSnapToIntTriangles = New Float[slotWorldTriangleVerts[index].Length]
+						EndIf
+						For Local snapIndex:= 0 Until slotWorldTriangleVerts[index].Length
+							tempSnapToIntTriangles[snapIndex] = Int(slotWorldTriangleVerts[index][snapIndex])
+						Next
+						
+						attachment.RenderObject.Draw(target, tempSnapToIntTriangles, slotWorldTriangleUVs[index], slotWorldTriangleTotals[index])
+					Else
+						attachment.RenderObject.Draw(target, slotWorldTriangleVerts[index], slotWorldTriangleUVs[index], slotWorldTriangleTotals[index])
+					EndIf
 					
 			End
 		Next
@@ -704,20 +604,20 @@ Class SpineEntity
 				Case SpineAttachmentType.BoundingBox, SpineAttachmentType.Mesh, SpineAttachmentType.SkinnedMesh, SpineAttachmentType.Region
 					'mesh
 					If debugMesh
-						length = slotWorldTrianglesLength[index]
+						length = slotWorldTriangleTotals[index]
 						If length > 0
 							target.SetColor(0.0, (1.0 / 255) * 229, 1.0)
 							If snapToPixels
-								For subIndex = 0 Until length Step 12
-									target.DrawLine(Int(slotWorldTriangles[index][subIndex]), Int(slotWorldTriangles[index][subIndex + 1]), Int(slotWorldTriangles[index][subIndex + 4]), Int(slotWorldTriangles[index][subIndex + 5]))
-									target.DrawLine(Int(slotWorldTriangles[index][subIndex + 4]), Int(slotWorldTriangles[index][subIndex + 5]), Int(slotWorldTriangles[index][subIndex + 8]), Int(slotWorldTriangles[index][subIndex + 9]))
-									target.DrawLine(Int(slotWorldTriangles[index][subIndex + 8]), Int(slotWorldTriangles[index][subIndex + 9]), Int(slotWorldTriangles[index][subIndex]), Int(slotWorldTriangles[index][subIndex + 1]))
+								For subIndex = 0 Until length Step 6
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex]), Int(slotWorldTriangleVerts[index][subIndex + 1]), Int(slotWorldTriangleVerts[index][subIndex + 2]), Int(slotWorldTriangleVerts[index][subIndex + 3]))
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex + 2]), Int(slotWorldTriangleVerts[index][subIndex + 3]), Int(slotWorldTriangleVerts[index][subIndex + 4]), Int(slotWorldTriangleVerts[index][subIndex + 5]))
+									target.DrawLine(Int(slotWorldTriangleVerts[index][subIndex + 4]), Int(slotWorldTriangleVerts[index][subIndex + 5]), Int(slotWorldTriangleVerts[index][subIndex]), Int(slotWorldTriangleVerts[index][subIndex + 1]))
 								Next
 							Else
-								For subIndex = 0 Until length Step 12
-									target.DrawLine(slotWorldTriangles[index][subIndex], slotWorldTriangles[index][subIndex + 1], slotWorldTriangles[index][subIndex + 4], slotWorldTriangles[index][subIndex + 5])
-									target.DrawLine(slotWorldTriangles[index][subIndex + 4], slotWorldTriangles[index][subIndex + 5], slotWorldTriangles[index][subIndex + 8], slotWorldTriangles[index][subIndex + 9])
-									target.DrawLine(slotWorldTriangles[index][subIndex + 8], slotWorldTriangles[index][subIndex + 9], slotWorldTriangles[index][subIndex], slotWorldTriangles[index][subIndex + 1])
+								For subIndex = 0 Until length Step 6
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex], slotWorldTriangleVerts[index][subIndex + 1], slotWorldTriangleVerts[index][subIndex + 2], slotWorldTriangleVerts[index][subIndex + 3])
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex + 2], slotWorldTriangleVerts[index][subIndex + 3], slotWorldTriangleVerts[index][subIndex + 4], slotWorldTriangleVerts[index][subIndex + 5])
+									target.DrawLine(slotWorldTriangleVerts[index][subIndex + 4], slotWorldTriangleVerts[index][subIndex + 5], slotWorldTriangleVerts[index][subIndex], slotWorldTriangleVerts[index][subIndex + 1])
 								Next
 							EndIf
 						EndIf
