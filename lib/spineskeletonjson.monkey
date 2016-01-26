@@ -31,68 +31,69 @@ Class SpineSkeletonJson
 	End
 	
 	Method ReadSkeletonData:SpineSkeletonData()
-		'read 
+		'read
 		Local skeletonData:SpineSkeletonData = New SpineSkeletonData
 		skeletonData.Name = SpineExtractFilenameWithoutExtension(file.path)
 
-		Local jsonRoot:= JSONObject(JSONData.ReadJSON(file.ReadAll()))
+		Local jsonRoot:= JsonObject(file.ReadAll())
 		If jsonRoot = Null Throw New SpineException("Invalid JSON.")
 
-		Local jsonGroupArray:JSONArray
-		Local jsonGroupObject:JSONObject
+		Local jsonGroupArray:JsonArray
+		Local jsonGroupObject:JsonObject
+		Local jsonGroupIndex:Int
 		Local jsonName:String
-		Local jsonObjectDataItem:JSONDataItem
-		Local jsonObject:JSONObject
-		Local jsonItem:JSONDataItem
-		Local jsonChildArray:JSONArray
+		Local jsonObject:JsonObject
+		Local jsonItem:JsonValue
+		Local jsonChildArray:JsonArray
+		Local jsonChildIndex:Int
 		
 		Local boneName:String
 		Local boneData:SpineBoneData
-
+		
 		'Skeleton.
-		jsonItem = jsonRoot.GetItem("skeleton")
+		jsonItem = jsonRoot.Get("skeleton")
 		If jsonItem <> Null
-			jsonObject = JSONObject(jsonItem)
-			skeletonData.Hash = jsonObject.GetItem("hash", "")
-			skeletonData.Version = jsonObject.GetItem("version", "")
-			skeletonData.Width = jsonObject.GetItem("width", 0.0)
-			skeletonData.Height = jsonObject.GetItem("height", 0.0)
+			jsonObject = JsonObject(jsonItem)
+			skeletonData.Hash = GetJsonString(jsonObject, "hash", "")
+			skeletonData.Version = GetJsonString(jsonObject, "version", "")
+			skeletonData.Width = GetJsonFloat(jsonObject, "width", 0.0)
+			skeletonData.Height = GetJsonFloat(jsonObject, "height", 0.0)
 		EndIf
 		
 		'Bones.
-		jsonGroupArray = JSONArray(jsonRoot.GetItem("bones"))
+		jsonGroupArray = JsonArray(jsonRoot.Get("bones"))
 		If jsonGroupArray <> Null
 			Local boneParentData:SpineBoneData
 			
 			'iterate over bone objects
-			For jsonObjectDataItem = EachIn jsonGroupArray
-				jsonObject = JSONObject(jsonObjectDataItem)
+			For jsonGroupIndex = 0 Until jsonGroupArray.Length
+				jsonObject = JsonObject(jsonGroupArray.Get(jsonGroupIndex))
 				If jsonObject = Null Continue
 				
 				boneParentData = Null
 				
-				jsonItem = jsonObject.GetItem("parent")
+				jsonItem = jsonObject.Get("parent");
 				If jsonItem <> Null
-					boneName = jsonItem.ToString()
+					boneName = jsonItem.StringValue()
 					boneParentData = skeletonData.FindBone(boneName)
 					If boneParentData = Null Throw New SpineException("Parent not:bone found: " + boneName)
 				EndIf
 				
-				boneData = New SpineBoneData(jsonObject.GetItem("name", ""), boneParentData)
-				boneData.Length = jsonObject.GetItem("length", 0.0) * Scale
-				boneData.X = jsonObject.GetItem("x", 0.0) * Scale
-				boneData.Y = jsonObject.GetItem("y", 0.0) * Scale
-				boneData.Rotation = jsonObject.GetItem("rotation", 0.0)
-				boneData.ScaleX = jsonObject.GetItem("scaleX", 1.0)
-				boneData.ScaleY = jsonObject.GetItem("scaleY", 1.0)
-				boneData.InheritScale = GetBool(jsonObject, "inheritScale", True)
-				boneData.InheritRotation = GetBool(jsonObject, "inheirtRotation", True)
+				boneData = New SpineBoneData(GetJsonString(jsonObject, "name", ""), boneParentData)
+				boneData.Length = GetJsonFloat(jsonObject, "length", 0.0) * Scale
+				boneData.X = GetJsonFloat(jsonObject, "x", 0.0) * Scale
+				boneData.Y = GetJsonFloat(jsonObject, "y", 0.0) * Scale
+				boneData.Rotation = GetJsonFloat(jsonObject, "rotation", 0.0)
+				boneData.ScaleX = GetJsonFloat(jsonObject, "scaleX", 1.0)
+				boneData.ScaleY = GetJsonFloat(jsonObject, "scaleY", 1.0)
+				boneData.InheritScale = GetJsonBool(jsonObject, "inheritScale", True)
+				boneData.InheritRotation = GetJsonBool(jsonObject, "inheirtRotation", True)
 				skeletonData.AddBone(boneData)
 			Next
 		EndIf
 
 		'IK constraints.
-		jsonGroupArray = JSONArray(jsonRoot.GetItem("ik"))
+		jsonGroupArray = JsonArray(jsonRoot.Get("ik"))
 		If jsonGroupArray <> Null
 			Local ikConstraintData:SpineIkConstraintData
 			Local targetName:String
@@ -100,16 +101,18 @@ Class SpineSkeletonJson
 			Local bones:SpineBoneData[10]
 			Local bonesCount:Int
 			
-			For jsonObjectDataItem = EachIn jsonGroupArray
-				jsonObject = JSONObject(jsonObjectDataItem)
+			For jsonGroupIndex = 0 Until jsonGroupArray.Length
+				jsonObject = JsonObject(jsonGroupArray.Get(jsonGroupIndex))
 				If jsonObject = Null Continue
 				
-				ikConstraintData = New SpineIkConstraintData(jsonObject.GetItem("name", ""))
+				ikConstraintData = New SpineIkConstraintData(GetJsonString(jsonObject, "name", ""))
 							
-				jsonChildArray = JSONArray(jsonObject.GetItem("bones"))
+				jsonChildArray = JsonArray(jsonObject.Get("bones"))
 				bonesCount = 0
 				If jsonChildArray <> Null
-					For boneName = EachIn jsonChildArray
+					For jsonChildIndex = 0 Until jsonChildArray.Length
+						boneName = jsonChildArray.Get(jsonChildIndex).StringValue()
+
 						boneData = skeletonData.FindBone(boneName)
 						If boneData = Null Throw New SpineException("IK bone found: " + boneName)
 						
@@ -121,12 +124,12 @@ Class SpineSkeletonJson
 				
 				If bonesCount > 0 ikConstraintData.Bones = bones[ .. bonesCount]
 			
-				targetName = jsonObject.GetItem("target", "")
+				targetName = GetJsonString(jsonObject, "target", "")
 				ikConstraintData.Target = skeletonData.FindBone(targetName)
 				If ikConstraintData.Target = Null Throw New SpineException("Target bone not found: " + targetName)
 				
 				'ikConstraintData.bendDirection = GetBoolean(ikMap, "bendPositive", True) ? 1 : -1
-				If GetBool(jsonObject, "bendPositive", True)
+				If GetJsonBool(jsonObject, "bendPositive", True)
 					ikConstraintData.BendDirection = 1
 				Else
 					ikConstraintData.BendDirection = -1
@@ -139,36 +142,39 @@ Class SpineSkeletonJson
 		Local slotName:String
 		Local slotData:SpineSlotData
 		Local color:String
-		jsonGroupArray = JSONArray(jsonRoot.GetItem("slots"))
+		jsonGroupArray = JsonArray(jsonRoot.Get("slots"))
 		If jsonGroupArray <> Null
 			'iterate over bone objects
-			For jsonObjectDataItem = EachIn jsonGroupArray
-				'convert to correct format
-				jsonObject = JSONObject(jsonObjectDataItem)
+			For jsonGroupIndex = 0 Until jsonGroupArray.Length
+				jsonObject = JsonObject(jsonGroupArray.Get(jsonGroupIndex))
 				If jsonObject = Null Continue
 				
 				'process this object
-				slotName = jsonObject.GetItem("name", "")
-				boneName = jsonObject.GetItem("bone","")
+				slotName = GetJsonString(jsonObject, "name", "")
+				boneName = GetJsonString(jsonObject, "bone", "")
 				boneData = skeletonData.FindBone(boneName)
 				
 				If boneData = Null Throw New SpineException("Slot bone not found: " + boneName)
 				slotData = New SpineSlotData(slotName, boneData)
 
-				jsonItem = jsonObject.GetItem("color")
+				jsonItem = jsonObject.Get("color")
 				If jsonItem <> Null
-					color = jsonItem.ToString()
-					slotData.R = ToColor(color, 0)
-					slotData.G = ToColor(color, 1)
-					slotData.B = ToColor(color, 2)
-					slotData.A = ToColor(color, 3)
+					color = jsonItem.StringValue()
+					slotData.R = ParseHexColor(color, 0)
+					slotData.G = ParseHexColor(color, 1)
+					slotData.B = ParseHexColor(color, 2)
+					slotData.A = ParseHexColor(color, 3)
 				EndIf
 
-				jsonItem = jsonObject.GetItem("attachment")
-				If jsonItem <> Null slotData.AttachmentName = jsonItem.ToString()
+				jsonItem = jsonObject.Get("attachment")
+				If jsonItem <> Null
+					slotData.AttachmentName = jsonItem.StringValue()
+				EndIf
 				
-				jsonItem = jsonObject.GetItem("additive")
-				If jsonItem <> Null slotData.AdditiveBlending = jsonItem.ToBool()
+				jsonItem = jsonObject.Get("additive")
+				If jsonItem <> Null
+					slotData.AdditiveBlending = jsonItem.BoolValue()
+				EndIf
 
 				skeletonData.AddSlot(slotData)
 			Next
@@ -180,25 +186,25 @@ Class SpineSkeletonJson
 		Local attachment:SpineAttachment
 		Local attachmentName:String
 		Local eventData:SpineEventData
-		Local jsonSlot:JSONObject
-		Local jsonAttachment:JSONObject
+		Local jsonSlot:JsonObject
+		Local jsonAttachment:JsonObject
 		
 		'iterate over skins
-		jsonGroupObject = JSONObject(jsonRoot.GetItem("skins"))
+		jsonGroupObject = JsonObject(jsonRoot.Get("skins"))
 		If jsonGroupObject <> Null
-			For jsonName = EachIn jsonGroupObject.Names()
+			For jsonName = EachIn jsonGroupObject.GetData().Keys()
 				'get skin from name
-				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
+				jsonObject = JsonObject(jsonGroupObject.Get(jsonName))
 				skin = New SpineSkin(jsonName)
 				
 				'iterate over slots in skin
-				For slotName = EachIn jsonObject.Names()
-					jsonSlot = JSONObject(jsonObject.GetItem(slotName))
+				For slotName = EachIn jsonObject.GetData().Keys()
+					jsonSlot = JsonObject(jsonObject.Get(slotName))
 					slotIndex = skeletonData.FindSlotIndex(slotName)
 					
 					'iterate over attachments in slot
-					For attachmentName = EachIn jsonSlot.Names()
-						jsonAttachment = JSONObject(jsonSlot.GetItem(attachmentName))
+					For attachmentName = EachIn jsonSlot.GetData().Keys()
+						jsonAttachment = JsonObject(jsonSlot.Get(attachmentName))
 						
 						attachment = ReadAttachment(skin, attachmentName, jsonAttachment)
 						skin.AddAttachment(slotIndex, attachmentName, attachment)
@@ -211,27 +217,27 @@ Class SpineSkeletonJson
 		EndIf
 		
 		'events
-		jsonGroupObject = JSONObject(jsonRoot.GetItem("events"))
+		jsonGroupObject = JsonObject(jsonRoot.Get("events"))
 		If jsonGroupObject <> Null
-			For jsonName = EachIn jsonGroupObject.Names()
+			For jsonName = EachIn jsonGroupObject.GetData().Keys()
 				'get event from name
-				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
+				jsonObject = JsonObject(jsonGroupObject.Get(jsonName))
 				eventData = New SpineEventData(jsonName)
-				eventData.IntValue = jsonObject.GetItem("int", 0)
-				eventData.FloatValue = jsonObject.GetItem("float", 0.0)
-				eventData.StringValue = jsonObject.GetItem("string", "")
+				eventData.IntValue = GetJsonInt(jsonObject, "int", 0)
+				eventData.FloatValue = GetJsonFloat(jsonObject, "float", 0.0)
+				eventData.StringValue = GetJsonString(jsonObject, "string", "")
 				
 				'add it
 				skeletonData.AddEvent(eventData)
 			Next
-		EndIf		
+		EndIf
 
 		'animations.
-		jsonGroupObject = JSONObject(jsonRoot.GetItem("animations"))
+		jsonGroupObject = JsonObject(jsonRoot.Get("animations"))
 		If jsonGroupObject <> Null
-			For jsonName = EachIn jsonGroupObject.Names()
+			For jsonName = EachIn jsonGroupObject.GetData().Keys()
 				'get animation from name
-				jsonObject = JSONObject(jsonGroupObject.GetItem(jsonName))
+				jsonObject = JsonObject(jsonGroupObject.Get(jsonName))
 				ReadAnimation(jsonName, jsonObject, skeletonData)
 			Next
 		EndIf
@@ -241,20 +247,20 @@ Class SpineSkeletonJson
 		Return skeletonData
 	End
 
-	Method ReadAttachment:SpineAttachment(skin:SpineSkin, name:String, jsonAttachment:JSONObject)
-		Local jsonItem:JSONDataItem
+	Method ReadAttachment:SpineAttachment(skin:SpineSkin, name:String, jsonAttachment:JsonObject)
+		Local jsonItem:JsonValue
 		Local color:String
 		
-		jsonItem = jsonAttachment.GetItem("name")
-		If jsonItem <> Null name = jsonItem.ToString()
+		jsonItem = jsonAttachment.Get("name")
+		If jsonItem <> Null name = jsonItem.StringValue()
 
 		Local type:Int = SpineAttachmentType.Region'defaults to region aiiighhht
-		jsonItem = jsonAttachment.GetItem("type")
-		If jsonItem <> Null type = SpineAttachmentType.FromString(jsonItem.ToString())
+		jsonItem = jsonAttachment.Get("type")
+		If jsonItem <> Null type = SpineAttachmentType.FromString(jsonItem.StringValue())
 
 		Local path:String = name
-		jsonItem = jsonAttachment.GetItem("path")
-		If jsonItem <> Null path = jsonItem.ToString()
+		jsonItem = jsonAttachment.Get("path")
+		If jsonItem <> Null path = jsonItem.StringValue()
 
 		Select type
 			Case SpineAttachmentType.Region
@@ -264,22 +270,22 @@ Class SpineSkeletonJson
 				EndIf
 				
 				region.Path = path
-				region.X = jsonAttachment.GetItem("x", 0.0) * Scale
-				region.Y = jsonAttachment.GetItem("y", 0.0) * Scale
-				region.ScaleX = jsonAttachment.GetItem("scaleX", 1.0)
-				region.ScaleY = jsonAttachment.GetItem("scaleY", 1.0)
-				region.Rotation = jsonAttachment.GetItem("rotation", 0.0)
-				region.Width = jsonAttachment.GetItem("width", 32.0) * Scale
-				region.Height = jsonAttachment.GetItem("height", 32.0) * Scale
+				region.X = GetJsonFloat(jsonAttachment, "x", 0.0) * Scale
+				region.Y = GetJsonFloat(jsonAttachment, "y", 0.0) * Scale
+				region.ScaleX = GetJsonFloat(jsonAttachment, "scaleX", 1.0)
+				region.ScaleY = GetJsonFloat(jsonAttachment, "scaleY", 1.0)
+				region.Rotation = GetJsonFloat(jsonAttachment, "rotation", 0.0)
+				region.Width = GetJsonFloat(jsonAttachment, "width", 32.0) * Scale
+				region.Height = GetJsonFloat(jsonAttachment, "height", 32.0) * Scale
 				region.UpdateOffset()
 				
-				jsonItem = jsonAttachment.GetItem("color")
+				jsonItem = jsonAttachment.Get("color")
 				If jsonItem <> Null
-					color = jsonItem.ToString()
-					region.R = ToColor(color, 0)
-					region.G = ToColor(color, 1)
-					region.B = ToColor(color, 2)
-					region.A = ToColor(color, 3)
+					color = jsonItem.StringValue()
+					region.R = ParseHexColor(color, 0)
+					region.G = ParseHexColor(color, 1)
+					region.B = ParseHexColor(color, 2)
+					region.A = ParseHexColor(color, 3)
 				EndIf
 				
 				Return region
@@ -291,27 +297,27 @@ Class SpineSkeletonJson
 				EndIf
 				
 				mesh.Path = path
-				mesh.Vertices = GetFloatArray(jsonAttachment, "vertices", Scale)
-				mesh.Triangles = GetIntArray(jsonAttachment, "triangles")
-				mesh.RegionUVs = GetFloatArray(jsonAttachment, "uvs", 1.0)
+				mesh.Vertices = GetJsonFloatArray(jsonAttachment, "vertices", Scale)
+				mesh.Triangles = GetJsonIntArray(jsonAttachment, "triangles")
+				mesh.RegionUVs = GetJsonFloatArray(jsonAttachment, "uvs", 1.0)
 				mesh.UpdateUVs()
 				
-				jsonItem = jsonAttachment.GetItem("color")
+				jsonItem = jsonAttachment.Get("color")
 				If jsonItem <> Null
-					color = jsonItem.ToString()
-					mesh.R = ToColor(color, 0)
-					mesh.G = ToColor(color, 1)
-					mesh.B = ToColor(color, 2)
-					mesh.A = ToColor(color, 3)
+					color = jsonItem.StringValue()
+					mesh.R = ParseHexColor(color, 0)
+					mesh.G = ParseHexColor(color, 1)
+					mesh.B = ParseHexColor(color, 2)
+					mesh.A = ParseHexColor(color, 3)
 				EndIf
 				
-				mesh.HullLength = jsonAttachment.GetItem("hull", 0) * 2
+				mesh.HullLength = GetJsonFloat(jsonAttachment, "hull", 0) * 2
 				
-				jsonItem = jsonAttachment.GetItem("edges")
-				If jsonItem <> Null mesh.Edges = GetIntArray(jsonAttachment, "edges")
+				jsonItem = jsonAttachment.Get("edges")
+				If jsonItem <> Null mesh.Edges = GetJsonIntArray(jsonAttachment, "edges")
 				
-				mesh.Width = jsonAttachment.GetItem("width", 0.0) * Scale
-				mesh.Height = jsonAttachment.GetItem("height", 0.0) * Scale
+				mesh.Width = GetJsonFloat(jsonAttachment, "width", 0.0) * Scale
+				mesh.Height = GetJsonFloat(jsonAttachment, "height", 0.0) * Scale
 				
 				Return mesh
 				
@@ -322,9 +328,9 @@ Class SpineSkeletonJson
 				EndIf
 				
 				mesh.Path = path
-				Local uvs:= GetFloatArray(jsonAttachment, "uvs", 1.0)
+				Local uvs:= GetJsonFloatArray(jsonAttachment, "uvs", 1.0)
 				
-				Local vertices:= GetFloatArray(jsonAttachment, "vertices", 1.0)'1.0...Should this be Scale ???
+				Local vertices:= GetJsonFloatArray(jsonAttachment, "vertices", 1.0)'1.0...Should this be Scale ???
 				Local verticesCount:= vertices.Length()
 				Local bonesCount:Int
 				Local meshBonesCount:Int
@@ -369,26 +375,26 @@ Class SpineSkeletonJson
 				
 				mesh.Bones = bones
 				mesh.Weights = weights
-				mesh.Triangles = GetIntArray(jsonAttachment, "triangles")
+				mesh.Triangles = GetJsonIntArray(jsonAttachment, "triangles")
 				mesh.RegionUVs = uvs
 				mesh.UpdateUVs()
 				
-				jsonItem = jsonAttachment.GetItem("color")
+				jsonItem = jsonAttachment.Get("color")
 				If jsonItem <> Null
-					color = jsonItem.ToString()
-					mesh.R = ToColor(color, 0)
-					mesh.G = ToColor(color, 1)
-					mesh.B = ToColor(color, 2)
-					mesh.A = ToColor(color, 3)
+					color = jsonItem.StringValue()
+					mesh.R = ParseHexColor(color, 0)
+					mesh.G = ParseHexColor(color, 1)
+					mesh.B = ParseHexColor(color, 2)
+					mesh.A = ParseHexColor(color, 3)
 				EndIf
 				
-				mesh.HullLength = jsonAttachment.GetItem("hull", 0) * 2
+				mesh.HullLength = GetJsonInt(jsonAttachment, "hull", 0) * 2
 				
-				jsonItem = jsonAttachment.GetItem("edges")
-				If jsonItem <> Null mesh.Edges = GetIntArray(jsonAttachment, "edges")
+				jsonItem = jsonAttachment.Get("edges")
+				If jsonItem <> Null mesh.Edges = GetJsonIntArray(jsonAttachment, "edges")
 				
-				mesh.Width = jsonAttachment.GetItem("width", 0.0) * Scale
-				mesh.Height = jsonAttachment.GetItem("height", 0.0) * Scale
+				mesh.Width = GetJsonFloat(jsonAttachment, "width", 0.0) * Scale
+				mesh.Height = GetJsonFloat(jsonAttachment, "height", 0.0) * Scale
 				
 				Return mesh
 				
@@ -398,66 +404,89 @@ Class SpineSkeletonJson
 					Return Null
 				EndIf
 				
-				box.Vertices = GetFloatArray(jsonAttachment, "vertices", Scale)
+				box.Vertices = GetJsonFloatArray(jsonAttachment, "vertices", Scale)
 				Return box
 		End
 
 		Return Null
 	End
 	
-	Method GetFloatArray:Float[] (jsonObject:JSONObject, name:String, scale:Float)
-		Local list:= JSONArray(jsonObject.GetItem(name))
+	Method GetJsonFloatArray:Float[] (jsonObject:JsonObject, name:String, scale:Float)
+		Local list:= JsonArray(jsonObject.Get(name))
 		If list = Null Return[]
 		
-		'var list = (List<Object>) map[name]
-		Local total:= list.values.Count()
-		Local values:Float[total]
+		Local values:Float[list.Length()]
 		If scale = 1.0
-			Local i:Int
-			For Local listItem:= EachIn list
-				values[i] = listItem.ToFloat()
-				i += 1
+			Local listItem:JsonValue
+			For Local listIndex:= 0 Until list.Length()
+				listItem = list.Get(listIndex)
+				values[listIndex] = listItem.FloatValue()
 			Next
 		Else
-			Local i:Int
-			For Local listItem:= EachIn list
-				values[i] = listItem.ToFloat() * scale
-				i += 1
+			Local listItem:JsonValue
+			For Local listIndex:= 0 Until list.Length()
+				listItem = list.Get(listIndex)
+				values[listIndex] = listItem.FloatValue() * scale
 			Next
 		EndIf
 		Return values
 	End
 	
-	Method GetIntArray:Int[] (jsonObject:JSONObject, name:String)
-		Local list:= JSONArray(jsonObject.GetItem(name))
+	Method GetJsonIntArray:Int[] (jsonObject:JsonObject, name:String)
+		Local list:= JsonArray(jsonObject.Get(name))
 		If list = Null Return[]
 		
-		'var list = (List<Object>) map[name]
-		Local total:= list.values.Count()
-		Local values:Int[total]
-
-		Local i:Int
-		For Local listItem:= EachIn list
-			values[i] = listItem.ToInt()
-			i += 1
+		Local values:Int[list.Length()]
+		
+		Local listItem:JsonValue
+		For Local listIndex:= 0 Until list.Length()
+			listItem = list.Get(listIndex)
+			values[listIndex] = listItem.IntValue()
 		Next
+		
 		Return values
 	End
-
-	Method GetBool:Bool(jsonObject:JSONObject, name:String, defaultValue:Bool)
-		Local result:String = jsonObject.GetItem(name, "")
-		If result = "" Return defaultValue
-		Return result = "true"
+	
+	Method GetJsonBool:Bool(jsonObject:JsonObject, name:String, value:Bool = False)
+		Local jsonValue:= JsonBool(jsonObject.Get(name))
+		If jsonValue = Null
+			Return value
+		EndIf
+		Return jsonValue.BoolValue()
 	End
 	
-	Function ToColor:Float(hex:String, colorIndex:Int)
+	Method GetJsonInt:Int(jsonObject:JsonObject, name:String, value:int = 0)
+		Local jsonValue:= JsonNumber(jsonObject.Get(name))
+		If jsonValue = Null
+			Return value
+		EndIf
+		Return jsonValue.IntValue()
+	End
+	
+	Method GetJsonFloat:Float(jsonObject:JsonObject, name:String, value:Float = 0.0)
+		Local jsonValue:= JsonNumber(jsonObject.Get(name))
+		If jsonValue = Null
+			Return value
+		EndIf
+		Return jsonValue.FloatValue()
+	End
+	
+	Method GetJsonString:String(jsonObject:JsonObject, name:String, value:String = "")
+		Local jsonValue:= JsonString(jsonObject.Get(name))
+		If jsonValue = Null
+			Return value
+		EndIf
+		Return jsonValue.StringValue()
+	End
+	
+	Function ParseHexColor:Float(hex:String, colorIndex:Int)
 		If hex.Length() <> 8 Throw New SpineArgumentNullException("Color hexidecimal length must be 8, recieved: " + hex)
 		
 		Local val:Int = 0
 		Local offset:Int = colorIndex * 2
 		hex = hex.ToUpper()
 		For Local i:Int = offset Until offset + 2
-			val *=16	
+			val *=16
 			If hex[i] >= 48 And hex[i] <= 57
 				val += (hex[i] - 48)
 			Else
@@ -469,19 +498,18 @@ Class SpineSkeletonJson
 	End
 
 	Private
-	Method ReadAnimation:Void(name:String, jsonAnimation:JSONObject, skeletonData:SpineSkeletonData)
+	Method ReadAnimation:Void(name:String, jsonAnimation:JsonObject, skeletonData:SpineSkeletonData)
 		Local timelines:SpineTimeline[]
 		Local timelineCount:Int
 
 		Local duration:Float = 0.0
 
 		Local index:Int
-		Local jsonGroupObject:JSONObject
-		Local jsonGroupArray:JSONArray
-		Local jsonBone:JSONObject
-		Local jsonTimeline:JSONArray
-		Local jsonTimelineFrameDataItem:JSONDataItem
-		Local jsonTimelineFrame:JSONObject
+		Local jsonGroupObject:JsonObject
+		Local jsonGroupArray:JsonArray
+		Local jsonBone:JsonObject
+		Local jsonTimeline:JsonArray
+		Local jsonTimelineFrame:JsonObject
 		Local boneName:String
 		Local boneIndex:Int
 		Local timelineName:String
@@ -490,36 +518,34 @@ Class SpineSkeletonJson
 		Local slotIndex:Int
 		Local slotName:String
 		
-		'slots		
-		jsonGroupObject = JSONObject(jsonAnimation.GetItem("slots"))
+		'slots
+		jsonGroupObject = JsonObject(jsonAnimation.Get("slots"))
 		If jsonGroupObject <> Null
-			Local jsonSlot:JSONObject
+			Local jsonSlot:JsonObject
 			Local c:String
 			
-			For slotName = EachIn jsonGroupObject.Names()
-				jsonSlot = JSONObject(jsonGroupObject.GetItem(slotName))
+			For slotName = EachIn jsonGroupObject.GetData().Keys()
+				jsonSlot = JsonObject(jsonGroupObject.Get(slotName))
 				If jsonSlot = Null Continue
 			
 				slotIndex = skeletonData.FindSlotIndex(slotName)
 				
-				For timelineName = EachIn jsonSlot.Names()
-					jsonTimeline = JSONArray(jsonSlot.GetItem(timelineName))
+				For timelineName = EachIn jsonSlot.GetData().Keys()
+					jsonTimeline = JsonArray(jsonSlot.Get(timelineName))
 				
 					Select timelineName
 						Case TIMELINE_COLOR
-							Local timeline:SpineColorTimeline = New SpineColorTimeline(jsonTimeline.values.Count())
+							Local timeline:SpineColorTimeline = New SpineColorTimeline(jsonTimeline.Length())
 							timeline.SlotIndex = slotIndex
 	
-							frameIndex = 0
-							For jsonTimelineFrameDataItem = EachIn jsonTimeline
+							For frameIndex = 0 Until jsonTimeline.Length()
 								'convert to correct object format
-								jsonTimelineFrame = JSONObject(jsonTimelineFrameDataItem)
+								jsonTimelineFrame = JsonObject(jsonTimeline.Get(frameIndex))
 								
 								'process object
-								c = jsonTimelineFrame.GetItem("color", "")
-								timeline.SetFrame(frameIndex, jsonTimelineFrame.GetItem("time", 0.0), ToColor(c, 0), ToColor(c, 1), ToColor(c, 2), ToColor(c, 3))
+								c = GetJsonString(jsonTimelineFrame, "color", "")
+								timeline.SetFrame(frameIndex, GetJsonFloat(jsonTimelineFrame, "time", 0.0), ParseHexColor(c, 0), ParseHexColor(c, 1), ParseHexColor(c, 2), ParseHexColor(c, 3))
 								ReadCurve(timeline, frameIndex, jsonTimelineFrame)
-								frameIndex += 1
 							Next
 							
 							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
@@ -529,17 +555,15 @@ Class SpineSkeletonJson
 							duration = Max(duration, timeline.Frames[timeline.FrameCount() * 5 - 5])
 							
 						Case TIMELINE_ATTACHMENT
-							Local timeline:SpineAttachmentTimeline = New SpineAttachmentTimeline(jsonTimeline.values.Count())
+							Local timeline:SpineAttachmentTimeline = New SpineAttachmentTimeline(jsonTimeline.Length())
 							timeline.SlotIndex = slotIndex
 	
-							frameIndex = 0
-							For jsonTimelineFrameDataItem = EachIn jsonTimeline
+							For frameIndex = 0 Until jsonTimeline.Length()
 								'convert to correct object format
-								jsonTimelineFrame = JSONObject(jsonTimelineFrameDataItem)
+								jsonTimelineFrame = JsonObject(jsonTimeline.Get(frameIndex))
 								
 								'process object
-								timeline.SetFrame(frameIndex, jsonTimelineFrame.GetItem("time", 0.0), jsonTimelineFrame.GetItem("name", ""))
-								frameIndex += 1
+								timeline.SetFrame(frameIndex, GetJsonFloat(jsonTimelineFrame, "time", 0.0), GetJsonString(jsonTimelineFrame, "name", ""))
 							Next
 							
 							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
@@ -556,33 +580,35 @@ Class SpineSkeletonJson
 		EndIf
 		
 		'bones
-		jsonGroupObject = JSONObject(jsonAnimation.GetItem("bones"))
+		jsonGroupObject = JsonObject(jsonAnimation.Get("bones"))
 		If jsonGroupObject <> Null
-			For boneName = EachIn jsonGroupObject.Names()
-				jsonBone = JSONObject(jsonGroupObject.GetItem(boneName))
+			For boneName = EachIn jsonGroupObject.GetData().Keys()
+				jsonBone = JsonObject(jsonGroupObject.Get(boneName))
 				If jsonBone = Null Continue
 				
 				boneIndex = skeletonData.FindBoneIndex(boneName)
 				If boneIndex = -1 Throw New SpineException("Bone not found: " + boneName)
 				
-				For timelineName = EachIn jsonBone.Names()
-					jsonTimeline = JSONArray(jsonBone.GetItem(timelineName))
+				For timelineName = EachIn jsonBone.GetData().Keys()
+					jsonTimeline = JsonArray(jsonBone.Get(timelineName))
 					If jsonTimeline = Null Continue
 					
 					Select timelineName
 						Case TIMELINE_ROTATE
-							Local timeline:SpineRotateTimeline = New SpineRotateTimeline(jsonTimeline.values.Count())
+							Local timeline:SpineRotateTimeline = New SpineRotateTimeline(jsonTimeline.Length())
 							timeline.BoneIndex = boneIndex
 	
-							frameIndex = 0
-							For jsonTimelineFrameDataItem = EachIn jsonTimeline
+							For frameIndex = 0 Until jsonTimeline.Length()
 								'convert to correct object format
-								jsonTimelineFrame = JSONObject(jsonTimelineFrameDataItem)
+								jsonTimelineFrame = JsonObject(jsonTimeline.Get(frameIndex))
 								
 								'process object
-								timeline.SetFrame(frameIndex, jsonTimelineFrame.GetItem("time", 0.0), jsonTimelineFrame.GetItem("angle", 0.0))
+								timeline.SetFrame(frameIndex, GetJsonFloat(jsonTimelineFrame, "time", 0.0), GetJsonFloat(jsonTimelineFrame, "angle", 0.0))
+								Print "got here"
+								If name = "hit" And boneName = "front_thigh" And timelineName = "rotate"
+									'DebugStop()
+								EndIf
 								ReadCurve(timeline, frameIndex, jsonTimelineFrame)
-								frameIndex += 1
 							Next
 							
 							'add timeline (maybe resize array)
@@ -597,22 +623,20 @@ Class SpineSkeletonJson
 							timelineScale = 1.0
 							
 							If timelineName = TIMELINE_SCALE
-								timeline = New SpineScaleTimeline(jsonTimeline.values.Count())
+								timeline = New SpineScaleTimeline(jsonTimeline.Length())
 							Else
-								timeline = New SpineTranslateTimeline(jsonTimeline.values.Count())
+								timeline = New SpineTranslateTimeline(jsonTimeline.Length())
 								timelineScale = Scale
 							EndIf
 							timeline.BoneIndex = boneIndex
 	
-							frameIndex = 0
-							For jsonTimelineFrameDataItem = EachIn jsonTimeline
+							For frameIndex = 0 Until jsonTimeline.Length()
 								'convert to correct object format
-								jsonTimelineFrame = JSONObject(jsonTimelineFrameDataItem)
+								jsonTimelineFrame = JsonObject(jsonTimeline.Get(frameIndex))
 								
 								'process object
-								timeline.SetFrame(frameIndex, jsonTimelineFrame.GetItem("time", 0.0), jsonTimelineFrame.GetItem("x", 0.0) * timelineScale, jsonTimelineFrame.GetItem("y", 0.0) * timelineScale)
+								timeline.SetFrame(frameIndex, GetJsonFloat(jsonTimelineFrame, "time", 0.0), GetJsonFloat(jsonTimelineFrame, "x", 0.0) * timelineScale, GetJsonFloat(jsonTimelineFrame, "y", 0.0) * timelineScale)
 								ReadCurve(timeline, frameIndex, jsonTimelineFrame)
-								frameIndex += 1
 							Next
 							
 							If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
@@ -628,25 +652,25 @@ Class SpineSkeletonJson
 		EndIf
 		
 		'ik
-		jsonGroupArray = JSONArray(jsonAnimation.GetItem("ik"))
+		jsonGroupArray = JsonArray(jsonAnimation.Get("ik"))
 		If jsonGroupArray <> Null
-			Local jsonIkConstraint:JSONObject
+			Local jsonIkConstraint:JsonObject
 			Local bendPositive:Int
 
-			Local timeline:SpineIkConstraintTimeline = New SpineIkConstraintTimeline(jsonGroupArray.values.Count())
-			frameIndex = 0
-			
-			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
-				jsonIkConstraint = JSONObject(jsonTimelineFrameDataItem)
+			Local timeline:SpineIkConstraintTimeline = New SpineIkConstraintTimeline(jsonGroupArray.Length())
+
+			For frameIndex = 0 Until jsonTimeline.Length()
+				'convert to correct object format
+				jsonIkConstraint = JsonObject(jsonTimeline.Get(frameIndex))
 				
-				If GetBool(jsonTimelineFrame, "bendPositive", True) 
+				If GetJsonBool(jsonTimelineFrame, "bendPositive", True)
 					bendPositive = 1
 				Else
 					bendPositive = -1
 				EndIf
-				timeline.SetFrame(frameIndex, jsonTimelineFrame.GetItem("time", 0.0), jsonTimelineFrame.GetItem("mix", 1.0), bendPositive)
+				
+				timeline.SetFrame(frameIndex, GetJsonFloat(jsonTimelineFrame, "time", 0.0), GetJsonFloat(jsonTimelineFrame, "mix", 1.0), bendPositive)
 				ReadCurve(timeline, frameIndex, jsonTimelineFrame)
-				frameIndex += 1
 			Next
 			
 			If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
@@ -657,16 +681,15 @@ Class SpineSkeletonJson
 		EndIf
 		
 		'ffd
-		jsonGroupObject = JSONObject(jsonAnimation.GetItem("ffd"))
+		jsonGroupObject = JsonObject(jsonAnimation.Get("ffd"))
 		If jsonGroupObject <> Null
 			Local skin:SpineSkin
-			Local jsonFfdGroup:JSONObject
-			Local jsonSlotGroup:JSONObject
-			Local jsonMeshArray:JSONArray
-			Local jsonMeshDataItem:JSONDataItem
-			Local jsonMesh:JSONObject
-			Local jsonMeshVertices:JSONArray
-			Local jsonMeshVerticesItem:JSONDataItem
+			Local jsonFfdGroup:JsonObject
+			Local jsonSlotGroup:JsonObject
+			Local jsonMeshArray:JsonArray
+			Local jsonMesh:JsonObject
+			Local jsonMeshVertices:JsonArray
+			Local jsonMeshVerticesItem:JsonValue
 			Local slotKey:String
 			Local meshKey:String
 			Local timeline:SpineFFDTimeline
@@ -676,25 +699,25 @@ Class SpineSkeletonJson
 			Local start:Int
 			Local i:Int
 			
-			For Local ffdKey:String = EachIn jsonGroupObject.Names()
-				jsonFfdGroup = JSONObject(jsonGroupObject.GetItem(ffdKey))
+			For Local ffdKey:String = EachIn jsonGroupObject.GetData().Keys()
+				jsonFfdGroup = JsonObject(jsonGroupObject.Get(ffdKey))
 				If jsonFfdGroup = Null Continue
 				
 				skin = skeletonData.FindSkin(ffdKey)
 				
-				For slotKey = EachIn jsonFfdGroup.Names()
-					jsonSlotGroup = JSONObject(jsonFfdGroup.GetItem(slotKey))
+				For slotKey = EachIn jsonFfdGroup.GetData().Keys()
+					jsonSlotGroup = JsonObject(jsonFfdGroup.Get(slotKey))
 					If jsonSlotGroup = Null Continue
 					
 					slotIndex = skeletonData.FindSlotIndex(slotKey)
 					
-					For meshKey = EachIn jsonSlotGroup.Names()
-						jsonMeshArray = JSONArray(jsonSlotGroup.GetItem(meshKey))
+					For meshKey = EachIn jsonSlotGroup.GetData().Keys()
+						jsonMeshArray = JsonArray(jsonSlotGroup.Get(meshKey))
 						
 						attachment = skin.GetAttachment(slotIndex, meshKey)
 						If attachment = Null Throw New SpineException("FFD attachment not found: " + meshKey)
 						
-						timeline = New SpineFFDTimeline(jsonMeshArray.values.Count())
+						timeline = New SpineFFDTimeline(jsonMeshArray.Length())
 						timeline.SlotIndex = slotIndex
 						timeline.Attachment = attachment
 						
@@ -704,11 +727,10 @@ Class SpineSkeletonJson
 							vertexCount = SpineSkinnedMeshAttachment(attachment).Weights.Length() / 3 * 2
 						EndIf
 						
-						frameIndex = 0
-						For jsonMeshDataItem = EachIn jsonMeshArray
-							jsonMesh = JSONObject(jsonMeshDataItem)
+						For frameIndex = 0 Until jsonMeshArray.Length()
+							jsonMesh = JsonObject(jsonMeshArray.Get(frameIndex))
 							
-							jsonMeshVertices = JSONArray(jsonMesh.GetItem("vertices"))
+							jsonMeshVertices = JsonArray(jsonMesh.Get("vertices"))
 							If jsonMeshVertices = Null
 								If attachment.Type = SpineAttachmentType.Mesh
 									vertices = SpineMeshAttachment(attachment).Vertices
@@ -717,18 +739,17 @@ Class SpineSkeletonJson
 								EndIf
 							Else
 								vertices = New Float[vertexCount]
-								start = jsonMesh.GetItem("offset", 0)
+								start = GetJsonInt(jsonMesh, "offset", 0)
 								
-								i = 0
 								If Scale = 1.0
-									For jsonMeshVerticesItem = EachIn jsonMeshVertices
-										vertices[i + start] = jsonMeshVerticesItem.ToFloat()
-										i += 1
+									For i = 0 Until jsonMeshVertices.Length()
+										jsonMeshVerticesItem = jsonMeshVertices.Get(i)
+										vertices[i + start] = jsonMeshVerticesItem.FloatValue()
 									Next
 								Else
-									For jsonMeshVerticesItem = EachIn jsonMeshVertices
-										vertices[i + start] = jsonMeshVerticesItem.ToFloat() * Scale
-										i += 1
+									For i = 0 Until jsonMeshVertices.Length()
+										jsonMeshVerticesItem = jsonMeshVertices.Get(i)
+										vertices[i + start] = jsonMeshVerticesItem.FloatValue() * Scale
 									Next
 								EndIf
 								
@@ -740,9 +761,8 @@ Class SpineSkeletonJson
 								EndIf
 							EndIf
 							
-							timeline.SetFrame(frameIndex, jsonMesh.GetItem("time", 0.0), vertices)
+							timeline.SetFrame(frameIndex, GetJsonFloat(jsonMesh, "time", 0.0), vertices)
 							ReadCurve(timeline, frameIndex, jsonMesh)
-							frameIndex += 1
 						Next
 						
 						If timelineCount >= timelines.Length() timelines = timelines.Resize(timelines.Length() * 2 + 10)
@@ -755,14 +775,14 @@ Class SpineSkeletonJson
 			Next
 		EndIf
 		
-		'draw order		
-		jsonGroupArray = JSONArray(jsonAnimation.GetItem("draworder"))
+		'draw order
+		jsonGroupArray = JsonArray(jsonAnimation.Get("draworder"))
 		If jsonGroupArray <> Null
-			Local jsonOrder:JSONObject
-			Local jsonOffsetDataItem:JSONDataItem
-			Local jsonOffsetArray:JSONArray
+			Local jsonOrder:JsonObject
+			Local jsonOffsetArray:JsonArray
 			Local jsonOffsetTotal:Int
-			Local jsonOffset:JSONObject
+			Local jsonOffset:JsonObject
+			Local jsonOffsetIndex:Int
 			Local originalIndex:Int
 			Local unchangedIndex:Int
 			Local offset:Int
@@ -773,19 +793,19 @@ Class SpineSkeletonJson
 			Local slotsCount:= skeletonData.slotsCount
 			
 			'create this New timeline
-			Local timeline:SpineDrawOrderTimeline = New SpineDrawOrderTimeline(jsonGroupArray.values.Count())
+			Local timeline:SpineDrawOrderTimeline = New SpineDrawOrderTimeline(jsonGroupArray.Length())
 			frameIndex = 0
 			
 			'iterate over frame keys
-			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
-				jsonOrder = JSONObject(jsonTimelineFrameDataItem)
+			For frameIndex = 0 Until jsonGroupArray.Length()
+				jsonOrder = JsonObject(jsonGroupArray.Get(frameIndex))
 				
 				Local drawOrder:Int[]
 				
 				'get the offset array
-				jsonOffsetArray = JSONArray(jsonOrder.GetItem("offsets"))
+				jsonOffsetArray = JsonArray(jsonOrder.Get("offsets"))
 				If jsonOffsetArray <> Null
-					jsonOffsetTotal = jsonOffsetArray.values.Count()
+					jsonOffsetTotal = jsonOffsetArray.Length()
 					
 					'create draw order array and reset it
 					drawOrder = New Int[slotsCount]
@@ -800,11 +820,11 @@ Class SpineSkeletonJson
 					unchangedIndex = 0
 					
 					'iterate over offsets
-					For jsonOffsetDataItem = EachIn jsonOffsetArray
-						jsonOffset = JSONObject(jsonOffsetDataItem)
+					For jsonOffsetIndex = 0 Until jsonOffsetArray.Length()
+						jsonOffset = JsonObject(jsonOffsetArray.Get(jsonOffsetIndex))
 					
 						'get slot index
-						slotName = jsonOffset.GetItem("slot")
+						slotName = GetJsonString(jsonOffset, "slot")
 						slotIndex = skeletonData.FindSlotIndex(slotName)
 						
 						'check slot is valid
@@ -818,7 +838,7 @@ Class SpineSkeletonJson
 						Wend
 						
 						'get offset
-						offset = jsonOffset.GetItem("offset", 0)
+						offset = GetJsonInt(jsonOffset, "offset", 0)
 						
 						'set changed items
 						drawOrder[originalIndex + offset] = originalIndex
@@ -842,10 +862,7 @@ Class SpineSkeletonJson
 				EndIf
 				
 				'process frame in timeline
-				timeline.SetFrame(frameIndex, jsonOrder.GetItem("time", 0.0), drawOrder)
-				
-				'Next frame index
-				frameIndex += 1
+				timeline.SetFrame(frameIndex, GetJsonFloat(jsonOrder, "time", 0.0), drawOrder)
 			Next
 			
 			'add timeline
@@ -858,35 +875,31 @@ Class SpineSkeletonJson
 		EndIf
 		
 		'events
-		jsonGroupArray = JSONArray(jsonAnimation.GetItem("events"))
+		jsonGroupArray = JsonArray(jsonAnimation.Get("events"))
 		If jsonGroupArray <> Null
 			Local eventName:String
-			Local jsonEvent:JSONObject
+			Local jsonEvent:JsonObject
 			Local event:SpineEvent
 			Local eventData:SpineEventData
 			
-			Local timeline:SpineEventTimeline = New SpineEventTimeline(jsonGroupArray.values.Count())
-			frameIndex = 0
-			
-			For jsonTimelineFrameDataItem = EachIn jsonGroupArray
-				jsonEvent = JSONObject(jsonTimelineFrameDataItem)
+			Local timeline:SpineEventTimeline = New SpineEventTimeline(jsonGroupArray.Length())
+
+			For frameIndex = 0 Until jsonGroupArray.Length()
+				jsonEvent = JsonObject(jsonGroupArray.Get(frameIndex))
 				
 				'lookup the event
-				eventName = jsonEvent.GetItem("name")
+				eventName = GetJsonString(jsonEvent, "name")
 				eventData = skeletonData.FindEvent(eventName)
 				If eventData = Null Throw New SpineException("Event not found: " + eventName)
 				
 				'create New event
 				event = New SpineEvent(eventData)
-				event.IntValue = jsonEvent.GetItem("int", eventData.IntValue)
-				event.FloatValue = jsonEvent.GetItem("float", eventData.FloatValue)
-				event.StringValue = jsonEvent.GetItem("string", eventData.StringValue)
+				event.IntValue = GetJsonInt(jsonEvent, "int", eventData.IntValue)
+				event.FloatValue = GetJsonFloat(jsonEvent, "float", eventData.FloatValue)
+				event.StringValue = GetJsonString(jsonEvent, "string", eventData.StringValue)
 				
 				'process frame in timeline
-				timeline.SetFrame(frameIndex, jsonEvent.GetItem("time", 0.0), event)
-				
-				'Next frame index
-				frameIndex += 1
+				timeline.SetFrame(frameIndex, GetJsonFloat(jsonEvent, "time", 0.0), event)
 			Next
 			
 			'add timeline
@@ -904,22 +917,25 @@ Class SpineSkeletonJson
 		skeletonData.AddAnimation(New SpineAnimation(name, timelines, duration))
 	End
 
-	Method ReadCurve:Void(timeline:SpineCurveTimeline, frameIndex:Int, jsonTimelineFrame:JSONObject)
-		Local jsonItem:JSONDataItem
+	Method ReadCurve:Void(timeline:SpineCurveTimeline, frameIndex:Int, jsonTimelineFrame:JsonObject)
+		Local jsonItem:JsonValue
 		
-		jsonItem = jsonTimelineFrame.GetItem("curve")
+		jsonItem = jsonTimelineFrame.Get("curve")
 		If jsonItem = Null Return
 		
-		Select jsonItem.ToString()
-			Case "stepped"
-				timeline.SetStepped(frameIndex)
-			Default
-				Local jsonArray:JSONArray = JSONArray(jsonItem)
-				If jsonArray <> Null
-					'bezier curve
-					Local curve:= jsonArray.values.ToArray()
-					timeline.SetCurve(frameIndex, Float(curve[0]), Float(curve[1]), Float(curve[2]), Float(curve[3]))
-				EndIf
-		End
+		Local jsonString:= JsonString(jsonItem)
+		If jsonString <> Null
+			Select jsonString.StringValue()
+				Case "stepped"
+					timeline.SetStepped(frameIndex)
+			End
+		Else
+			Local jsonArray:JsonArray = JsonArray(jsonItem)
+			If jsonArray <> Null
+				'bezier curve
+				Local curve:= jsonArray.GetData()
+				timeline.SetCurve(frameIndex, curve[0].FloatValue(), curve[1].FloatValue(), curve[2].FloatValue(), curve[3].FloatValue())
+			EndIf
+		EndIf
 	End
 End

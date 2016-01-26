@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 26
+' - removed dependancy of external json module and switched code to brl.json
 'version 25
 ' - big update to port spine to work with mojo2
 'version 24
@@ -92,9 +94,9 @@ Import mojo2
 Import monkey.map
 Import monkey.boxes
 Import brl.databuffer
+Import brl.json
 
 '3rd party
-Import json
 
 'glue code
 Import glue.spineatlas
