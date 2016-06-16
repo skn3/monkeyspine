@@ -12,6 +12,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	Field spineTest:SpineEntity
 	Field showMessageText:String
 	Field showMessageAlpha:Float = 4.0
+	Field firstUpdate:Bool = True
 	
 	Field banana:SpineMojoImageAttachment
 	
@@ -30,7 +31,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 	Method OnCreate:Int()
 		' --- create the app ---
 		'setup runtime
-		SetUpdateRate(60)
+		SetUpdateRate(20)
 		timestamp = Millisecs()
 		
 		'load some stuff to maybe use
@@ -38,7 +39,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 		
 		'load spineTest
 		Try
-			#TEST = "custom_attachment"
+			#TEST = "p1"
 			
 			'which mode ?
 			#If TEST = "spineboy"
@@ -47,6 +48,10 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest.SetScale(0.4)
 			spineTest.SetSpeed(0.5)
 			
+			#Elseif TEST = "p1"
+			spineTest = LoadMojoSpineEntity("monkey://data/player.json")
+			spineTest.SetAnimation("walking", True)
+
 			#ElseIf TEST = "goblin"
 			spineTest = LoadMojoSpineEntity("monkey://data/goblins-ffd.json")
 			spineTest.SetAnimation("walk", True)
@@ -94,7 +99,7 @@ Class MyApp Extends App Implements SpineEntityCallback
 			spineTest = LoadMojoSpineEntity("monkey://data/spineboy.json")
 			spineTest.SetAnimation("run", True)
 			spineTest.SetScale(0.4)
-			spineTest.SetSpeed(0.2)			
+			spineTest.SetSpeed(0.2)
 			
 			#Else
 			Error("no test specified")
@@ -120,6 +125,10 @@ Class MyApp Extends App Implements SpineEntityCallback
 		' --- render the app ---
 		Cls(255, 255, 255)
 
+		If MouseDown(MOUSE_LEFT)
+			DebugStop()
+		EndIf
+		
 		'simples! render current item
 		spineTest.Render()
 		
@@ -153,11 +162,12 @@ Class MyApp Extends App Implements SpineEntityCallback
 		'spineTest.SetRotation(spineTest.GetRotation() +1.0)
 		'spineTest.SetRotation(MouseY())
 		'spineTest.SetBonePosition("bone4", MouseX(), MouseY(), True)
-		spineTest.Update(deltaFloat)
+		
+		spineTest.Update(deltaFloat / 4)
 		
 		'do stuff based on test
 		#If TEST = "custom_attachment"
-			spineTest.SetSlotCustomAttachment("gun", banana)
+		'spineTest.SetSlotCustomAttachment("gun", banana)
 		#EndIf
 		
 		'make changes to certain bones after it has been updated

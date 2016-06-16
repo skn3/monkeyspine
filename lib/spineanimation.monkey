@@ -452,7 +452,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 		ElseIf lastTime > time
 			lastTime = -1
 		EndIf
-		
+
 		Local frameIndex:Int
 		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
