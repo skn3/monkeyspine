@@ -444,24 +444,14 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, alpha:Float)
 		If time < Frames[0]
-			'If (lastTime > time) Apply(skeleton, lastTime, Int.MaxValue, Null, 0)
-			'Return
-			time = SPINE_MAX_FLOAT
-			events = Null
-			alpha = 0.0
-		ElseIf lastTime > time
-			lastTime = -1
+			Return
 		EndIf
-
+		
 		Local frameIndex:Int
-		If time >= Frames[Frames.Length() - 1] ' Time is after last frame.
+		If time >= Frames[Frames.Length() -1] ' Time is after last frame.
 			frameIndex = Frames.Length() - 1
 		Else
 			frameIndex = SpineAnimation.BinarySearch(Frames, time) - 1
-		EndIf
-		
-		If Frames[frameIndex] <= lastTime
-			Return
 		EndIf
 
 		Local attachmentName:String = AttachmentNames[frameIndex]

@@ -125,10 +125,6 @@ Class MyApp Extends App Implements SpineEntityCallback
 		' --- render the app ---
 		Cls(255, 255, 255)
 
-		If MouseDown(MOUSE_LEFT)
-			DebugStop()
-		EndIf
-		
 		'simples! render current item
 		spineTest.Render()
 		
