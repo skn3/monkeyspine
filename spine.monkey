@@ -1,6 +1,8 @@
 'see license.txt For source licenses
 Strict
 
+'version 27
+' - fixed bug in attachment timeline, causing duplicate attachments to render!
 'version 26
 ' - removed dependancy of external json module and switched code to brl.json
 'version 25
