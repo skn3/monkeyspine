@@ -1,0 +1,13 @@
+
+goblins-spear.png
+size: 32,512
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+spear
+  rotate: false
+  xy: 2, 2
+  size: 22, 368
+  orig: 22, 368
+  offset: 0, 0
+  index: -1

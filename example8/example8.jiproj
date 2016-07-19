@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<JiProj xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" EntryPoint=".\example8.monkey" Name="example8">
+  <Files>
+    <Document Filename=".\example8.monkey" Open="false" SplitView="false" SplitIsVertical="false" SplitSize="150">
+      <DocGUID />
+      <CursorPos>
+        <X>0</X>
+        <Y>0</Y>
+      </CursorPos>
+    </Document>
+  </Files>
+  <CompilerConfig Configuration="debug" BuildMode="run" Target="Desktop_Game_(Glfw3)" />
+  <Version Major="16" Minor="7" Revision="19" Build="65" ProductName="Untitled product" />
+  <PreBuildCommands />
+</JiProj>

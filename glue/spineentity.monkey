@@ -535,6 +535,7 @@ Class SpineEntity
 		If debugHideImages = False
 		#EndIf
 		total = skeleton.DrawOrder.Length()
+		
 		For index = 0 Until total
 			'get slot
 			slot = skeleton.DrawOrder[index]
@@ -1217,6 +1218,7 @@ Class SpineEntity
 		'apply the animation to the skeleton
 		If animation
 			skeleton.SetToSetupPose()
+			
 			animation.Apply(skeleton, skeleton.Time, skeleton.Time, events, looping)
 		
 			'need to process events this will probably never do anything...

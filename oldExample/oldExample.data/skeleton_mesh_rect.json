@@ -1,0 +1,28 @@
+{
+"skeleton": { "spine": "1.9.17", "hash": "rAEEbfi7hnnOT5Qzs7s3Z+W85Uo", "width": 128, "height": 128 },
+"bones": [
+	{ "name": "root" }
+],
+"slots": [
+	{ "name": "slot1", "bone": "root", "attachment": "smile" }
+],
+"skins": {
+	"default": {
+		"slot1": {
+			"smile": {
+				"type": "mesh",
+				"uvs": [ 1, 1, 0.49128, 0.64471, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 4, 0, 2, 3, 1, 1, 3, 4 ],
+				"vertices": [ 64, -64, 1.32, -64, -64, -64, -64, 64, 64, 64 ],
+				"hull": 5,
+				"edges": [ 4, 6, 6, 8, 0, 8, 0, 2, 2, 4 ],
+				"width": 128,
+				"height": 128
+			}
+		}
+	}
+},
+"animations": {
+	"animation": {}
+}
+}

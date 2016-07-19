@@ -24,7 +24,9 @@ Class SpineAnimation
 		'this will convert the entire timeline into a single loop
 		If loop And Duration <> 0
 			time = time Mod Duration
-			lastTime = lastTime Mod Duration
+			If lastTime > 0
+				lastTime = lastTime Mod Duration
+			EndIf
 		EndIf
 		
 		'iterate over all timelines attached to animation
@@ -40,7 +42,9 @@ Class SpineAnimation
 
 		If loop And Duration <> 0
 			time Mod= Duration
-			lastTime Mod= Duration
+			If lastTime > 0
+				lastTime = lastTime Mod Duration
+			EndIf
 		EndIf
 
 		For Local i:= 0 Until Timelines.Length()
@@ -179,6 +183,7 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 	End
 
 	Method GetCurvePercent:Float(frameIndex:Int, percent:Float)
+		percent = Min(1.0, Max(0.0, percent))
 		Local i:= frameIndex * BEZIER_SIZE
 		Local type:Float = curves[i]
 		
@@ -209,6 +214,10 @@ Class SpineCurveTimeline Implements SpineTimeline Abstract
 		
 		Local y:Float = curves[i - 1]
 		Return y + (1 - y) * (percent - x) / (1 - x)'Last point is 1, 1.
+	End
+	
+	Method GetCurveType:Float(frameIndex:Int)
+		Return curves[frameIndex * BEZIER_SIZE]
 	End
 End
 
@@ -444,13 +453,7 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 
 	Method Apply:Void(skeleton:SpineSkeleton, lastTime:Float, time:Float, events:List<SpineEvent>, alpha:Float)
 		If time < Frames[0]
-			'If (lastTime > time) Apply(skeleton, lastTime, Int.MaxValue, Null, 0)
-			'Return
-			time = SPINE_MAX_FLOAT
-			events = Null
-			alpha = 0.0
-		ElseIf lastTime > time
-			lastTime = -1
+			Return
 		EndIf
 		
 		Local frameIndex:Int
@@ -458,10 +461,6 @@ Class SpineAttachmentTimeline Implements SpineTimeline
 			frameIndex = Frames.Length() - 1
 		Else
 			frameIndex = SpineAnimation.BinarySearch(Frames, time) - 1
-		EndIf
-		
-		If Frames[frameIndex] <= lastTime
-			Return
 		EndIf
 
 		Local attachmentName:String = AttachmentNames[frameIndex]

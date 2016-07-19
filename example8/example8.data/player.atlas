@@ -1,0 +1,524 @@
+
+player.png
+size: 512,256
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+gfx/player/standing_climbing/standing_climbing_01
+  rotate: false
+  xy: 2, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_02
+  rotate: false
+  xy: 2, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_03
+  rotate: false
+  xy: 36, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_04
+  rotate: false
+  xy: 2, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_05
+  rotate: false
+  xy: 36, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_06
+  rotate: false
+  xy: 70, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_07
+  rotate: false
+  xy: 2, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_08
+  rotate: false
+  xy: 36, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_09
+  rotate: false
+  xy: 70, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_10
+  rotate: false
+  xy: 104, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_11
+  rotate: false
+  xy: 2, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_12
+  rotate: false
+  xy: 36, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_13
+  rotate: false
+  xy: 70, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_14
+  rotate: false
+  xy: 104, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_15
+  rotate: false
+  xy: 138, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_16
+  rotate: false
+  xy: 36, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_17
+  rotate: false
+  xy: 70, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_18
+  rotate: false
+  xy: 104, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_19
+  rotate: false
+  xy: 138, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_20
+  rotate: false
+  xy: 172, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_21
+  rotate: false
+  xy: 70, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_22
+  rotate: false
+  xy: 104, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_23
+  rotate: false
+  xy: 138, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_24
+  rotate: false
+  xy: 172, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_climbing/standing_climbing_25
+  rotate: false
+  xy: 206, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_idle
+  rotate: false
+  xy: 104, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_01
+  rotate: false
+  xy: 138, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_02
+  rotate: false
+  xy: 172, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_03
+  rotate: false
+  xy: 206, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_04
+  rotate: false
+  xy: 240, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_05
+  rotate: false
+  xy: 138, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_06
+  rotate: false
+  xy: 172, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_07
+  rotate: false
+  xy: 206, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_08
+  rotate: false
+  xy: 240, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_09
+  rotate: false
+  xy: 274, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_10
+  rotate: false
+  xy: 172, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_11
+  rotate: false
+  xy: 206, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_12
+  rotate: false
+  xy: 240, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_13
+  rotate: false
+  xy: 274, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_14
+  rotate: false
+  xy: 308, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_15
+  rotate: false
+  xy: 206, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_16
+  rotate: false
+  xy: 240, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_17
+  rotate: false
+  xy: 274, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_jump_up/standing_jump_18
+  rotate: false
+  xy: 308, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_01
+  rotate: false
+  xy: 342, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_02
+  rotate: false
+  xy: 240, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_03
+  rotate: false
+  xy: 274, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_04
+  rotate: false
+  xy: 308, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_05
+  rotate: false
+  xy: 342, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_06
+  rotate: false
+  xy: 376, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_to_crouch/standing_to_crouch_07
+  rotate: false
+  xy: 274, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_01
+  rotate: false
+  xy: 308, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_02
+  rotate: false
+  xy: 342, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_03
+  rotate: false
+  xy: 376, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_04
+  rotate: false
+  xy: 410, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_05
+  rotate: false
+  xy: 308, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_06
+  rotate: false
+  xy: 342, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_07
+  rotate: false
+  xy: 376, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_08
+  rotate: false
+  xy: 410, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_09
+  rotate: false
+  xy: 444, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_10
+  rotate: false
+  xy: 478, 202
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/standing_turn/standing_turn_11
+  rotate: false
+  xy: 342, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_01
+  rotate: false
+  xy: 376, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_02
+  rotate: false
+  xy: 410, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_03
+  rotate: false
+  xy: 444, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_04
+  rotate: false
+  xy: 478, 152
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_05
+  rotate: false
+  xy: 376, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_06
+  rotate: false
+  xy: 410, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_07
+  rotate: false
+  xy: 444, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_08
+  rotate: false
+  xy: 478, 102
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_09
+  rotate: false
+  xy: 410, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_10
+  rotate: false
+  xy: 444, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_11
+  rotate: false
+  xy: 478, 52
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1
+gfx/player/walking/walking_12
+  rotate: false
+  xy: 444, 2
+  size: 32, 48
+  orig: 32, 48
+  offset: 0, 0
+  index: -1

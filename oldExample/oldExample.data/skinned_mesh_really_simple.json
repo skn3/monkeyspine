@@ -1,0 +1,77 @@
+{
+"skeleton": { "hash": "jB/zXd6Jj3n+xU8GCG6I+GXs7Pc", "spine": "2.1.27", "width": 434.99, "height": 381 },
+"bones": [
+	{ "name": "root", "x": 2.99 },
+	{ "name": "bone", "parent": "root", "x": -2.99, "y": 124 },
+	{ "name": "bone2", "parent": "root", "x": 303.99, "y": -255 },
+	{ "name": "bone3", "parent": "bone2", "x": 65, "y": 125 }
+],
+"slots": [
+	{ "name": "slot1", "bone": "root", "attachment": "smile" },
+	{ "name": "slot2", "bone": "bone2", "attachment": "test" }
+],
+"skins": {
+	"default": {
+		"slot1": {
+			"smile": {
+				"type": "skinnedmesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 3, 0, 1, 2, 3 ],
+				"vertices": [ 1, 0, 64, -2.99, 1, 1, 0, -64, -2.99, 1, 1, 1, -61, 1, 1, 1, 1, 66.99, 1, 1 ],
+				"hull": 4
+			}
+		},
+		"slot2": {
+			"test": {
+				"type": "skinnedmesh",
+				"uvs": [ 1, 1, 0, 1, 0, 0, 1, 0 ],
+				"triangles": [ 1, 3, 0, 1, 2, 3 ],
+				"vertices": [ 2, 2, 66.99, -0.99, 0.84455, 3, 1.99, -126, 0.15544, 2, 2, -61, -0.99, 0.99158, 3, -126, -126, 0.00841, 2, 2, -61, 127, 0.52758, 3, -126, 2, 0.4724, 1, 3, 1.99, 2, 1 ],
+				"hull": 4
+			}
+		}
+	}
+},
+"animations": {
+	"animation": {
+		"bones": {
+			"root": {
+				"rotate": [
+					{ "time": 0, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 }
+				]
+			},
+			"bone": {
+				"rotate": [
+					{ "time": 0, "angle": 0 },
+					{ "time": 1, "angle": -59.49 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 1, "x": 207, "y": 23 }
+				]
+			},
+			"bone2": {
+				"rotate": [
+					{ "time": 0, "angle": 0 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 }
+				]
+			},
+			"bone3": {
+				"rotate": [
+					{ "time": 0, "angle": 0 },
+					{ "time": 1, "angle": 72.15 }
+				],
+				"translate": [
+					{ "time": 0, "x": 0, "y": 0 },
+					{ "time": 1, "x": -217, "y": 38 }
+				]
+			}
+		}
+	}
+}
+}
